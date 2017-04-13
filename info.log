@@ -1,3 +1,0 @@
-
-C:\__users\Lucru\jason\patrol\GuardianPatrol>java -classpath .;.\bin\classes;C:\kituri\jason-2.0\libs\jason-2.0.jar jason.infra.centralised.RunCentralisedMAS GuardianPatrol.mas2j 
-Terminate batch job (Y/N)? 
