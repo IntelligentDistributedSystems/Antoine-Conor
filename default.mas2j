@@ -1,0 +1,23 @@
+/* Jason Project */
+
+
+
+MAS guardianPatrol {
+
+
+
+    infrastructure: Centralised
+
+
+
+    environment: SecurityEnvironment
+
+    agents:
+
+        guardian;
+
+        robber;
+
+}
+
+

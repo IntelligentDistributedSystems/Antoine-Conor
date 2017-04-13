@@ -1,0 +1,22 @@
+/* Jason Project */
+
+MAS guardianPatrol {
+
+
+    infrastructure: Jade
+
+    environment: SecurityEnvironment
+
+    agents:
+
+        guardian;
+
+        robber;
+
+        stopper;
+
+        sender;
+
+}
+
+
