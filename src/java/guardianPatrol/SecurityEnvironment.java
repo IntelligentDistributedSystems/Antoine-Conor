@@ -127,7 +127,7 @@ public class SecurityEnvironment extends Environment {
 
     public synchronized boolean executeRobberAction(Structure action) {
 
-//        logger.info("Robber executing: "+action);
+//      logger.info("Robber executing: "+action);
         
         NumberTerm type, attack;
         
