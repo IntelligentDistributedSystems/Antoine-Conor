@@ -2,21 +2,16 @@
 
 MAS guardianPatrol {
 
+    infrastructure: Centralised
 
-    infrastructure: Jade
-
-    environment: SecurityEnvironment
+    environment: guardianPatrol.SecurityEnvironment
 
     agents:
+    	robber;
+		sender;
+		stopper;
+		guardian;
 
-        guardian;
-
-        robber;
-
-        stopper;
-
-        sender;
-
+	aslSourcePath:
+		"src/asl";
 }
-
-
