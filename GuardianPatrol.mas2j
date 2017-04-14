@@ -8,10 +8,10 @@ MAS guardianPatrol {
 
     agents:
 		tester;
-    	/*robber;
+    	robber;
 		sender;
 		stopper;
-		guardian;*/
+		guardian;
 
 	aslSourcePath:
 		"src/asl";
