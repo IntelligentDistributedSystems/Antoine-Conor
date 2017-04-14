@@ -11,16 +11,26 @@ import jason.asSyntax.*;
 
 public class helloWorld extends DefaultInternalAction {
 
-	private static InternalAction singleton = null;
-    public static InternalAction create() {
-        if (singleton == null)
-            singleton = new helloWorld();
-        return singleton;
+
+    /**
+     * Used to set the minimum number of arguments expected.
+     * Postconditions : checkArguments needs to be called (i.e. super.checkArguments(args)) 
+     */
+    @Override public int getMinArgs() {
+        return 1;
+    }
+    
+    /**
+     * Used to set the maximum number of arguments expected.
+     * Postconditions : checkArguments needs to be called (i.e. super.checkArguments(args)) 
+     */
+    @Override public int getMaxArgs() {
+        return 1;
     }
     
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-
+    	super.checkArguments(args);
     	//Logger
         //ts.getAg().getLogger().info("executing internal action 'internalActions.helloWorld'");
         

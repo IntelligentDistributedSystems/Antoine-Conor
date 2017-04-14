@@ -17,9 +17,9 @@ public class SecurityEnvironment extends Environment {
     private Logger logger = Logger.getLogger("GuardianPatrol.mas2j."+SecurityEnvironment.class.getName());
 
     // Number of patrols, attacks and robber types
-    private final int nPatrols = 4;
-    private final int nAttacks = 3;
-    private final int nRobberTypes = 2;
+    //private final int nPatrols = 4;
+    //private final int nAttacks = 3;
+    //private final int nRobberTypes = 2;
     
     // Current patrol, attack and robber type
     private int iPatrol = -1;

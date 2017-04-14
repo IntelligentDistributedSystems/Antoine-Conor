@@ -104,11 +104,8 @@ gen_prob([X | Xs],K,[X/K | Ys]) :-
 //    .wait(10000);
     ?probability_resolution(K);
     ?guardian_patrols(N);
-    .println(L1);
     ?init(N,K,L1);
-    .println(L1);
     .reverse(L1,L);
-    .wait(10000);
     ?gen_prob(L,K,Strategy); 
     -+guardian_strategy(Strategy,L);
     !do_episodes.
