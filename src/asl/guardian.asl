@@ -16,7 +16,7 @@ iterations(20).
 -- n is the number of patrols
 -- 1 >= qi >= 0 is probability of attack i
 -- sum qi = 1
--- Number of strategies is conb(n+k-1,n-1)
+-- Number of strategies is comb(n+k-1,n-1)
 -- comb(3+4-1,4-1) = comb(6,3) = 20
 */
 guardian_strategy([0,0,0,1],[0,0,0,4]).
@@ -51,30 +51,39 @@ interval(X,[P | L],I,Pt,It) :-
 
 /*
    next(+Xs,-Ys).
-   Determines the succesor Ys in lexicographical order of a list Xs. Xs contains
+   Determines the successor Ys in lexicographical order of a list Xs. Xs contains
    N elements X1 ... XN of natural numbers such that their sum is K. The first
    element of Xs has the smallest rank.
-   The first element for starting the generating proces must be the N-element
+   The first element for starting the generating process must be the N-element
    list [K, 0, ..., 0].
 */
 next(Xs,Ys) :-
    count_0(Xs,Ys,0).
 
+/* If the head of Xs is 0 */
 count_0([0 | Xs],Ys,I) :-
    count_0(Xs,Ys,I+1).
-count_0([X | Xs],[X1 | Ys],I) :-
-   X > 0 &
-   X1 = X-1 &
+
+/* If Xs doesn't start with a 0 */
+count_0([X | Xs],[Y | Ys],I) :-
+   Y = X-1 &
    set_0(Xs,Ys,I).
 
 set_0(Xs,[0 | Ys],I) :-
    I > 0 &
    I1 = I-1 &
    set_0(Xs,Ys,I1).
+   
 set_0([X | Xs],[X+1 | Xs],0). 
 
-/* init(+N,+K,-Xs) generates the first N-element list Xs = [K, 0, ..., 0] */
+/* init(+N,+K,-Xs) generates the first N-element list Xs = [K, 0, ..., 0]
+ * call : ?init(N,K,L1);
+ * */
+ 
+ /* Stop recursion when M == 1 */
 init(1,K,[K]).
+
+/* Add a 0 to list and call recursively with M-1 */
 init(M,K,[0|Xs]) :-
   M > 0 &
   init(M-1,K,Xs).
@@ -95,14 +104,15 @@ gen_prob([X | Xs],K,[X/K | Ys]) :-
 //    .wait(10000);
     ?probability_resolution(K);
     ?guardian_patrols(N);
+    .println(L1);
     ?init(N,K,L1);
+    .println(L1);
     .reverse(L1,L);
-    .println(L);
     .wait(10000);
     ?gen_prob(L,K,Strategy); 
     -+guardian_strategy(Strategy,L);
     !do_episodes.
-    
+
 +!do_episodes : guardian_strategy(S,_) <-
     ?iterations(MaxIter);
     !do_actions(1,MaxIter).
