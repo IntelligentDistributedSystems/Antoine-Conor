@@ -5,3 +5,4 @@ APDescription.txt
 default.mas2j
 MTPs-Main-Container.txt
 *.log
+/bin/
