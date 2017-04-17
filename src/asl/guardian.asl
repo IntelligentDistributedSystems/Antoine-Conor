@@ -74,7 +74,7 @@ set_0(Xs,[0 | Ys],I) :-
    I1 = I-1 &
    set_0(Xs,Ys,I1).
    
-set_0([X | Xs],[X+1 | Xs],0). 
+set_0([X | Xs],[X+1 | Xs],0).
 
 /* init(+N,+K,-Xs) generates the first N-element list Xs = [K, 0, ..., 0]
  * call : ?init(N,K,L1);

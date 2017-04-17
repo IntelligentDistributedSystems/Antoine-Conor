@@ -1,20 +1,25 @@
 package guardianPatrol;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.GraphWalk;
 import org.jgrapht.graph.SimpleGraph;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.jgrapht.GraphPath;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
- * Class representing a patrolling game map :
+ * This class is a specialized implementation of jGraphT's Graph :
  * 	- includes a list of possible attack points (vertices)
  *  - includes a base (special vertex, unique)
  *  - includes a set of edges with determine whether a guardian
@@ -55,51 +60,68 @@ import org.jgrapht.GraphPath;
 public class PatrolGraph extends SimpleGraph<String, DefaultEdge> {
 	
 	private static final long serialVersionUID = -7038166255538966671L;
+	private static final String baseID = "0";
+	
+	private PatrolConfig config;
 	
 	/* TODO : remove test String */
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
-		String example1 = "{\"graph\":{\"vertices\":[{\"id\":\"0\",},{\"id\":\"1\",},{\"id\":\"2\",}],\"edges\":[{\"source\":\"0\",\"target\":\"1\"},{\"source\":\"2\",\"target\":\"0\"}]}}";
-		String example2 = "{\"graph\":{\"vertices\":[{\"id\":\"0\",},{\"id\":\"1\",},{\"id\":\"2\",},{\"id\":\"3\",},{\"id\":\"4\",}],\"edges\":[{\"source\":\"0\",\"target\":\"1\"},{\"source\":\"3\",\"target\":\"0\"},{\"source\":\"1\",\"target\":\"2\"},{\"source\":\"2\",\"target\":\"3\"},{\"source\":\"3\",\"target\":\"1\"},{\"source\":\"3\",\"target\":\"4\"}]}}";
+		String example1 = "/home/conor/Antoine-Conor/tests/input1.json";
+		String example2 = "/home/conor/Antoine-Conor/tests/input2.json";
 		new PatrolGraph(example2);
 	}
-	
 	/**
 	 * Constructor for PatrolGraph class
 	 * @param jsonString
 	 * A JSON String with following structure : {"graph":{"vertices":[{"id":"0",},{"id":"1",}],"edges":[{"source":"1","target":"0"},{"source":"0","target":"2"}]}}
+	 * @throws ParseException 
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
 	 */
-	/* TODO : catch JSONException and IllegalArgumentException */
-	public PatrolGraph(String jsonString) {
+	public PatrolGraph(String filePath) {
 		super(DefaultEdge.class);
+		config = PatrolConfig.create();
 
+		JSONParser parser = new JSONParser();
 		JSONObject json, graph;
 		JSONArray vertices, edges;
 		
-		json = new JSONObject(jsonString);
-		graph = json.getJSONObject("graph");
-		vertices = graph.getJSONArray("vertices");
-		edges = graph.getJSONArray("edges");
-		
-		// vertices.toList().getClass() == java.util.ArrayList<HashMap>
-		for(Object vertex : vertices.toList()){
-			@SuppressWarnings("unchecked")
-			HashMap<String, String> vertexMap = (HashMap<String, String>)(vertex);
-			String id = vertexMap.get("id");
-			this.addVertex(id);
+		try {
+			
+			json = (JSONObject) parser.parse(new FileReader(filePath));
+			graph = (JSONObject) json.get("graph");
+			vertices = (JSONArray) graph.get("vertices");
+			edges = (JSONArray) graph.get("edges");
+			
+			// vertices.toArray() == java.util.ArrayList<HashMap>
+			for(Object vertex : vertices.toArray()){
+				@SuppressWarnings("unchecked")
+				HashMap<String, String> vertexMap = (HashMap<String, String>)(vertex);
+				String id = vertexMap.get("id");
+				this.addVertex(id);
+			}
+			
+			// edges.toList().getClass() == java.util.ArrayList<HashMap>
+			for(Object edge : edges.toArray()){
+				@SuppressWarnings("unchecked")
+				HashMap<String, String> edgeMap = (HashMap<String, String>)(edge);
+				String source = edgeMap.get("source");
+				String target = edgeMap.get("target");
+				this.addEdge(source, target);
+			}
+			
+			System.out.println(this.getAllPossiblePaths());
+			config.setN(this.getAllPossiblePaths().size());
+			
+		// TODO Auto-generated catch blocks
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
 		}
-		
-		// edges.toList().getClass() == java.util.ArrayList<HashMap>
-		for(Object edge : edges.toList()){
-			@SuppressWarnings("unchecked")
-			HashMap<String, String> edgeMap = (HashMap<String, String>)(edge);
-			String source = edgeMap.get("source");
-			String target = edgeMap.get("target");
-			this.addEdge(source, target);
-		}
-		
-		System.out.println(this.getAllPossiblePaths());
-	
 	}
 	
 	
@@ -108,7 +130,7 @@ public class PatrolGraph extends SimpleGraph<String, DefaultEdge> {
 	 * @return A set of all possible simple paths from the base 
 	 */
 	private Set<GraphPath<String, DefaultEdge>> getAllPossiblePaths(){
-		return this.getAllPossiblePaths("0", new ArrayList<String>());
+		return this.getAllPossiblePaths(PatrolGraph.baseID, new ArrayList<String>());
 	}
 	
 	/**
@@ -139,8 +161,7 @@ public class PatrolGraph extends SimpleGraph<String, DefaultEdge> {
 		/* Remove all vertices that are already visited (can't go back) */
 		neighbors.removeAll(visited);
 		
-		/* If they're are no neighbors, return the current path
-		 * if not, return the paths of all neighbors
+		/* If they're are no neighbors return the current path, else return the paths of all neighbors
 		 * NOTE : possible to add partial paths to program by removing if(neighbors.isEmpty()) condition
 		 */
 		Set<GraphPath<String, DefaultEdge>> result = new HashSet<GraphPath<String,DefaultEdge>>();

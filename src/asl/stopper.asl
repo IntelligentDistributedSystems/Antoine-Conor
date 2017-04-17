@@ -19,7 +19,7 @@
 +stoprobber: stopguardian <-
 	!stop.
 
-/* If robber stops first, check that guard finished also */
+/* If guard stops first, check that robber finished also */
 +stopguardian: stoprobber <-
 	!stop.
 
