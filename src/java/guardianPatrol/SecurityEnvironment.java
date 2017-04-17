@@ -11,7 +11,7 @@ import java.util.logging.*;
 
 import java.util.*;
 
-
+@SuppressWarnings("unused")
 public class SecurityEnvironment extends Environment {
 
     private Logger logger = Logger.getLogger("GuardianPatrol.mas2j."+SecurityEnvironment.class.getName());
@@ -28,7 +28,7 @@ public class SecurityEnvironment extends Environment {
     
     // Agent types
     private final int ROBBER = 1;
-    private final int GUARDIAN = 2;
+	private final int GUARDIAN = 2;
     
     // Robber parameters
     private final double p1[] = {1.0,0.7};

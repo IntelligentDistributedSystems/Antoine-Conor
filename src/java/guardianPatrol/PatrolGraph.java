@@ -1,16 +1,22 @@
 package guardianPatrol;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.GraphWalk;
 import org.jgrapht.graph.SimpleGraph;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.jgrapht.GraphPath;
 
 /**
  * Class representing a patrolling game map :
- * 	- includes a list of possible attack points (nodes)
- *  - includes a base (special node, unique)
+ * 	- includes a list of possible attack points (vertices)
+ *  - includes a base (special vertex, unique)
  *  - includes a set of edges with determine whether a guardian
  *  	can go from one attack point to another (represents
  *  	physical constraints)
@@ -19,25 +25,26 @@ import org.json.JSONObject;
  */
 
 /*
- * Assuming JSON Structure (node id 0 is considered to be the base):
+ * Assuming JSON Structure (vertex id 0 is considered to be the base):
  * 
 {
     "graph": {
-        "nodes": [
+        "vertices": [
             {
                 "id": "0",
             },
             {
                 "id": "1",
-            },
-            {
-                "id": "2",
             }
         ],
         "edges": [
             {
+                "source": "1",
+                "target": "0"
+            },
+            {
                 "source": "0",
-                "target": "1"
+                "target": "2"
             }
         ]
     }
@@ -50,35 +57,104 @@ public class PatrolGraph extends SimpleGraph<String, DefaultEdge> {
 	private static final long serialVersionUID = -7038166255538966671L;
 	
 	/* TODO : remove test String */
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
-		String jsonString = "{\"graph\":{\"nodes\":[{\"id\":\"0\",},{\"id\":\"1\",},{\"id\":\"2\",}],\"edges\":[{\"source\":\"0\",\"target\":\"1\"}]}}";
-		new PatrolGraph(jsonString);
+		String example1 = "{\"graph\":{\"vertices\":[{\"id\":\"0\",},{\"id\":\"1\",},{\"id\":\"2\",}],\"edges\":[{\"source\":\"0\",\"target\":\"1\"},{\"source\":\"2\",\"target\":\"0\"}]}}";
+		String example2 = "{\"graph\":{\"vertices\":[{\"id\":\"0\",},{\"id\":\"1\",},{\"id\":\"2\",},{\"id\":\"3\",},{\"id\":\"4\",}],\"edges\":[{\"source\":\"0\",\"target\":\"1\"},{\"source\":\"3\",\"target\":\"0\"},{\"source\":\"1\",\"target\":\"2\"},{\"source\":\"2\",\"target\":\"3\"},{\"source\":\"3\",\"target\":\"1\"},{\"source\":\"3\",\"target\":\"4\"}]}}";
+		new PatrolGraph(example2);
 	}
 	
+	/**
+	 * Constructor for PatrolGraph class
+	 * @param jsonString
+	 * A JSON String with following structure : {"graph":{"vertices":[{"id":"0",},{"id":"1",}],"edges":[{"source":"1","target":"0"},{"source":"0","target":"2"}]}}
+	 */
+	/* TODO : catch JSONException and IllegalArgumentException */
 	public PatrolGraph(String jsonString) {
 		super(DefaultEdge.class);
 
 		JSONObject json, graph;
-		JSONArray nodes, edges;
+		JSONArray vertices, edges;
 		
 		json = new JSONObject(jsonString);
 		graph = json.getJSONObject("graph");
-		nodes = graph.getJSONArray("nodes");
+		vertices = graph.getJSONArray("vertices");
 		edges = graph.getJSONArray("edges");
 		
-		// nodes.toList().getClass() == java.util.ArrayList<HashMap>
-		for(Object node : nodes.toList()){
-			HashMap<String, String> nodeMap = (HashMap<String, String>)(node);
-			String id = nodeMap.get("id");
+		// vertices.toList().getClass() == java.util.ArrayList<HashMap>
+		for(Object vertex : vertices.toList()){
+			@SuppressWarnings("unchecked")
+			HashMap<String, String> vertexMap = (HashMap<String, String>)(vertex);
+			String id = vertexMap.get("id");
 			this.addVertex(id);
 		}
 		
 		// edges.toList().getClass() == java.util.ArrayList<HashMap>
 		for(Object edge : edges.toList()){
+			@SuppressWarnings("unchecked")
 			HashMap<String, String> edgeMap = (HashMap<String, String>)(edge);
 			String source = edgeMap.get("source");
 			String target = edgeMap.get("target");
 			this.addEdge(source, target);
 		}
+		
+		System.out.println(this.getAllPossiblePaths());
+	
+	}
+	
+	
+	/**
+	 * Default usage for getAllPossiblePaths (from base vertex)
+	 * @return A set of all possible simple paths from the base 
+	 */
+	private Set<GraphPath<String, DefaultEdge>> getAllPossiblePaths(){
+		return this.getAllPossiblePaths("0", new ArrayList<String>());
+	}
+	
+	/**
+	 * Function to get all possible simple paths (not going by any vertex twice) from the base vertex.
+	 * Contrary to most algorithms, this one doesn't try to optimize path length or visited vertices,
+	 * and is used only to find possible guardian paths, not the best one.
+	 * @param source
+	 * The source vertex
+	 * @param visited
+	 * Vertexes already visited on the current path
+	 * @return A set of all possible simple paths from the source
+	 */
+	private Set<GraphPath<String, DefaultEdge>> getAllPossiblePaths(String source, List<String> visited){
+		visited.add(source);
+		
+		/* Get all the vertices that are neighbors to the source node.
+		 * Note : using sets to not check duplication.
+		 */
+		Set<DefaultEdge> edges = this.edgesOf(source);
+		Set<String> neighbors = new HashSet<String>();
+		for(DefaultEdge edge : edges){
+			String edgeSource = this.getEdgeSource(edge);
+			String edgeTarget = this.getEdgeTarget(edge);
+			neighbors.add(edgeSource);
+			neighbors.add(edgeTarget);
+		}
+		
+		/* Remove all vertices that are already visited (can't go back) */
+		neighbors.removeAll(visited);
+		
+		/* If they're are no neighbors, return the current path
+		 * if not, return the paths of all neighbors
+		 * NOTE : possible to add partial paths to program by removing if(neighbors.isEmpty()) condition
+		 */
+		Set<GraphPath<String, DefaultEdge>> result = new HashSet<GraphPath<String,DefaultEdge>>();
+		if(neighbors.isEmpty()){
+			GraphPath<String, DefaultEdge> path = new GraphWalk<String, DefaultEdge>(this, visited, 0);
+			result.add(path);
+		}
+		else {
+			for(String neighbor : neighbors){
+				/* Essential to make a new list of visited points, for each "direction" from source vertex */
+				List<String> newVisited = new ArrayList<String>(visited);
+				result.addAll(this.getAllPossiblePaths(neighbor, newVisited));
+			}
+		}
+		return result;
 	}
 }
