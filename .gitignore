@@ -1,6 +1,6 @@
 .project
 .classpath
-.settings
+/.settings/
 .idea
 .stop___MAS
 APDescription.txt

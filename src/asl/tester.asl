@@ -10,5 +10,5 @@
 /* Plans */
 
 +!start : true <-
-	internalActions.helloWorld(A);
+	internalActions.config(n,A);
 	.println(A).

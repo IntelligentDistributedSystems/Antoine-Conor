@@ -16,7 +16,7 @@
 // TODO : Guardian stop not working correctly. Solve after model extension
 /* Plans */
 /* If robber stops first, check that guard finished also */
-+stoprobber: stopguardian <-
++stoprobber: true <- //stopguardian <-
 	!stop.
 
 /* If guard stops first, check that robber finished also */

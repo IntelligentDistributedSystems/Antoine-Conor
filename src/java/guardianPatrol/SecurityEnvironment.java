@@ -14,12 +14,16 @@ import java.util.*;
 @SuppressWarnings("unused")
 public class SecurityEnvironment extends Environment {
 	
-    private Logger logger = Logger.getLogger("GuardianPatrol.mas2j."+SecurityEnvironment.class.getName());
-
+	// TODO : remove public static, used for debugging purposes
+    // private Logger logger = Logger.getLogger("GuardianPatrol.mas2j."+SecurityEnvironment.class.getName());
+	public static Logger logger = Logger.getLogger("GuardianPatrol.mas2j."+SecurityEnvironment.class.getName());
+	
     /*
+     * Initilizing input from user
+     */
     private PatrolGraph graph = new PatrolGraph("/home/conor/Antoine-Conor/tests/input2.json");
     private PatrolConfig config = PatrolConfig.create();
-    */
+    
     
     // Number of patrols, attacks and robber types
     //private final int nPatrols = 4;
@@ -154,7 +158,6 @@ public class SecurityEnvironment extends Environment {
     }
 
     public synchronized boolean executeGuardianAction(Structure action) {
-    	//System.out.println(config.getN());
 //        logger.info("Guardian executing: "+action);
         
         NumberTerm patrol;
