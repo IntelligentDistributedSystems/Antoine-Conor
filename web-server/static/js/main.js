@@ -51,5 +51,5 @@ $(function(){
 	
 	const interface = new Interface()
 	$('#sortNodes').on('click', event => interface.properties.path.sort())
-	$('#launchButton').on('click')
+	$('#launchButton').on('click', event => interface.startSimulation())
 })

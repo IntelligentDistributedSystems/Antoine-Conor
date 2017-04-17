@@ -1,3 +1,9 @@
+// Imports
+
+const spawn = require('child_process').spawn
+const crypto = require('crypto')
+const fs = require('fs')
+
 // Configuration
 
 const httpPort = 8080
@@ -18,11 +24,27 @@ app.listen(httpPort, () => console.log(`Web-GUI hosted on port ${httpPort}.`))
 const io = require('socket.io')(webSocketsPort)
 
 io.on('connection', socket => {
+
 	console.log(socket.conn.id)
 
 	socket.on('startSimulation', data => {
 
-		console.log(data)
+		// TODO : vérifier la data.
+
+		const configFileID = crypto.createHmac('sha256', ''+Math.random())
+                   				   .digest('hex')
+
+		fs.writeFile(`configs/${configFileID}.json`, JSON.stringify(data), 'utf8', () => {
+
+			const ls = spawn('cat', ['configs/$configFileID.json'], {env: {configFileID: configFileID}})
+
+			ls.stdout.on('data', data => socket.emit('stdout', {text: ''+data}))
+
+			ls.stderr.on('data', data => socket.emit('stderr', {text: ''+data}))
+
+			ls.on('close', code => socket.emit('close', {text: `child process exited with code ${code}`}))
+
+		})
 
 	})
 })

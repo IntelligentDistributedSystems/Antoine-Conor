@@ -7,6 +7,10 @@ class Interface{
 		
 			console.log('Connection to the remote server established.')
 
+			this.socket.on('stdout', data => console.log(data.text))
+			this.socket.on('stderr', data => console.log(data.text))
+			this.socket.on('close', data => console.log(data.text))
+
 		})
 
 		this.properties = new Properties()

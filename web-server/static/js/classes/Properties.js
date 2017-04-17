@@ -2,8 +2,11 @@ class Properties {
 	constructor(){
 		this.path = new Graph()
 		this.initPath()
-	}
 
+		this.generalParameters = {},
+		this.robberParameters = {},
+		this.attackParameters = {}
+	}
 
 	initPath(){
 		

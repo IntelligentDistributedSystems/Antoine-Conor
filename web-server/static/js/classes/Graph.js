@@ -145,9 +145,13 @@ class Graph {
 			classes: base ? 'base' : ''
 		}).qtip({
 			content: `
-			<a class="waves-effect waves-light btn blue link" style="width:160px"><i class="material-icons right">timeline</i>Link to...</a>
-			<a class="waves-effect waves-light btn red delete" style="width:160px; margin-top: 10px" ${base ? 'disabled' : ''}><i class="material-icons right">delete</i>Delete</a>
-			<a class="waves-effect waves-light btn green dismiss" style="width:160px; margin-top: 10px"><i class="material-icons right dismiss">cancel</i>Dismiss</a>
+			<div>
+				<a class="waves-effect waves-light btn blue link" style="width:160px"><i class="material-icons right">timeline</i>Link to...</a>
+				<a class="waves-effect waves-light btn red delete" style="width:160px; margin-top: 10px" ${base ? 'disabled' : ''}><i class="material-icons right">delete</i>Delete</a>
+				<a class="waves-effect waves-light btn green dismiss" style="width:160px; margin-top: 10px"><i class="material-icons right dismiss">cancel</i>Dismiss</a>
+				<a class="waves-effect waves-light btn red lighten-2 minusProbability col" style="margin-top: 10px; width: 78px;"><i class="material-icons dismiss">remove_circle</i></a>
+				<a class="waves-effect waves-light btn green lighten-2 plusProbability col" style="margin-top: 10px; width: 78px;"><i class="material-icons dismiss">add_circle</i></a>
+			</div>
 			`,
 			position: {
 				my: 'top center',
