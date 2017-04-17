@@ -14,14 +14,18 @@ import java.util.*;
 @SuppressWarnings("unused")
 public class SecurityEnvironment extends Environment {
 	
-	// TODO : remove public static, used for debugging purposes
-    // private Logger logger = Logger.getLogger("GuardianPatrol.mas2j."+SecurityEnvironment.class.getName());
-	public static Logger logger = Logger.getLogger("GuardianPatrol.mas2j."+SecurityEnvironment.class.getName());
+    private Logger logger = Logger.getLogger("GuardianPatrol.mas2j."+SecurityEnvironment.class.getName());
+    /*
+     * Following line can be used to log from any class for debug
+     * public static Logger logger = Logger.getLogger("GuardianPatrol.mas2j."+SecurityEnvironment.class.getName());
+     */
 	
     /*
      * Initilizing input from user
+     * TODO : set path dynamically (environment variable ?)
+     * name : $(configFileID).json
      */
-    private PatrolGraph graph = new PatrolGraph("/home/conor/Antoine-Conor/tests/input2.json");
+    private PatrolGraph graph = new PatrolGraph("/home/conor/Antoine-Conor/tests/input3.json");
     private PatrolConfig config = PatrolConfig.create();
     
     

@@ -70,7 +70,8 @@ public class PatrolGraph extends SimpleGraph<String, DefaultEdge> {
 	public static void main(String[] args) {
 		String example1 = "/home/conor/Antoine-Conor/tests/input1.json";
 		String example2 = "/home/conor/Antoine-Conor/tests/input2.json";
-		new PatrolGraph(example2);
+		String example3 = "/home/conor/Antoine-Conor/tests/input3.json";
+		new PatrolGraph(example3);
 	}
 	/**
 	 * Constructor for PatrolGraph class
@@ -112,7 +113,6 @@ public class PatrolGraph extends SimpleGraph<String, DefaultEdge> {
 				this.addEdge(source, target);
 			}
 			
-			SecurityEnvironment.logger.info("Setting number patrols");
 			config.setNumberPossiblePatrols(this.getAllPossiblePaths().size());
 			
 		// TODO : Correctly catch exceptions

@@ -6,8 +6,12 @@ package guardianPatrol;
  *
  */
 public class PatrolConfig {
+	// Guardian Configuration
 	private int numberPossiblePatrols = 0;
 	
+	// Robber Configuration
+	
+	// General Configuration
 	
 	private static PatrolConfig singleton = null;
 	/**

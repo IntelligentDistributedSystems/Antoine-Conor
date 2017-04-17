@@ -10,5 +10,5 @@
 /* Plans */
 
 +!start : true <-
-	internalActions.config(n,A);
+	internalActions.config(numberPossiblePatrols,A);
 	.println(A).

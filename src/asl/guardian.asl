@@ -103,7 +103,11 @@ gen_prob([X | Xs],K,[X/K | Ys]) :-
 //    .println("Hello world !");
 //    .wait(10000);
     ?probability_resolution(K);
-    ?guardian_patrols(N);
+    /*
+     * Following line is dynamic implementation of config loading
+     * Backup : ?guardian_patrols(N);
+     */
+    internalActions.config(numberPossiblePatrols,N);
     ?init(N,K,L1);
     .reverse(L1,L);
     ?gen_prob(L,K,Strategy); 

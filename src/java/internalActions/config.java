@@ -50,7 +50,7 @@ public class config extends DefaultInternalAction {
         
         if (args.length == 2) {
         	switch (args[0].toString()) {
-        	case "n":
+        	case "numberPossiblePatrols":
         		return un.unifies(args[1], new NumberTermImpl(config.getNumberPossiblePatrols()));
         	default:
                 return un.unifies(args[1], new StringTermImpl("Hello World ! "));
