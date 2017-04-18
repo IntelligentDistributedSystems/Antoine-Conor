@@ -10,5 +10,4 @@
 /* Plans */
 
 +!start : true <-
-	internalActions.config(numberPossiblePatrols,A);
-	.println(A).
+	.println("Tester ready for action").

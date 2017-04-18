@@ -1,8 +1,4 @@
 // Internal action code for project Antoine-Conor
-/*
- * Note : 	Internal actions must be compiled manually before running the project.
- * 			Use compileInternalActions.sh to do so
- */
 
 package internalActions;
 
@@ -11,8 +7,11 @@ import jason.asSemantics.*;
 import jason.asSyntax.*;
 
 /**
+ * NOTE : Currently, the plan is to use a defaultBeliefBase. However, this class could be usefull
+ * for further developement
  * Class of InternalAction type, to be called from agents. This class is a controller
  * for the config that is user modifiable (from guardianPatrol.PatrolConfig).
+ * Example usage in agents : internalActions.config(numberPossiblePatrols,N);
  * @author ConorRyan
  *
  */

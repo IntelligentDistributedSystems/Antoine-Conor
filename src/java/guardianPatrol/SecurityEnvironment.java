@@ -4,7 +4,7 @@ package guardianPatrol;
 import jason.asSyntax.*;
 
 import jason.*;
-
+import jason.asSemantics.TransitionSystem;
 import jason.environment.*;
 
 import java.util.logging.*;
@@ -13,7 +13,6 @@ import java.util.*;
 
 @SuppressWarnings("unused")
 public class SecurityEnvironment extends Environment {
-	
     private Logger logger = Logger.getLogger("GuardianPatrol.mas2j."+SecurityEnvironment.class.getName());
     /*
      * Following line can be used to log from any class for debug
@@ -27,7 +26,6 @@ public class SecurityEnvironment extends Environment {
      */
     private PatrolGraph graph = new PatrolGraph("/home/conor/Antoine-Conor/tests/input3.json");
     private PatrolConfig config = PatrolConfig.create();
-    
     
     // Number of patrols, attacks and robber types
     //private final int nPatrols = 4;
@@ -226,12 +224,13 @@ public class SecurityEnvironment extends Environment {
 
     @Override
     public void stop() {
-        logger.info(""+history.size());
+        logger.info("History size : "+history.size());
         for (EnvPercept per : history) {
             logger.info(per.i+","+per.r+","+per.a+","+per.p+","+per.ur+","+per.ug);
         }
         super.stop();
     }
+
 
 }
 

@@ -7,11 +7,11 @@ MAS guardianPatrol {
     environment: guardianPatrol.SecurityEnvironment
 
     agents:
-		tester;
-    	robber;
+    	robber beliefBaseClass beliefbases.RobberBeliefBase;
 		sender;
 		stopper;
-		guardian;
+		guardian beliefBaseClass beliefbases.GuardianBeliefBase;
+		tester;
 
 	aslSourcePath:
 		"src/asl";

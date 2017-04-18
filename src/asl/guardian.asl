@@ -7,7 +7,7 @@
 /* Parameter = identify patrol: 1, 2, 3, 4 */
 /* action(patrol,2) */
 /* N = 4 */
-guardian_patrols(4).
+// TODO  : uneeded guardian_patrols(4).
 
 /* Maximum number of iterations per episode */
 iterations(20).
@@ -24,7 +24,7 @@ guardian_strategy([0,0,0,1],[0,0,0,4]).
 
 /* Probability resolution: K */
 /* K = 3 */
-probability_resolution(3).
+// TODO : unneeded probability_resolution(3).
 
 /* Select guardian patrol according to the current strategy. *
 /* select_patrol(+X,+L,-I)
@@ -102,12 +102,12 @@ gen_prob([X | Xs],K,[X/K | Ys]) :-
 +!start : true <- 
 //    .println("Hello world !");
 //    .wait(10000);
+	?number_possible_patrols(N);
     ?probability_resolution(K);
     /*
      * Following line is dynamic implementation of config loading
      * Backup : ?guardian_patrols(N);
      */
-    internalActions.config(numberPossiblePatrols,N);
     ?init(N,K,L1);
     .reverse(L1,L);
     ?gen_prob(L,K,Strategy); 
