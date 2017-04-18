@@ -2,8 +2,8 @@ package guardianPatrol;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import helpers.Helpers;
 import jason.asSyntax.Literal;
 
 /**
@@ -13,10 +13,13 @@ import jason.asSyntax.Literal;
  */
 public class PatrolConfig {
 	// Guardian Configuration
+	/* TODO : remove default values, when properly calculated from graph and user input */
 	private int numberPossiblePatrols;
-	private int probabilityResolution;
+	private int probabilityResolution = 3;
+	private int guardianIterations = 20;
 	
 	// Robber Configuration
+	private int numberPossibleAttacks;
 	
 	// General Configuration
 	/**
@@ -38,30 +41,50 @@ public class PatrolConfig {
         return singleton;
     }
     
-    /* TODO : Currently, n = k (number of patrols and proba resolution : see with CB) */
+    
+    //GUARDIAN CONFIGURATION
     public void setNumberPossiblePatrols(int n){
     	this.numberPossiblePatrols = n;
-    	this.setProbabilityResolution(n);
+    }
+    
+    public int getNumberPossiblePatrols(){
+    	return this.numberPossiblePatrols;
     }
     
     public int getProbabilityResolution() {
 		return probabilityResolution;
 	}
 
-    /* TODO : Currently, n = k (number of patrols and proba resolution : see with CB) */
 	public void setProbabilityResolution(int probabilityResolution) {
 		this.probabilityResolution = probabilityResolution;
 	}
+	
+	public int getNumberOfStrategies(){
+		return Helpers.choose(numberPossiblePatrols + probabilityResolution -1 , numberPossiblePatrols - 1);
+	}
+	
+	public int getGuardianIterations(){
+		return guardianIterations;
+	}
+	
+	//ROBBER CONFIGURATION
+	public int getNumberPossibleAttacks() {
+		return numberPossibleAttacks;
+	}
 
-	public int getNumberPossiblePatrols(){
-    	return this.numberPossiblePatrols;
-    }
-    
-    public List<Literal> getBeliefLiterals(){
-    	List<Literal> result = new ArrayList<>();
-    	result.add(Literal.parseLiteral("number_possible_patrols(" + numberPossiblePatrols +")"));
-    	result.add(Literal.parseLiteral("probability_resolution(" + probabilityResolution +")"));
-    	return result;
-    }
+	/**
+	 * This method sets the number of possible attack points for the robber.
+	 * Attacks = Vertices - 1 , because the robber cannot attack the base
+	 * @param numberOfVertices Number of vertices of the graph
+	 */
+	public void setNumberPossibleAttacks(int numberOfVertices) {
+		this.numberPossibleAttacks = numberOfVertices - 1;
+	}
 
+	/* For each possible strategy (N total), the guardian does I iterations.
+	 * Thus, the robber does N*I iterations
+	 */
+	public int getRobberIterations(){
+		return this.getGuardianIterations() * this.getNumberOfStrategies();
+	}
 }

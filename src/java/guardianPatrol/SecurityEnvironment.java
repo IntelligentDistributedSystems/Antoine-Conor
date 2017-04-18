@@ -224,10 +224,12 @@ public class SecurityEnvironment extends Environment {
 
     @Override
     public void stop() {
-        logger.info("History size : "+history.size());
-        for (EnvPercept per : history) {
-            logger.info(per.i+","+per.r+","+per.a+","+per.p+","+per.ur+","+per.ug);
-        }
+	    /*
+	    logger.info("History size : "+history.size());
+	    for (EnvPercept per : history) {
+	        logger.info(per.i+","+per.r+","+per.a+","+per.p+","+per.ur+","+per.ug);
+	    }
+	    */
         super.stop();
     }
 

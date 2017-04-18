@@ -13,10 +13,10 @@ robber_types(2).
 /* Type = robber type */
 /* Parameter = identify attack: 1, 2, 3 */
 /* action(attack,1,3) */
-robber_attacks(3).
+// UNUSED robber_attacks(3).
 
 /* Maximum number of iterations */
-iterations(400).
+// UNUSED iterations(400).
 
 /* Robber strategy: [p1, p2, ..., pn] such that
 -- n is the number of attacks

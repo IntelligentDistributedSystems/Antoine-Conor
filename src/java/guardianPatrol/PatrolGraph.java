@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
-
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.GraphWalk;
@@ -106,6 +104,7 @@ public class PatrolGraph extends SimpleGraph<String, DefaultEdge> {
 			}
 			
 			config.setNumberPossiblePatrols(this.getAllPossiblePaths().size());
+			config.setNumberPossibleAttacks(this.vertexSet().size());
 			
 		// TODO : Correctly catch exceptions
 		} catch (FileNotFoundException e) {

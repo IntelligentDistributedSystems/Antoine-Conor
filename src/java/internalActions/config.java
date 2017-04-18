@@ -16,6 +16,8 @@ import jason.asSyntax.*;
  *
  */
 public class config extends DefaultInternalAction {
+	private static final long serialVersionUID = 4740178248861241577L;
+	
 	private PatrolConfig config = PatrolConfig.create();
 
     /**

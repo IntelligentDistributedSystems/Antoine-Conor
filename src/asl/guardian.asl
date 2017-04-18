@@ -7,10 +7,10 @@
 /* Parameter = identify patrol: 1, 2, 3, 4 */
 /* action(patrol,2) */
 /* N = 4 */
-// TODO  : uneeded guardian_patrols(4).
+// Uneeded : guardian_patrols(4).
 
 /* Maximum number of iterations per episode */
-iterations(20).
+// Uneeded : iterations(20).
 
 /* Guardian strategy: [q1, q2, ..., qn] such that
 -- n is the number of patrols
@@ -24,7 +24,7 @@ guardian_strategy([0,0,0,1],[0,0,0,4]).
 
 /* Probability resolution: K */
 /* K = 3 */
-// TODO : unneeded probability_resolution(3).
+// Uneeded : probability_resolution(3).
 
 /* Select guardian patrol according to the current strategy. *
 /* select_patrol(+X,+L,-I)
