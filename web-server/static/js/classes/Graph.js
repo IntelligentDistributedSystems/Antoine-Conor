@@ -4,9 +4,12 @@ class Graph {
 		this.stylesheet = [{
 				selector: 'node',
 				style: {
-					'height': 20,
-					'width': 20,
-					'background-color': '#18e018'
+					height: 20,
+					width: 20,
+					'background-color': '#18e018',
+					content: 'data(weight)',
+					'text-valign': 'center',
+					'text-halign': 'center'
 				}
 			},
 			{
@@ -14,8 +17,8 @@ class Graph {
 				style: {
 					'curve-style': 'haystack',
 					'haystack-radius': 0,
-					'width': 5,
-					'opacity': 0.5,
+					width: 5,
+					opacity: 0.5,
 					'line-color': '#a2efa2'
 				}
 			},
@@ -59,12 +62,20 @@ class Graph {
 		})
 
 		$(document).on('click', '.delete', event => {
-			this.cy.remove(`node[id = "${this.lastSelectedNode}"]`)
+			this.lastSelectedNode.remove()
 			this.reset()
 		})
 
 		$(document).on('click', '.dismiss', event => {
 			this.reset()
+		})
+
+		$(document).on('click', '.plusProbability', event => {
+			this.lastSelectedNode.data('weight', this.lastSelectedNode.data('weight')+1)
+		})
+
+		$(document).on('click', '.minusProbability', event => {
+			this.lastSelectedNode.data('weight', Math.maw(this.lastSelectedNode.data('weight')-1, 0))
 		})
 
 		this.cy.on('tap', event => {
@@ -80,16 +91,16 @@ class Graph {
 		this.cy.on('tap', 'node', event => {
 			if (this.currentAction === 'linking'){
 				this.currentAction = null
-				const secondNode = event.target.id()
+				const secondNode = event.target
 				// We check if that edge aleady exists or if the source and target are the same node.
-				if (!this.cy.elements(`edge[source = "${this.lastSelectedNode}"][target = "${secondNode}"]`).length && 
-					!this.cy.elements(`edge[target = "${this.lastSelectedNode}"][source = "${secondNode}"]`).length && 
+				if (!this.cy.elements(`edge[source = "${this.lastSelectedNode.id()}"][target = "${secondNode.id()}"]`).length && 
+					!this.cy.elements(`edge[target = "${this.lastSelectedNode.id()}"][source = "${secondNode.id()}"]`).length && 
 					secondNode != this.lastSelectedNode){
-					this.link(this.lastSelectedNode, secondNode)
+					this.link(this.lastSelectedNode.id(), secondNode.id())
 				}
 			}
 
-			this.lastSelectedNode = event.target.id()
+			this.lastSelectedNode = event.target
 		})
 
 		this.cy.on('tap', 'edge', event => {
@@ -135,7 +146,8 @@ class Graph {
 	addNode(position, base){
 		this.cy.add({
 			data: {
-				id: `n${this.nbrNodesCreated++}`
+				id: `n${this.nbrNodesCreated++}`,
+				weight: 1
 			},
 			position: position,
 			group: 'nodes',
@@ -149,8 +161,8 @@ class Graph {
 				<a class="waves-effect waves-light btn blue link" style="width:160px"><i class="material-icons right">timeline</i>Link to...</a>
 				<a class="waves-effect waves-light btn red delete" style="width:160px; margin-top: 10px" ${base ? 'disabled' : ''}><i class="material-icons right">delete</i>Delete</a>
 				<a class="waves-effect waves-light btn green dismiss" style="width:160px; margin-top: 10px"><i class="material-icons right dismiss">cancel</i>Dismiss</a>
-				<a class="waves-effect waves-light btn red lighten-2 minusProbability col" style="margin-top: 10px; width: 78px;"><i class="material-icons dismiss">remove_circle</i></a>
-				<a class="waves-effect waves-light btn green lighten-2 plusProbability col" style="margin-top: 10px; width: 78px;"><i class="material-icons dismiss">add_circle</i></a>
+				<a class="waves-effect waves-light btn red lighten-2 minusProbability col" style="margin-top: 10px; width: 78px;" ${base ? 'disabled' : ''}><i class="material-icons dismiss">remove_circle</i></a>
+				<a class="waves-effect waves-light btn green lighten-2 plusProbability col" style="margin-top: 10px; width: 78px;" ${base ? 'disabled' : ''}><i class="material-icons dismiss">add_circle</i></a>
 			</div>
 			`,
 			position: {
@@ -171,7 +183,8 @@ class Graph {
 			verticies: Object.keys(cy.nodes())
 							 .filter(key => !isNaN(key))
 							 .map(key => ({
-							 	id: cy.nodes()[key].id()
+							 	id: cy.nodes()[key].id(),
+							 	weight: cy.nodes()[key].data('weight')
 							 })),
 			edges: Object.keys(cy.edges())
 						 .filter(key => !isNaN(key))
