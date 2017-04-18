@@ -9,8 +9,8 @@ class Graph {
 					height: 20,
 					width: 20,
 					'background-color': 'mapData(robbersInterest, 0, 25, green, red)',
-					content: node => `${node.data('id')}:${node.data('guardiansCost')}/${node.data('guardiansReward')}`,
-					'text-valign': 'center',
+					content: node => `N${node.data('id')} C${node.data('guardiansCost')}/R${node.data('guardiansReward')}`,
+					//'text-valign': 'center',
 					'text-halign': 'center'
 				}
 			},
@@ -57,42 +57,42 @@ class Graph {
 		this.lastSelectedNode = null
 		this.currentAction = null
 
-		$(document).on('click', '.link', event => {
+		$(document).on('click', '.qtip-content .link', event => {
 			console.log("linking")
 			this.currentAction = 'linking'
 			$('.qtip').qtip('hide')
 		})
 
-		$(document).on('click', '.delete', event => {
+		$(document).on('click', '.qtip-content .delete', event => {
 			this.lastSelectedNode.remove()
 			this.reset()
 		})
 
-		$(document).on('click', '.dismiss', event => {
+		$(document).on('click', '.qtip-content .dismiss', event => {
 			this.reset()
 		})
 
-		$(document).on('click', '.plusInterest', event => {
+		$(document).on('click', '.qtip-content .plusInterest', event => {
 			this.lastSelectedNode.data('robbersInterest', Math.min(this.lastSelectedNode.data('robbersInterest')+1, 25))
 		})
 
-		$(document).on('click', '.minusInterest', event => {
+		$(document).on('click', '.qtip-content .minusInterest', event => {
 			this.lastSelectedNode.data('robbersInterest', Math.max(this.lastSelectedNode.data('robbersInterest')-1, 0))
 		})
 
-		$(document).on('click', '.plusCost', event => {
+		$(document).on('click', '.qtip-content .plusCost', event => {
 			this.lastSelectedNode.data('guardiansCost', Math.min(this.lastSelectedNode.data('guardiansCost')+1, 25))
 		})
 
-		$(document).on('click', '.minusCost', event => {
+		$(document).on('click', '.qtip-content .minusCost', event => {
 			this.lastSelectedNode.data('guardiansCost', Math.max(this.lastSelectedNode.data('guardiansCost')-1, 0))
 		})
 
-		$(document).on('click', '.plusReward', event => {
+		$(document).on('click', '.qtip-content .plusReward', event => {
 			this.lastSelectedNode.data('guardiansReward', Math.min(this.lastSelectedNode.data('guardiansReward')+1, 25))
 		})
 
-		$(document).on('click', '.minusReward', event => {
+		$(document).on('click', '.qtip-content .minusReward', event => {
 			this.lastSelectedNode.data('guardiansReward', Math.max(this.lastSelectedNode.data('guardiansReward')-1, 0))
 		})
 
@@ -206,8 +206,8 @@ class Graph {
 				width: 195
 			}
 		})
-		
-		this.settings.robbers.forEach(robber => newNode.data('robbersSettings').put(robber, {
+
+		this.settings.robbers.forEach(robber => newNode.data('robbersSettings').set(robber, {
 			cost: 2,
 			reward: 1,
 			caughtProbability: 0.3

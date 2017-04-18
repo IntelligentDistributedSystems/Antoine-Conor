@@ -51,5 +51,6 @@ $(function(){
 	
 	const interface = new Interface()
 	$('#sortNodes').on('click', event => interface.settings.path.sort())
+	$('#newRobber').on('click', event => interface.settings.newRobber())
 	$('#launchButton').on('click', event => interface.startSimulation())
 })
