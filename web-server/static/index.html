@@ -48,7 +48,7 @@
 						<div class="col s12 m6">
 							<div class="card hoverable" data-dest="simulate">
 								<div class="card-image">
-									<img src="http://placehold.it/400x400?text=img/simulate.jpg">
+									<img src="http://placehold.it/400x250?text=img/simulate.jpg">
 									<span class="card-title">Run a simulation</span>
 								</div>
 								<div class="card-action">
@@ -60,7 +60,7 @@
 						<div class="col s12 m6">
 							<div class="card hoverable" data-dest="about">
 								<div class="card-image">
-									<img src="http://placehold.it/400x400?text=img/about.jpg">
+									<img src="http://placehold.it/400x250?text=img/about.jpg">
 									<span class="card-title">About agents</span>
 								</div>
 								<div class="card-action">
@@ -86,10 +86,9 @@
 						<div class="row">
 
 							<ul class="tabs">
-								<li class="tab col s3"><a class="active" href="#parameters-0">Paths</a></li>
-								<li class="tab col s3"><a href="#parameters-1">General</a></li>
-								<li class="tab col s3"><a href="#parameters-2">Robbers</a></li>
-								<li class="tab col s3"><a href="#parameters-3">Attacks</a></li>
+								<li class="tab col s4"><a class="active" href="#parameters-0">Paths</a></li>
+								<li class="tab col s4"><a href="#parameters-1">General</a></li>
+								<li class="tab col s4"><a href="#parameters-2">Robbers</a></li>
 							</ul>
 
 							<div id="parameters-0" class="parameters col s12">
@@ -138,39 +137,6 @@
 									<a id="newRobber" class="btn-floating btn-large waves-effect waves-light blue right"><i class="material-icons">add</i></a>
 								</div>
 							</div>
-							<div id="parameters-3" class="parameters col s12">
-								
-								<table class="stripped">
-									<thead>
-										<tr>
-											<th>Attack's n°</th>
-											<th>Guardians' reward</th>
-											<th>Guardians' cost</th>
-											<th>Remove</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>
-											N° 1
-											</td>
-											<td>
-												<input type="number" min="0" value="2" class="guardiansReward[]" required>
-											</td>
-											<td>
-												<input type="number" min="0" value="2" class="guardiansCost[]" required>
-											</td>
-											<td>
-												<a id="removeAttack" class="s5 waves-effect waves-light btn red"><i class="material-icons right">remove_circle</i>Remove</a>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-
-								<div class="row s12">
-									<a id="newAttack" class="btn-floating btn-large waves-effect waves-light blue right"><i class="material-icons">add</i></a>
-								</div>
-							</div>
 						</div>
 
 						<div class="row">
@@ -184,8 +150,25 @@
 							</div>
 						</div>
 
-						<!-- Modal Structure -->
-						<div id="modal1" class="modal">
+						<div id="modal-results" class="modal">
+							<div class="modal-content">
+								<h4>New target options</h4>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+									tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+									quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+									consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+									cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+									proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+								</p>
+							</div>
+							<div class="modal-footer">
+								<a href="#simulate" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+								<a href="#simulate" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+							</div>
+						</div>
+
+						<div id="modal-robber-conf" class="modal">
 							<div class="modal-content">
 								<h4>New target options</h4>
 								<p>
@@ -265,7 +248,7 @@
 		<script type="text/javascript" src="js/libs/cytoscape-qtip.js"></script>
 
 		<script type="text/javascript" src="js/classes/Graph.js"></script>
-		<script type="text/javascript" src="js/classes/Properties.js"></script>
+		<script type="text/javascript" src="js/classes/Settings.js"></script>
 		<script type="text/javascript" src="js/classes/Interface.js"></script>
 
 		<script type="text/javascript" src="js/main.js"></script>

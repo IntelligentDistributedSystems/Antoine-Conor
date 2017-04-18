@@ -50,6 +50,6 @@ $(function(){
 	setupDOM()
 	
 	const interface = new Interface()
-	$('#sortNodes').on('click', event => interface.properties.path.sort())
+	$('#sortNodes').on('click', event => interface.settings.path.sort())
 	$('#launchButton').on('click', event => interface.startSimulation())
 })

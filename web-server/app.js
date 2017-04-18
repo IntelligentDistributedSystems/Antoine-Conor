@@ -36,7 +36,10 @@ io.on('connection', socket => {
 
 		fs.writeFile(`configs/${configFileID}.json`, JSON.stringify(data), 'utf8', () => {
 
-			const ls = spawn('cat', ['configs/$configFileID.json'], {env: {configFileID: configFileID}})
+			const env = Object.create(process.env)
+			env.configFileID = configFileID
+
+			const ls = spawn('echo', ['il faut me faire exécuter le .jar'], {env: env})
 
 			ls.stdout.on('data', data => socket.emit('stdout', {text: ''+data}))
 

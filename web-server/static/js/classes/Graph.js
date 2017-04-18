@@ -1,13 +1,15 @@
 class Graph {
-	constructor(){
+	constructor(settings){
+
+		this.settings = settings
 
 		this.stylesheet = [{
 				selector: 'node',
 				style: {
 					height: 20,
 					width: 20,
-					'background-color': '#18e018',
-					content: 'data(weight)',
+					'background-color': 'mapData(robbersInterest, 0, 25, green, red)',
+					content: node => `${node.data('id')}:${node.data('guardiansCost')}/${node.data('guardiansReward')}`,
 					'text-valign': 'center',
 					'text-halign': 'center'
 				}
@@ -70,12 +72,28 @@ class Graph {
 			this.reset()
 		})
 
-		$(document).on('click', '.plusProbability', event => {
-			this.lastSelectedNode.data('weight', this.lastSelectedNode.data('weight')+1)
+		$(document).on('click', '.plusInterest', event => {
+			this.lastSelectedNode.data('robbersInterest', Math.min(this.lastSelectedNode.data('robbersInterest')+1, 25))
 		})
 
-		$(document).on('click', '.minusProbability', event => {
-			this.lastSelectedNode.data('weight', Math.maw(this.lastSelectedNode.data('weight')-1, 0))
+		$(document).on('click', '.minusInterest', event => {
+			this.lastSelectedNode.data('robbersInterest', Math.max(this.lastSelectedNode.data('robbersInterest')-1, 0))
+		})
+
+		$(document).on('click', '.plusCost', event => {
+			this.lastSelectedNode.data('guardiansCost', Math.min(this.lastSelectedNode.data('guardiansCost')+1, 25))
+		})
+
+		$(document).on('click', '.minusCost', event => {
+			this.lastSelectedNode.data('guardiansCost', Math.max(this.lastSelectedNode.data('guardiansCost')-1, 0))
+		})
+
+		$(document).on('click', '.plusReward', event => {
+			this.lastSelectedNode.data('guardiansReward', Math.min(this.lastSelectedNode.data('guardiansReward')+1, 25))
+		})
+
+		$(document).on('click', '.minusReward', event => {
+			this.lastSelectedNode.data('guardiansReward', Math.max(this.lastSelectedNode.data('guardiansReward')-1, 0))
 		})
 
 		this.cy.on('tap', event => {
@@ -144,10 +162,13 @@ class Graph {
 	}
 
 	addNode(position, base){
-		this.cy.add({
+		const newNode = this.cy.add({
 			data: {
-				id: `n${this.nbrNodesCreated++}`,
-				weight: 1
+				id: `${this.nbrNodesCreated++}`,
+				robbersInterest: 1,
+				guardiansCost: 2,
+				guardiansReward: 1,
+				robbersSettings : new Map()
 			},
 			position: position,
 			group: 'nodes',
@@ -160,9 +181,20 @@ class Graph {
 			<div>
 				<a class="waves-effect waves-light btn blue link" style="width:160px"><i class="material-icons right">timeline</i>Link to...</a>
 				<a class="waves-effect waves-light btn red delete" style="width:160px; margin-top: 10px" ${base ? 'disabled' : ''}><i class="material-icons right">delete</i>Delete</a>
-				<a class="waves-effect waves-light btn green dismiss" style="width:160px; margin-top: 10px"><i class="material-icons right dismiss">cancel</i>Dismiss</a>
-				<a class="waves-effect waves-light btn red lighten-2 minusProbability col" style="margin-top: 10px; width: 78px;" ${base ? 'disabled' : ''}><i class="material-icons dismiss">remove_circle</i></a>
-				<a class="waves-effect waves-light btn green lighten-2 plusProbability col" style="margin-top: 10px; width: 78px;" ${base ? 'disabled' : ''}><i class="material-icons dismiss">add_circle</i></a>
+				
+				<a class="waves-effect waves-light btn red lighten-2 minusInterest col" ${base ? 'disabled' : ''}><i class="material-icons">remove_circle</i></a>
+				<div class="label">Robbers Interest</div>
+				<a class="waves-effect waves-light btn green lighten-2 plusInterest col" ${base ? 'disabled' : ''}><i class="material-icons">add_circle</i></a>
+
+				<a class="waves-effect waves-light btn red lighten-2 minusCost col" ${base ? 'disabled' : ''}><i class="material-icons">remove_circle</i></a>
+				<div class="label">Guardians Cost</div>
+				<a class="waves-effect waves-light btn green lighten-2 plusCost col" ${base ? 'disabled' : ''}><i class="material-icons">add_circle</i></a>
+
+				<a class="waves-effect waves-light btn red lighten-2 minusReward col" ${base ? 'disabled' : ''}><i class="material-icons">remove_circle</i></a>
+				<div class="label">Guardians Reward</div>
+				<a class="waves-effect waves-light btn green lighten-2 plusReward col" ${base ? 'disabled' : ''}><i class="material-icons">add_circle</i></a>
+
+				<a class="waves-effect waves-light btn green dismiss" style="width:160px; margin-top: 10px"><i class="material-icons right">cancel</i>Dismiss</a>
 			</div>
 			`,
 			position: {
@@ -174,17 +206,26 @@ class Graph {
 				width: 195
 			}
 		})
+		
+		this.settings.robbers.forEach(robber => newNode.data('robbersSettings').put(robber, {
+			cost: 2,
+			reward: 1,
+			caughtProbability: 0.3
+		}))
 
 		return this
 	}
 
-	getProperties(){
+	getSettings(){
 		return {
 			verticies: Object.keys(cy.nodes())
 							 .filter(key => !isNaN(key))
 							 .map(key => ({
 							 	id: cy.nodes()[key].id(),
-							 	weight: cy.nodes()[key].data('weight')
+							 	robbersInterest: cy.nodes()[key].data('robbersInterest'),
+							 	guardiansCost: cy.nodes()[key].data('guardiansCost'),
+								guardiansReward: cy.nodes()[key].data('guardiansReward'),
+								robbersSettings: cy.nodes()[key].data('robbersSettings')
 							 })),
 			edges: Object.keys(cy.edges())
 						 .filter(key => !isNaN(key))

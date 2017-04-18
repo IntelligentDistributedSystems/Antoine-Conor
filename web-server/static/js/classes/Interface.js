@@ -13,10 +13,10 @@ class Interface{
 
 		})
 
-		this.properties = new Properties()
+		this.settings = new Settings()
 	}
 
 	startSimulation(){
-		this.socket.emit('startSimulation', this.properties.getProperties())
+		this.socket.emit('startSimulation', this.settings.getSettings())
 	}
 }

@@ -82,6 +82,22 @@ thead i {
 	overflow: hidden;
 }
 
+.qtip-content .lighten-2{
+	margin-top: 10px;
+	padding-left: 10px;
+	width: 30px;
+	vertical-align: middle;
+}
+
+.qtip-content .label{
+	padding-top: 5px;
+	margin-top: 2px;
+	width: 75px;
+	vertical-align: middle;
+	display: inline-block;
+	text-align: center;
+}
+
 ::-webkit-scrollbar
 {
   width: 12px;  /* for vertical scrollbars */
