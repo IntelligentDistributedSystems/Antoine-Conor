@@ -69,6 +69,9 @@ class Graph {
 			style: this.stylesheet
 		})
 
+		this.cy.minZoom(0.5)
+		this.cy.maxZoom(2)
+
 		window.graph = this
 
 		this.nbrEdgesCreated = 0
@@ -254,7 +257,7 @@ class Graph {
 		this.settings.robbers.list.forEach(robber => newNode.data('robbersSettings').set(robber, {
 			cost: 2,
 			reward: 1,
-			caughtProbability: 0.3
+			catchProbability: 0.3
 		}))
 
 		return this
@@ -272,7 +275,7 @@ class Graph {
 							 	robbersInterest: cy.nodes()[key].data('robbersInterest'),
 							 	guardiansCost: cy.nodes()[key].data('guardiansCost'),
 								guardiansReward: cy.nodes()[key].data('guardiansReward'),
-								robbersSettings: cy.nodes()[key].data('robbersSettings')
+								robbersSettings: Array.from(cy.nodes()[key].data('robbersSettings')).reduce((obj, [key, value]) => { obj[key] = value; return obj}, {})
 							 })),
 			edges: Object.keys(cy.edges())
 						 .filter(key => !isNaN(key))

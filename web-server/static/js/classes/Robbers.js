@@ -24,6 +24,22 @@ class Robbers{
 
 		})
 
+		$(document).on('change', '#modal-robber-config input', event => {
+
+			const row = $(event.currentTarget).parent().parent()
+
+			const nodeId = row.data('nodeid')
+			const robberId = row.data('robberid')
+
+			const setting = $(event.currentTarget).data('setting')
+			const newValue = parseInt($(event.currentTarget).val())
+
+			console.log(`${setting} changed for node ${nodeId} : ${newValue}`)
+
+			this.settings.path.cy.nodes(`[id = "${nodeId}"]`).data('robbersSettings').get(robberId)[setting] = newValue
+
+		})
+
 	}
 
 	/*
@@ -40,14 +56,14 @@ class Robbers{
 		this.settings.path.cy.nodes().each(node => node.data('robbersSettings').set(robberId, {
 			cost: 2,
 			reward: 1,
-			caughtProbability: 0.3
+			catchProbability: 0.3
 		}))
 
 		$('#robbers').append(`
 			<div class="col s4" data-robberid="${robberId}">
 			    <div class="card blue-grey darken-1">
 					<div class="card-content white-text">
-						<span class="card-title">Robber : ${robberId}</span>
+						<span class="card-title">Robber ${robberId}</span>
 						<p>Some bad guy.</p>
 					</div>
 					<div class="card-action">
@@ -84,10 +100,40 @@ class Robbers{
 		console.log(`Configuring robber ${robberId}.`)
 
 		// TODO : Setup the modal content.
+		let table = `
+			<table class="striped centered">
+				<thead>
+					<tr>
+						<th>Target ID</th>
+						<th>Cost</th>
+						<th>Reward</th>
+						<th>Probability of getting caught</th>
+					</tr>
+				</thead>
 
+				<tbody>`
 
+		this.settings.path.cy.nodes('[id != "0"]').forEach(node => {
+			let settings = node.data('robbersSettings').get(robberId)
 
-		$('#modal-robber-conf').modal('open')
+			table += `
+				<tr data-nodeid="${node.id()}" data-robberid="${robberId}">
+					<td>${node.id()}</td>
+					<td><input data-setting="cost" type="number" value="${settings.cost}" min="0"></td>
+					<td><input data-setting="reward" type="number" value="${settings.reward}" min="0"></td>
+					<td><input data-setting="catchProbability" type="number" value="${settings.catchProbability}" min="0" max="1" step="0.1"></td>
+				</tr>`
+		})
+
+		table += `
+				</tbody>
+			</table>`
+
+		$('#modal-robber-config h4').text(`Robber ${robberId} configuration`)
+
+		$('#modal-robber-config p').html(table)
+
+		$('#modal-robber-config').modal('open')
 
 	}
 
@@ -95,7 +141,7 @@ class Robbers{
 	*	Return the list of every robber.
 	*/
 	getSettings(){
-		return this.list
+		return [...this.list]
 	}
 
 
