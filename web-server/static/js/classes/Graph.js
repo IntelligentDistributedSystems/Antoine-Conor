@@ -9,7 +9,7 @@
 *		- guardiansCost (the cost when guardians fail to protect the target)
 *		- guardiansReward (the reward when guardians manage to prevent 
 *							an attack)
-*		- robbersSettings (the cost, reward and probability for each robber)
+*		- robberSettings (the cost, reward and probability for each robber)
 *			(Set through the Robbers class)
 *
 *	Nodes = Attacks = Targets
@@ -68,6 +68,9 @@ class Graph {
 
 			style: this.stylesheet
 		})
+
+		this.cy.minZoom(0.5)
+		this.cy.maxZoom(2)
 
 		window.graph = this
 
@@ -212,7 +215,7 @@ class Graph {
 				robbersInterest: 1,
 				guardiansCost: 2,
 				guardiansReward: 1,
-				robbersSettings : new Map()
+				robberSettings : new Map()
 			},
 			position: position,
 			group: 'nodes',
@@ -251,10 +254,10 @@ class Graph {
 			}
 		})
 
-		this.settings.robbers.list.forEach(robber => newNode.data('robbersSettings').set(robber, {
+		this.settings.robbers.list.forEach(robber => newNode.data('robberSettings').set(robber, {
 			cost: 2,
 			reward: 1,
-			caughtProbability: 0.3
+			catchProbability: 0.3
 		}))
 
 		return this
@@ -265,14 +268,14 @@ class Graph {
 	*/
 	getSettings(){
 		return {
-			verticies: Object.keys(cy.nodes())
+			vertices: Object.keys(cy.nodes())
 							 .filter(key => !isNaN(key))
 							 .map(key => ({
 							 	id: cy.nodes()[key].id(),
 							 	robbersInterest: cy.nodes()[key].data('robbersInterest'),
 							 	guardiansCost: cy.nodes()[key].data('guardiansCost'),
 								guardiansReward: cy.nodes()[key].data('guardiansReward'),
-								robbersSettings: cy.nodes()[key].data('robbersSettings')
+								robberSettings: Array.from(cy.nodes()[key].data('robberSettings')).reduce((obj, [key, value]) => { obj[key] = value; return obj}, {})
 							 })),
 			edges: Object.keys(cy.edges())
 						 .filter(key => !isNaN(key))
