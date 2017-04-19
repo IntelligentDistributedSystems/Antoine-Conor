@@ -114,6 +114,7 @@ class Robbers{
 				<tbody>`
 
 		this.settings.path.cy.nodes('[id != "0"]').forEach(node => {
+
 			let settings = node.data('robberSettings').get(robberId)
 
 			table += `
