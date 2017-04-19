@@ -1,5 +1,25 @@
+/*
+*	Graph representing the paths of the simulation.
+*
+*	You can add targets, deleted target, and link
+*	them together.
+*
+*	For each target, you can set :
+*		- robbersInterest (the probability of robbers attacking this target)
+*		- guardiansCost (the cost when guardians fail to protect the target)
+*		- guardiansReward (the reward when guardians manage to prevent 
+*							an attack)
+*		- robbersSettings (the cost, reward and probability for each robber)
+*			(Set through the Robbers class)
+*
+*	Nodes = Attacks = Targets
+*/
+
 class Graph {
+
 	constructor(settings){
+
+		// Fields
 
 		this.settings = settings
 
@@ -57,6 +77,8 @@ class Graph {
 		this.lastSelectedNode = null
 		this.currentAction = null
 
+		// DOM listeners
+
 		$(document).on('click', '.qtip-content .link', event => {
 			console.log("linking")
 			this.currentAction = 'linking'
@@ -96,6 +118,8 @@ class Graph {
 			this.lastSelectedNode.data('guardiansReward', Math.max(this.lastSelectedNode.data('guardiansReward')-1, 0))
 		})
 
+		// Cytoscape listeners
+
 		this.cy.on('tap', event => {
 			if (event.target === event.cy)
 				this.reset()
@@ -126,6 +150,9 @@ class Graph {
 		})
 	}
 
+	/*
+	*	Sort targets with the CoSE layout (by Bilkent University).
+	*/
 	sort(){
 		this.cy.layout({
 			name: 'cose-bilkent',
@@ -135,6 +162,9 @@ class Graph {
 		return this
 	}
 
+	/*
+	*	Reset the current action, selected target and hide the tips.
+	*/
 	reset(){
 		this.lastSelectedNode = null
 		this.currentAction = null
@@ -142,6 +172,10 @@ class Graph {
 
 		return this
 	}
+
+	/*
+	*	Link two targets together. You have to specify the ids.
+	*/
 
 	link(source, target){
 		this.cy.add({
@@ -161,7 +195,17 @@ class Graph {
 		return this
 	}
 
-	addNode(position, base){
+	/*
+	*	Add a node to the path.
+	*	
+	*	Arguments :
+	*		- position should be an object with fields x and y.
+	*		- base is a boolean defining if the node is the base.
+	*
+	*	Base nodes can not been attacket nor defended.
+	*	Patrols have to start and end at the base.
+	*/
+	addNode(position, base = false){
 		const newNode = this.cy.add({
 			data: {
 				id: `${this.nbrNodesCreated++}`,
@@ -207,7 +251,7 @@ class Graph {
 			}
 		})
 
-		this.settings.robbers.forEach(robber => newNode.data('robbersSettings').set(robber, {
+		this.settings.robbers.list.forEach(robber => newNode.data('robbersSettings').set(robber, {
 			cost: 2,
 			reward: 1,
 			caughtProbability: 0.3
@@ -216,6 +260,9 @@ class Graph {
 		return this
 	}
 
+	/*
+	*	Concatenate settings into a JSON object.
+	*/
 	getSettings(){
 		return {
 			verticies: Object.keys(cy.nodes())

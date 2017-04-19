@@ -1,8 +1,22 @@
+/*
+*	Interface between the client side and the back-end.
+*
+*	The interface has settings and a socket enabling it 
+*	to send and receive data from the server running the
+*	Java MAS simulation.
+*/
+
 class Interface{
 	
 	constructor(){
 
+		// Fields
+
 		this.socket = io.connect(`http://${window.location.hostname}:8081`)
+		this.settings = new Settings()
+
+		// Socket listeners
+
 		this.socket.on('connect', () => {
 		
 			console.log('Connection to the remote server established.')
@@ -12,9 +26,12 @@ class Interface{
 			this.socket.on('close', data => console.log(data.text))
 
 		})
-
-		this.settings = new Settings()
 	}
+
+	/*
+	*	Start the simulation by sending the settings to the back-end
+	*	along the message 'startSimulation'.
+	*/
 
 	startSimulation(){
 		this.socket.emit('startSimulation', this.settings.getSettings())

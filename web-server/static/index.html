@@ -101,8 +101,8 @@
 
 							<div id="parameters-1" class="parameters col s12">
 								<div class="input-field col s12">
-									<input type="number" min="0" max="100" value="20" id="nbrIterations" multiple>
-									<label for="nbrIterations">Number of iterations</label>
+									<input type="number" min="0" max="100" value="20" id="numberOfIterations" multiple required>
+									<label for="numberOfIterations">Number of iterations</label>
 								</div>
 							</div>
 							<div id="parameters-2" class="parameters col s12">
@@ -129,7 +129,7 @@
 
 						<div id="modal-results" class="modal">
 							<div class="modal-content">
-								<h4>New target options</h4>
+								<h4>Simulation results</h4>
 								<p>
 									Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 									tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
@@ -147,7 +147,7 @@
 
 						<div id="modal-robber-conf" class="modal">
 							<div class="modal-content">
-								<h4>New target options</h4>
+								<h4>Robber configuration</h4>
 								<p>
 									Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 									tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
@@ -158,8 +158,7 @@
 								</p>
 							</div>
 							<div class="modal-footer">
-								<a href="#simulate" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
-								<a href="#simulate" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+								<a href="#simulate" class="modal-action modal-close waves-effect waves-green btn-flat">Close</a>
 							</div>
 						</div>
 
@@ -225,6 +224,7 @@
 		<script type="text/javascript" src="js/libs/cytoscape-qtip.js"></script>
 
 		<script type="text/javascript" src="js/classes/Graph.js"></script>
+		<script type="text/javascript" src="js/classes/Robbers.js"></script>
 		<script type="text/javascript" src="js/classes/Settings.js"></script>
 		<script type="text/javascript" src="js/classes/Interface.js"></script>
 
