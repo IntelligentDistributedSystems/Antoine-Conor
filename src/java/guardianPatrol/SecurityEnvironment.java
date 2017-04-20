@@ -44,8 +44,11 @@ public class SecurityEnvironment extends Environment {
         }
         
         Robber.create(json);
+        // System.out.println(Robber.allRobbersToString());
         graph = new PatrolGraph(json);
+        // System.out.println(graph.toString());
         config = Config.create();
+        // System.out.println(config.toString());
     }
 	
     private Logger logger = Logger.getLogger("GuardianPatrol.mas2j."+SecurityEnvironment.class.getName());
@@ -251,7 +254,16 @@ public class SecurityEnvironment extends Environment {
 	        logger.info(per.i+","+per.r+","+per.a+","+per.p+","+per.ur+","+per.ug);
 	    }
 	    */
-	    
+    	double tur = 0;
+    	double tug = 0;
+    	
+    	for (EnvPercept per : history) {
+	        tur += per.ur;
+	        tug += per.ug;
+	    }
+    	tur /= history.size();
+    	tug /= history.size();
+	    System.out.println("AVERAGE UG : " + tug + ", TOTAL UR : " + tur);
         super.stop();
     }
 

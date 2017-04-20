@@ -44,7 +44,7 @@ public class Robber {
 		this.setId(id);
 		JSONObject robbers = (JSONObject)json.get("robbers");
 		JSONObject catchProbability = (JSONObject) robbers.get("catchProbability");
-		this.setCatchProbabilityBase((double)catchProbability.get(id));
+		this.setCatchProbabilityBase(((Number)catchProbability.get(id)).doubleValue());
 	}
 
 
@@ -62,5 +62,18 @@ public class Robber {
 
 	public void setCatchProbabilityBase(double catchProbabilityBase) {
 		this.catchProbabilityBase = catchProbabilityBase;
+	}
+
+	public static String allRobbersToString() {
+		String res = "";
+		for(String robberId : Robber.robberMap.keySet()){
+			res += Robber.robberMap.get(robberId).toString();
+		}
+		return res;
+	}
+	
+	@Override
+	public String toString() {
+		return "Robber [id=" + id + ", catchProbabilityBase=" + catchProbabilityBase + "]"  + "\n";
 	}
 }

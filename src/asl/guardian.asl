@@ -99,8 +99,6 @@ gen_prob([X | Xs],K,[X/K | Ys]) :-
 /* Plans */
 
 +!start : true <- 
-//    .println("Hello world !");
-   .wait(10000);
 	?number_possible_patrols(N);
     ?probability_resolution(K);
     /*
@@ -125,7 +123,6 @@ gen_prob([X | Xs],K,[X/K | Ys]) :-
      
 +!do_action(Iter) : true <-
     ?select_patrol(Patrol);
-    .println(Patrol);
     Action = action(patrol,Patrol);
     //.println("Do action ",Action," for the ",Iter,"-th time.");
     Action.
@@ -133,7 +130,6 @@ gen_prob([X | Xs],K,[X/K | Ys]) :-
 +!do_actions(Iter,MaxIter) : Iter > MaxIter <-
     ?guardian_strategy(_,L);
     ?next(L,L1);
-    .println(L1);
     ?probability_resolution(K);
     ?gen_prob(L1,K,Strategy);
     -+guardian_strategy(Strategy,L1);

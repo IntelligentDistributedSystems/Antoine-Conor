@@ -33,8 +33,7 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 	
 	/**
 	 * Constructor for PatrolGraph class
-	 * @param jsonString
-	 * A JSON String with following structure : {"graph":{"vertices":[{"id":"0",},{"id":"1",}],"edges":[{"source":"1","target":"0"},{"source":"0","target":"2"}]}}
+	 * @param jsonString JSON String containing all configuration
 	 */
 	public PatrolGraph(JSONObject json) {
 		super(DefaultEdge.class);
@@ -67,7 +66,7 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 		config.setNumberPossiblePatrols(this.getAllPossiblePaths().size());
 		config.setNumberPossibleAttacks(this.vertexSet().size());
 	}
-	
+
 	public PatrolVertex getVertex(String id){
 		for(PatrolVertex vertex : this.vertexSet()){
 			if(vertex.getId().equals(id)){
@@ -129,5 +128,10 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 			}
 		}
 		return result;
+	}
+	
+	@Override
+	public String toString() {
+		return "PatrolGraph [config=" + config  +",  vertexSet()=" + vertexSet() + "]";
 	}
 }
