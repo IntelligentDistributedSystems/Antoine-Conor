@@ -9,23 +9,49 @@ import jason.environment.*;
 
 import java.util.logging.*;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+import java.io.FileReader;
 import java.util.*;
 
 @SuppressWarnings("unused")
 public class SecurityEnvironment extends Environment {
+	
+	private PatrolGraph graph;
+	private PatrolConfig config;
+	
+	/** Called before the MAS execution with the args informed in .mas2j */
+
+    @Override
+    public void init(String[] args) {
+        super.init(args);
+        /*
+         * Initilizing input from user
+         * input2.json : graph on paper
+         * input3.json : graph on pdf by CB
+         * TODO : set path dynamically (environment variable ?)
+         * name : $(configFileID).json
+         */
+        
+        String filepath = "/home/conor/Antoine-Conor/tests/input3.json";
+        JSONObject json = null;
+        JSONParser parser = new JSONParser();
+        
+        try {
+        	json = (JSONObject)parser.parse(new FileReader(filepath));
+        } catch (Exception e) {
+        	System.out.println("Cannot read JSON file");
+        }
+        graph = new PatrolGraph(json);
+        config = PatrolConfig.create();
+    }
+	
     private Logger logger = Logger.getLogger("GuardianPatrol.mas2j."+SecurityEnvironment.class.getName());
     /*
      * Following line can be used to log from any class for debug
      * public static Logger logger = Logger.getLogger("GuardianPatrol.mas2j."+SecurityEnvironment.class.getName());
      */
-	
-    /*
-     * Initilizing input from user
-     * TODO : set path dynamically (environment variable ?)
-     * name : $(configFileID).json
-     */
-    private PatrolGraph graph = new PatrolGraph("/home/conor/Antoine-Conor/tests/input3.json");
-    private PatrolConfig config = PatrolConfig.create();
     
     // Number of patrols, attacks and robber types
     //private final int nPatrols = 4;
@@ -112,13 +138,6 @@ public class SecurityEnvironment extends Environment {
         return prob*gReward[a] + (1-prob)*(-gCost[a]);
     }
 
-    /** Called before the MAS execution with the args informed in .mas2j */
-
-    @Override
-    public void init(String[] args) {
-        super.init(args);
-    }
-
     @Override
     public synchronized boolean executeAction(String agName, Structure action) {
 
@@ -179,8 +198,8 @@ public class SecurityEnvironment extends Environment {
 
     }
 
-        /** update the agent's percepts based on the current
-        state of the world model */
+    /** update the agent's percepts based on the current
+    state of the world model */
     private void updatePercepts() {
         
 //        logger.info("updatePercepts: "+ iRobberType + "  " + iAttack + "  " + iPatrol); 
@@ -224,12 +243,14 @@ public class SecurityEnvironment extends Environment {
 
     @Override
     public void stop() {
-	    /*
+	    
+    	/*
 	    logger.info("History size : "+history.size());
 	    for (EnvPercept per : history) {
 	        logger.info(per.i+","+per.r+","+per.a+","+per.p+","+per.ur+","+per.ug);
 	    }
 	    */
+	    
         super.stop();
     }
 

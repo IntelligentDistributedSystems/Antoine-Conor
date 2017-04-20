@@ -1,10 +1,6 @@
 package guardianPatrol;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import helpers.Helpers;
-import jason.asSyntax.Literal;
 
 /**
  * This class is used to store the user inputed configuration

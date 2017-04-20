@@ -11,7 +11,7 @@ MAS guardianPatrol {
 		sender;
 		stopper;
 		guardian beliefBaseClass beliefbases.GuardianBeliefBase;
-		tester;
+		// tester beliefBaseClass beliefbases.GuardianBeliefBase;
 
 	aslSourcePath:
 		"src/asl";

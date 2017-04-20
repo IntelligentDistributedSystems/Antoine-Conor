@@ -1,8 +1,5 @@
 package guardianPatrol;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,8 +11,6 @@ import org.jgrapht.graph.GraphWalk;
 import org.jgrapht.graph.SimpleGraph;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
  * This class is a specialized implementation of jGraphT's Graph :
@@ -67,53 +62,37 @@ public class PatrolGraph extends SimpleGraph<String, DefaultEdge> {
 	 * Constructor for PatrolGraph class
 	 * @param jsonString
 	 * A JSON String with following structure : {"graph":{"vertices":[{"id":"0",},{"id":"1",}],"edges":[{"source":"1","target":"0"},{"source":"0","target":"2"}]}}
-	 * @throws ParseException 
-	 * @throws IOException 
-	 * @throws FileNotFoundException 
 	 */
-	public PatrolGraph(String filePath) {
+	public PatrolGraph(JSONObject json) {
 		super(DefaultEdge.class);
 		config = PatrolConfig.create();
-
-		JSONParser parser = new JSONParser();
-		JSONObject json, graph;
+		
+		JSONObject graph;
 		JSONArray vertices, edges;
 		
-		try {
-			
-			json = (JSONObject) parser.parse(new FileReader(filePath));
-			graph = (JSONObject) json.get("graph");
-			vertices = (JSONArray) graph.get("vertices");
-			edges = (JSONArray) graph.get("edges");
-			
-			// vertices.toArray() == java.util.ArrayList<HashMap>
-			for(Object vertex : vertices.toArray()){
-				@SuppressWarnings("unchecked")
-				HashMap<String, String> vertexMap = (HashMap<String, String>)(vertex);
-				String id = vertexMap.get("id");
-				this.addVertex(id);
-			}
-			
-			// edges.toList().getClass() == java.util.ArrayList<HashMap>
-			for(Object edge : edges.toArray()){
-				@SuppressWarnings("unchecked")
-				HashMap<String, String> edgeMap = (HashMap<String, String>)(edge);
-				String source = edgeMap.get("source");
-				String target = edgeMap.get("target");
-				this.addEdge(source, target);
-			}
-			
-			config.setNumberPossiblePatrols(this.getAllPossiblePaths().size());
-			config.setNumberPossibleAttacks(this.vertexSet().size());
-			
-		// TODO : Correctly catch exceptions
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
+		graph = (JSONObject) json.get("graph");
+		vertices = (JSONArray) graph.get("vertices");
+		edges = (JSONArray) graph.get("edges");
+		
+		// vertices.toArray() == java.util.ArrayList<HashMap>
+		for(Object vertex : vertices.toArray()){
+			@SuppressWarnings("unchecked")
+			HashMap<String, String> vertexMap = (HashMap<String, String>)(vertex);
+			String id = vertexMap.get("id");
+			this.addVertex(id);
 		}
+		
+		// edges.toList().getClass() == java.util.ArrayList<HashMap>
+		for(Object edge : edges.toArray()){
+			@SuppressWarnings("unchecked")
+			HashMap<String, String> edgeMap = (HashMap<String, String>)(edge);
+			String source = edgeMap.get("source");
+			String target = edgeMap.get("target");
+			this.addEdge(source, target);
+		}
+		
+		config.setNumberPossiblePatrols(this.getAllPossiblePaths().size());
+		config.setNumberPossibleAttacks(this.vertexSet().size());
 	}
 	
 	

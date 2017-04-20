@@ -64,7 +64,9 @@ next(Xs,Ys) :-
 count_0([0 | Xs],Ys,I) :-
    count_0(Xs,Ys,I+1).
 
-/* If Xs doesn't start with a 0 */
+/* If Xs doesn't start with a 0 
+ * I represents the number of 0's at the start of the list before next(Xs, Ys)
+ */
 count_0([X | Xs],[Y | Ys],I) :-
    Y = X-1 &
    set_0(Xs,Ys,I).
@@ -79,11 +81,8 @@ set_0([X | Xs],[X+1 | Xs],0).
 /* init(+N,+K,-Xs) generates the first N-element list Xs = [K, 0, ..., 0]
  * call : ?init(N,K,L1);
  * */
- 
- /* Stop recursion when M == 1 */
 init(1,K,[K]).
 
-/* Add a 0 to list and call recursively with M-1 */
 init(M,K,[0|Xs]) :-
   M > 0 &
   init(M-1,K,Xs).
@@ -110,7 +109,7 @@ gen_prob([X | Xs],K,[X/K | Ys]) :-
      */
     ?init(N,K,L1);
     .reverse(L1,L);
-    ?gen_prob(L,K,Strategy); 
+    ?gen_prob(L,K,Strategy);
     -+guardian_strategy(Strategy,L);
     !do_episodes.
 
@@ -126,6 +125,7 @@ gen_prob([X | Xs],K,[X/K | Ys]) :-
      
 +!do_action(Iter) : true <-
     ?select_patrol(Patrol);
+    .println(Patrol);
     Action = action(patrol,Patrol);
     //.println("Do action ",Action," for the ",Iter,"-th time.");
     Action.
@@ -135,7 +135,7 @@ gen_prob([X | Xs],K,[X/K | Ys]) :-
     ?next(L,L1);
     .println(L1);
     ?probability_resolution(K);
-    ?gen_prob(L1,K,Strategy); 
+    ?gen_prob(L1,K,Strategy);
     -+guardian_strategy(Strategy,L1);
     !do_episodes.
 
