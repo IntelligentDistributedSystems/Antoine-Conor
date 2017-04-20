@@ -132,6 +132,11 @@ thead i {
 	vertical-align: top;
 	height: 35.5px;
 	float: right;
+	margin-right: 0.4rem;
+}
+
+#modal-results p ul.tabs{
+    background-color: initial;
 }
 
 ::-webkit-scrollbar

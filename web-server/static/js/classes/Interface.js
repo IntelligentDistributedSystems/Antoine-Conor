@@ -14,6 +14,7 @@ class Interface{
 
 		this.socket = io.connect(`http://${window.location.hostname}:8081`)
 		this.settings = new Settings()
+		this.results = new Results()
 
 		// Socket listeners
 
@@ -35,5 +36,7 @@ class Interface{
 
 	startSimulation(){
 		this.socket.emit('startSimulation', this.settings.getSettings())
+		this.results.loading(0)
+		setTimeout(() => this.results.showResults(), 3000)
 	}
 }
