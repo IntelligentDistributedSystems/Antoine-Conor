@@ -7,7 +7,7 @@ import helpers.Helpers;
  * @author ConorRyan
  *
  */
-public class PatrolConfig {
+public class Config {
 	// Guardian Configuration
 	/* TODO : remove default values, when properly calculated from graph and user input */
 	private int numberPossiblePatrols;
@@ -22,18 +22,18 @@ public class PatrolConfig {
 	 * Contructor for PatrolConfig class.
 	 * Private, must use method PatrolConfig.create() to get instance.
 	 */
-	private PatrolConfig(){
+	private Config(){
 		super();
 	}
 	
-	private static PatrolConfig singleton = null;
+	private static Config singleton = null;
 	/**
 	 * Method to instanciate a singleton of PatrolConfig class
 	 * @return PatrolConfig instance
 	 */
-    public static PatrolConfig create() {
+    public static Config create() {
         if (singleton == null)
-            singleton = new PatrolConfig();
+            singleton = new Config();
         return singleton;
     }
     

@@ -1,6 +1,6 @@
 package beliefbases;
 
-import guardianPatrol.PatrolConfig;
+import guardianPatrol.Config;
 
 /**
  * This class determines the belief base for the guardian agent,
@@ -16,7 +16,7 @@ public class GuardianBeliefBase extends PatrolBeliefBase {
 	private static final String NUMBER_ITERATIONS = "iterations";
 	
 	public GuardianBeliefBase() {
-		PatrolConfig config = PatrolConfig.create();
+		Config config = Config.create();
 		this.addLiteral(NUMBER_POSSIBLE_PATROLS, config.getNumberPossiblePatrols());
 		this.addLiteral(PROBABILITY_RESOLUTION, config.getProbabilityResolution());
 		this.addLiteral(NUMBER_ITERATIONS, config.getGuardianIterations());

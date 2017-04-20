@@ -2,7 +2,7 @@
 
 package internalActions;
 
-import guardianPatrol.PatrolConfig;
+import guardianPatrol.Config;
 import jason.asSemantics.*;
 import jason.asSyntax.*;
 
@@ -18,7 +18,7 @@ import jason.asSyntax.*;
 public class config extends DefaultInternalAction {
 	private static final long serialVersionUID = 4740178248861241577L;
 	
-	private PatrolConfig config = PatrolConfig.create();
+	private Config config = Config.create();
 
     /**
      * Used to set the minimum number of arguments expected.

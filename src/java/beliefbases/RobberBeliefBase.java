@@ -1,6 +1,6 @@
 package beliefbases;
 
-import guardianPatrol.PatrolConfig;
+import guardianPatrol.Config;
 
 public class RobberBeliefBase extends PatrolBeliefBase {
     
@@ -9,7 +9,7 @@ public class RobberBeliefBase extends PatrolBeliefBase {
 	private static final String NUMBER_ITERATIONS = "iterations";
 	
 	public RobberBeliefBase() {
-		PatrolConfig config = PatrolConfig.create();
+		Config config = Config.create();
 		this.addLiteral(NUMBER_POSSIBLE_ATTACKS, config.getNumberPossibleAttacks());
 		this.addLiteral(NUMBER_ITERATIONS, config.getRobberIterations());
 	}

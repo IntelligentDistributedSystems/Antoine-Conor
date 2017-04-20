@@ -100,7 +100,7 @@ gen_prob([X | Xs],K,[X/K | Ys]) :-
 
 +!start : true <- 
 //    .println("Hello world !");
-//    .wait(10000);
+   .wait(10000);
 	?number_possible_patrols(N);
     ?probability_resolution(K);
     /*

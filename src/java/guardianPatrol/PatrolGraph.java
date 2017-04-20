@@ -23,40 +23,13 @@ import org.json.simple.JSONObject;
  *
  */
 
-/*
- * Assuming JSON Structure (vertex id 0 is considered to be the base):
- * 
-{
-    "graph": {
-        "vertices": [
-            {
-                "id": "0",
-            },
-            {
-                "id": "1",
-            }
-        ],
-        "edges": [
-            {
-                "source": "1",
-                "target": "0"
-            },
-            {
-                "source": "0",
-                "target": "2"
-            }
-        ]
-    }
-}
- */
-
-
-public class PatrolGraph extends SimpleGraph<String, DefaultEdge> {
+public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
+	
 	
 	private static final long serialVersionUID = -7038166255538966671L;
 	private static final String baseID = "0";
 	
-	private PatrolConfig config;
+	private Config config;
 	
 	/**
 	 * Constructor for PatrolGraph class
@@ -65,29 +38,29 @@ public class PatrolGraph extends SimpleGraph<String, DefaultEdge> {
 	 */
 	public PatrolGraph(JSONObject json) {
 		super(DefaultEdge.class);
-		config = PatrolConfig.create();
-		
+		config = Config.create();
+
 		JSONObject graph;
-		JSONArray vertices, edges;
+		JSONArray vertices;
+		JSONArray edges;
 		
-		graph = (JSONObject) json.get("graph");
+		graph = (JSONObject) json.get("paths");
 		vertices = (JSONArray) graph.get("vertices");
 		edges = (JSONArray) graph.get("edges");
 		
 		// vertices.toArray() == java.util.ArrayList<HashMap>
 		for(Object vertex : vertices.toArray()){
 			@SuppressWarnings("unchecked")
-			HashMap<String, String> vertexMap = (HashMap<String, String>)(vertex);
-			String id = vertexMap.get("id");
-			this.addVertex(id);
+			HashMap<String, Object> vertexMap = (HashMap<String, Object>)(vertex);
+			this.addVertex(new PatrolVertex(vertexMap));
 		}
 		
 		// edges.toList().getClass() == java.util.ArrayList<HashMap>
 		for(Object edge : edges.toArray()){
 			@SuppressWarnings("unchecked")
 			HashMap<String, String> edgeMap = (HashMap<String, String>)(edge);
-			String source = edgeMap.get("source");
-			String target = edgeMap.get("target");
+			PatrolVertex source = this.getVertex(edgeMap.get("source"));
+			PatrolVertex target = this.getVertex(edgeMap.get("target"));
 			this.addEdge(source, target);
 		}
 		
@@ -95,13 +68,21 @@ public class PatrolGraph extends SimpleGraph<String, DefaultEdge> {
 		config.setNumberPossibleAttacks(this.vertexSet().size());
 	}
 	
+	public PatrolVertex getVertex(String id){
+		for(PatrolVertex vertex : this.vertexSet()){
+			if(vertex.getId().equals(id)){
+				return vertex;
+			}
+		}
+		return null;
+	}
 	
 	/**
 	 * Default usage for getAllPossiblePaths (from base vertex)
 	 * @return A set of all possible simple paths from the base 
 	 */
-	private Set<GraphPath<String, DefaultEdge>> getAllPossiblePaths(){
-		return this.getAllPossiblePaths(PatrolGraph.baseID, new ArrayList<String>());
+	private Set<GraphPath<PatrolVertex, DefaultEdge>> getAllPossiblePaths(){
+		return this.getAllPossiblePaths(this.getVertex(PatrolGraph.baseID), new ArrayList<PatrolVertex>());
 	}
 	
 	/**
@@ -114,17 +95,17 @@ public class PatrolGraph extends SimpleGraph<String, DefaultEdge> {
 	 * Vertexes already visited on the current path
 	 * @return A set of all possible simple paths from the source
 	 */
-	private Set<GraphPath<String, DefaultEdge>> getAllPossiblePaths(String source, List<String> visited){
+	private Set<GraphPath<PatrolVertex, DefaultEdge>> getAllPossiblePaths(PatrolVertex source, List<PatrolVertex> visited){
 		visited.add(source);
 		
 		/* Get all the vertices that are neighbors to the source node.
 		 * Note : using sets to not check duplication.
 		 */
 		Set<DefaultEdge> edges = this.edgesOf(source);
-		Set<String> neighbors = new HashSet<String>();
+		Set<PatrolVertex> neighbors = new HashSet<PatrolVertex>();
 		for(DefaultEdge edge : edges){
-			String edgeSource = this.getEdgeSource(edge);
-			String edgeTarget = this.getEdgeTarget(edge);
+			PatrolVertex edgeSource = this.getEdgeSource(edge);
+			PatrolVertex edgeTarget = this.getEdgeTarget(edge);
 			neighbors.add(edgeSource);
 			neighbors.add(edgeTarget);
 		}
@@ -135,15 +116,15 @@ public class PatrolGraph extends SimpleGraph<String, DefaultEdge> {
 		/* If they're are no neighbors return the current path, else return the paths of all neighbors
 		 * NOTE : possible to add partial paths to program by removing if(neighbors.isEmpty()) condition
 		 */
-		Set<GraphPath<String, DefaultEdge>> result = new HashSet<GraphPath<String,DefaultEdge>>();
+		Set<GraphPath<PatrolVertex, DefaultEdge>> result = new HashSet<GraphPath<PatrolVertex,DefaultEdge>>();
 		if(neighbors.isEmpty()){
-			GraphPath<String, DefaultEdge> path = new GraphWalk<String, DefaultEdge>(this, visited, 0);
+			GraphPath<PatrolVertex, DefaultEdge> path = new GraphWalk<PatrolVertex, DefaultEdge>(this, visited, 0);
 			result.add(path);
 		}
 		else {
-			for(String neighbor : neighbors){
+			for(PatrolVertex neighbor : neighbors){
 				/* Essential to make a new list of visited points, for each "direction" from source vertex */
-				List<String> newVisited = new ArrayList<String>(visited);
+				List<PatrolVertex> newVisited = new ArrayList<PatrolVertex>(visited);
 				result.addAll(this.getAllPossiblePaths(neighbor, newVisited));
 			}
 		}

@@ -19,7 +19,7 @@ import java.util.*;
 public class SecurityEnvironment extends Environment {
 	
 	private PatrolGraph graph;
-	private PatrolConfig config;
+	private Config config;
 	
 	/** Called before the MAS execution with the args informed in .mas2j */
 
@@ -34,17 +34,18 @@ public class SecurityEnvironment extends Environment {
          * name : $(configFileID).json
          */
         
-        String filepath = "/home/conor/Antoine-Conor/tests/input3.json";
+        String filepath = "/home/conor/Antoine-Conor/tests/input4.json";
         JSONObject json = null;
         JSONParser parser = new JSONParser();
-        
         try {
         	json = (JSONObject)parser.parse(new FileReader(filepath));
         } catch (Exception e) {
         	System.out.println("Cannot read JSON file");
         }
+        
+        Robber.create(json);
         graph = new PatrolGraph(json);
-        config = PatrolConfig.create();
+        config = Config.create();
     }
 	
     private Logger logger = Logger.getLogger("GuardianPatrol.mas2j."+SecurityEnvironment.class.getName());
