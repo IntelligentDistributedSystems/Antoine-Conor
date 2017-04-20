@@ -10,6 +10,8 @@ class Robbers{
 
 		this.list = new Set()
 
+		this.catchProbability = new Map()
+
 		// DOM listeners
 
 		$(document).on('click', '#robbers .delete', event => {
@@ -24,6 +26,27 @@ class Robbers{
 
 		})
 
+		$(document).on('change', '#robbers input.discretion', event => {
+
+			const newValue = 1-parseFloat($(event.currentTarget).val())
+
+			if (newValue < 0 || newValue > 1){
+				return $(event.currentTarget).css({
+					color: 'red'
+				})
+			}
+
+			$(event.currentTarget).css({
+				color: "#fff"
+			})
+
+			this.catchProbability.set(
+				$(event.currentTarget).parent().parent().parent().parent().data('robberid'),
+				newValue
+			)
+
+		})
+
 		$(document).on('change', '#modal-robber-config input', event => {
 
 			const row = $(event.currentTarget).parent().parent()
@@ -32,7 +55,7 @@ class Robbers{
 			const robberId = row.data('robberid')
 
 			const setting = $(event.currentTarget).data('setting')
-			const newValue = parseInt($(event.currentTarget).val())
+			const newValue = parseFloat($(event.currentTarget).val())
 
 			console.log(`${setting} changed for node ${nodeId} : ${newValue}`)
 
@@ -53,10 +76,11 @@ class Robbers{
 
 		this.list.add(robberId)
 
+		this.catchProbability.set(robberId, 0.5)
+
 		this.settings.path.cy.nodes().each(node => node.data('robberSettings').set(robberId, {
 			cost: 2,
-			reward: 1,
-			catchProbability: 0.3
+			reward: 1
 		}))
 
 		$('#robbers').append(`
@@ -67,7 +91,11 @@ class Robbers{
 						<p>Some bad guy.</p>
 					</div>
 					<div class="card-action">
-						<a class="waves-effect waves-light btn blue configure" style="width: 100%"><i class="material-icons right">mode_edit</i>Configure</a>
+						<div class="discretionContainer">
+							<span>Discretion</span>
+							<input type="number" step="0.05" class="discretion" min="0" max="1" value="0.5">
+						</div>
+						<a class="waves-effect waves-light btn blue configure" style="width: 100%; margin-top: 10px;"><i class="material-icons right">mode_edit</i>Rewards</a>
 						<a class="waves-effect waves-light btn red delete" style="width: 100%; margin-top: 10px"><i class="material-icons right">delete</i>Delete</a>
 					</div>
 				</div>
@@ -107,7 +135,6 @@ class Robbers{
 						<th>Target ID</th>
 						<th>Cost</th>
 						<th>Reward</th>
-						<th>Probability of getting caught</th>
 					</tr>
 				</thead>
 
@@ -122,7 +149,6 @@ class Robbers{
 					<td>${node.id()}</td>
 					<td><input data-setting="cost" type="number" value="${settings.cost}" min="0"></td>
 					<td><input data-setting="reward" type="number" value="${settings.reward}" min="0"></td>
-					<td><input data-setting="catchProbability" type="number" value="${settings.catchProbability}" min="0" max="1" step="0.1"></td>
 				</tr>`
 		})
 
@@ -142,7 +168,10 @@ class Robbers{
 	*	Return the list of every robber.
 	*/
 	getSettings(){
-		return [...this.list]
+		return {
+			list: [...this.list],
+			catchProbability: Array.from(this.catchProbability).reduce((obj, [key, value]) => { obj[key] = value; return obj}, {})
+		}
 	}
 
 

@@ -256,8 +256,7 @@ class Graph {
 
 		this.settings.robbers.list.forEach(robber => newNode.data('robberSettings').set(robber, {
 			cost: 2,
-			reward: 1,
-			catchProbability: 0.3
+			reward: 1
 		}))
 
 		return this

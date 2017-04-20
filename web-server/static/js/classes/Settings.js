@@ -74,7 +74,7 @@ class Settings {
 
 	getGeneralSettings(){
 		return {
-			numberOfIterations: $('#numberOfIterations').val()
+			numberOfIterations: parseInt($('#numberOfIterations').val())
 		}
 	}
 }
