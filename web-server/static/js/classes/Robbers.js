@@ -72,7 +72,7 @@ class Robbers{
 	*/
 	newRobber(){
 
-		const robberId = this.numberOfRobbersCreated++
+		const robberId = `${this.numberOfRobbersCreated++}`
 
 		this.list.add(robberId)
 

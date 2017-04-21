@@ -1,10 +1,31 @@
+/*
+*	Deals with the results sent by the server.
+*/
 class Results{
 
 	constructor(){
 		window.results = this
 	}
 
+	/*
+	*	When an error is received, print it to screen.
+	*/
+	error(err){
 
+		console.log(err)
+
+		$('#modal-results p').html(`
+
+			<div class="center">
+				Error encountered while computing the results : <br>
+				${err}
+			</div>
+		`).modal('open')
+	}
+
+	/*
+	*	When the server is processing, show the progress.
+	*/
 	loading(percent = false){
 		$('#modal-results p').html(`
 
@@ -18,7 +39,12 @@ class Results{
 		`).modal('open')
 	}
 
-	showResults(){
+	/*
+	*	When everything is okay, display graphs, stats and show a simulation.
+	*/
+	showResults(data){
+
+		console.log(data)
 
 		$('#modal-results p').html(`
 

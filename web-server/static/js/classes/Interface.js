@@ -22,10 +22,13 @@ class Interface{
 		
 			console.log('Connection to the remote server established.')
 
+			/*
 			this.socket.on('stdout', data => console.log(data.text))
 			this.socket.on('stderr', data => console.log(data.text))
 			this.socket.on('close', data => console.log(data.text))
+			*/
 
+			this.socket.on('loading', data => this.results.loading(data.progression))
 		})
 	}
 
@@ -35,8 +38,19 @@ class Interface{
 	*/
 
 	startSimulation(){
-		this.socket.emit('startSimulation', this.settings.getSettings())
+		
 		this.results.loading(0)
-		setTimeout(() => this.results.showResults(), 3000)
+
+		this.socket.emit('startSimulation', this.settings.getSettings(), (results) => {
+
+			console.log(`Something received`)
+
+			if (results.error)
+				return this.results.error(results.error)
+
+			this.results.showResults(results.data)
+
+		})
+	
 	}
 }
