@@ -15,6 +15,7 @@ class Interface{
 		this.socket = io.connect(`http://${window.location.hostname}:8081`)
 		this.settings = new Settings()
 		this.results = new Results()
+		this.simulationRunning = false
 
 		// Socket listeners
 
@@ -22,13 +23,6 @@ class Interface{
 		
 			console.log('Connection to the remote server established.')
 
-			/*
-			this.socket.on('stdout', data => console.log(data.text))
-			this.socket.on('stderr', data => console.log(data.text))
-			this.socket.on('close', data => console.log(data.text))
-			*/
-
-			this.socket.on('loading', data => this.results.loading(data.progression))
 		})
 	}
 
@@ -38,12 +32,19 @@ class Interface{
 	*/
 
 	startSimulation(){
+
+		this.simulationRunning = true
+
+		this.socket.on('loading', data => this.results.loading(data.progression))
 		
 		this.results.loading(0)
 
 		this.socket.emit('startSimulation', this.settings.getSettings(), (results) => {
 
-			console.log(`Something received`)
+			if (!this.simulationRunning)
+				return
+
+			console.log(`Something received.`)
 
 			if (results.error)
 				return this.results.error(results.error)
@@ -52,5 +53,16 @@ class Interface{
 
 		})
 	
+	}
+
+	/*
+	*	Stop the client-side simulation by removing the loading screen and
+	*	blocking results callback.
+	*/
+
+	stopSimulation(){
+		this.simulationRunning = false
+
+		this.socket.removeListener('loading')
 	}
 }

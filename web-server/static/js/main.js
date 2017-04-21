@@ -71,7 +71,7 @@ const setupDOM = () => {
 
 	$('.parallax').parallax()
 
-	$('.modal').modal()
+	$('.modal#modal-robber-config').modal()
 
 	ConsoleLogHTML.connect($('#console'))
 }
@@ -88,4 +88,5 @@ $(() => {
 	$('#sortNodes').on('click', event => interface.settings.path.sort())
 	$('#newRobber').on('click', event => interface.settings.robbers.newRobber())
 	$('#launchButton').on('click', event => interface.startSimulation())
+	$('.modal#modal-results').modal({complete: () => interface.stopSimulation()})
 })
