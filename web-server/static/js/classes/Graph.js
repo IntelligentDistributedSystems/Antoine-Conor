@@ -211,7 +211,7 @@ class Graph {
 	addNode(position, base = false){
 		const newNode = this.cy.add({
 			data: {
-				id: `${this.nbrNodesCreated++}`,
+				id: this.nbrNodesCreated++,
 				robbersInterest: 1,
 				guardiansCost: 2,
 				guardiansReward: 1,
@@ -270,7 +270,7 @@ class Graph {
 			vertices: Object.keys(cy.nodes())
 							 .filter(key => !isNaN(key))
 							 .map(key => ({
-							 	id: cy.nodes()[key].id(),
+							 	id: parseInt(cy.nodes()[key].id()),
 							 	robbersInterest: cy.nodes()[key].data('robbersInterest'),
 							 	guardiansCost: cy.nodes()[key].data('guardiansCost'),
 								guardiansReward: cy.nodes()[key].data('guardiansReward'),
@@ -279,8 +279,8 @@ class Graph {
 			edges: Object.keys(cy.edges())
 						 .filter(key => !isNaN(key))
 						 .map(key => ({
-						 	source: cy.edges()[key].source().id(),
-						 	target: cy.edges()[key].target().id()
+						 	source: parseInt(cy.edges()[key].source().id()),
+						 	target: parseInt(cy.edges()[key].target().id())
 						 }))
 		}
 	}
