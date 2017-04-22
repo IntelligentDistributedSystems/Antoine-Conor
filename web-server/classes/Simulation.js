@@ -75,7 +75,7 @@ class Simulation{
 
 	sendError(error){
 
-		console.error(`[${socket.id}] Error encountered : ${error}`)
+		console.error(`[${this.socket.id}] Error encountered : ${error}`)
 
 		this.fn({
 			error: error

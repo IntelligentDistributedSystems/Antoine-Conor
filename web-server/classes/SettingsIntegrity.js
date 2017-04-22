@@ -31,6 +31,9 @@ module.exports = {
 
 		const robbersList = settings.robbers.list
 
+		if (robbersList.length === 0)
+			return `Robbers list should contain at least 1 robber.`
+
 		const verticesSet = new Set()
 
 		if (settings.general.numberOfIterations < 1 || settings.general.numberOfIterations > 100)
@@ -60,6 +63,7 @@ module.exports = {
 
 				if (typeof vertice.robberSettings[robber] === 'undefined')
 					return `No settings submitted for rober ${robber} and target ${vertice.id}.`
+
 				if (! (vertice.robberSettings[robber].cost >= 0))
 					return `Invalid robber cost for rober ${robber} and target ${vertice.id}.`
 
@@ -67,6 +71,9 @@ module.exports = {
 					return `Invalid robber reward for rober ${robber} and target ${vertice.id}.`
 			}
 		}
+
+		if (! verticesSet.has(0))
+			return `No base vertex submitted.`
 
 		// Edges integrity
 
