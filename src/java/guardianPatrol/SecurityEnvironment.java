@@ -132,7 +132,11 @@ public class SecurityEnvironment extends Environment {
     // RobberType x Attack x Patrol
     private double rUtility(int r, int a, int p) {
         double prob = pCaught[r][a][p];
-        //TODO
+        //TODO cost and reward ok, prob left
+        double newRCost = graph.getAttack(a).getRobberCost(r);
+        double newRReward = graph.getAttack(a).getRobberReward(r);
+        double newProb = graph.getPatrol(p).getCatchProbability(a, r);
+        System.out.println("P : " + p + " | a : " + a +" | r "+ r +" | New : " + newProb + " | Old : " + prob);
         return prob*(-rCost[r][a]) + (1-prob)*rReward[r][a];
     }   
     

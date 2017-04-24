@@ -31,9 +31,22 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 	
 	private Config config;
 	
-	List<PatrolVertex> vertices;
+	/**
+	 * The base of the graph, where all patrols must start. It is also impossible for a
+	 * robber to attack this vertex
+	 */
+	private PatrolVertex base;
 	
-	private List<GraphPath<PatrolVertex, DefaultEdge>> paths;
+	/**
+	 * List of all possible attacks for the robber. Their index in this list is used
+	 * for the definition of guardians patrols
+	 */
+	private List<PatrolVertex> attacks;
+	
+	/**
+	 * List of paths the guardian can follow to patrol
+	 */
+	private List<PatrolPath> patrols;
 	
 	/**
 	 * Constructor for PatrolGraph class
@@ -42,8 +55,8 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 	public PatrolGraph(JSONObject json) {
 		super(DefaultEdge.class);
 		config = Config.create();
-		vertices = new ArrayList<>();
-		paths = new ArrayList<>();
+		attacks = new ArrayList<>();
+		patrols = new ArrayList<>();
 		
 		JSONObject graph;
 		JSONArray vertices;
@@ -64,41 +77,71 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 		for(Object edge : edges.toArray()){
 			@SuppressWarnings("unchecked")
 			HashMap<String, Integer> edgeMap = (HashMap<String, Integer>)(edge);
-			PatrolVertex source = this.getVertex(((Number)(edgeMap.get("source"))).intValue());
-			PatrolVertex target = this.getVertex(((Number)(edgeMap.get("target"))).intValue());
+			PatrolVertex source = this.getVertexByGuiId(((Number)(edgeMap.get("source"))).intValue());
+			PatrolVertex target = this.getVertexByGuiId(((Number)(edgeMap.get("target"))).intValue());
 			this.addEdge(source, target);
 		}
 		
-		
-		paths.addAll(this.getAllPossiblePaths());
-		config.setNumberPossiblePatrols(paths.size());
-		config.setNumberPossibleAttacks(vertices.size());
+
+		/*
+		 * We add each GraphPath representing a possible patrol by the list of attack point
+		 * ids defined by List<PatrolVertex> attacks
+		 */
+		for(GraphPath<PatrolVertex, DefaultEdge> graphPath : this.getAllPossiblePaths()){
+			patrols.add(new PatrolPath(this, graphPath));
+		}
+		System.out.println(patrols);
+		config.setNumberPossiblePatrols(patrols.size());
+		config.setNumberPossibleAttacks(attacks.size());
 	}
 
 	/**
-	 * Adds a vertex to the PatrolGraph. Adds the vertex to the Map of vertices
-	 * for better speed to access vertices
+	 * Adds a vertex to the PatrolGraph. If the vertex is not the base, adds
+	 * it also to the list of possible attacks
 	 * @param v the vertex to add
 	 * @return true if the add is successful
 	 */
 	@Override 
 	public boolean addVertex(PatrolVertex v){
-		this.vertices.add(v);
+		if(v.getGuiId() == baseID){
+			base = v;
+		} else {
+			this.attacks.add(v);
+		}
 		return super.addVertex(v);
 	}
 	
 	
-	public PatrolVertex getVertex(int id){
-		return vertices.get(id);
+	public PatrolVertex getAttack(int index){
+		return attacks.get(index);
 	}
 	
+	public int getAttackIndex(PatrolVertex v){
+		return attacks.indexOf(v);
+	}
+	
+	public PatrolVertex getVertexByGuiId(int guiId){
+		if(guiId == baseID){
+			return base;
+		}
+		for(PatrolVertex v : attacks){
+			if(v.getGuiId() == guiId){
+				return v;
+			}
+		}
+		return null;
+	}
+	
+	public PatrolPath getPatrol(int index){
+		return this.patrols.get(index);
+	}
 	/**
 	 * Default usage for getAllPossiblePaths (from base vertex)
 	 * @return A set of all possible simple paths from the base
 	 * @see guardianPatrol.PatrolGraph#getAllPossiblePaths(PatrolVertex, List) 
 	 */
 	private Set<GraphPath<PatrolVertex, DefaultEdge>> getAllPossiblePaths(){
-		return this.getAllPossiblePaths(this.getVertex(PatrolGraph.baseID), new ArrayList<PatrolVertex>());
+		return this.getAllPossiblePaths(base, new ArrayList<PatrolVertex>());
 	}
 	
 	/**
@@ -147,6 +190,10 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 		return result;
 	}
 	
+	public PatrolVertex getBase() {
+		return base;
+	}
+
 	@Override
 	public String toString() {
 		return "PatrolGraph [config=" + config  +",  vertexSet()=" + vertexSet() + "]";

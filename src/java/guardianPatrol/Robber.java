@@ -27,7 +27,7 @@ public class Robber {
 		robberMap.put(id, new Robber(id, json));
 	}
 	
-	public static Robber getRobber(String id) {
+	public static Robber getRobber(Integer id) {
 		return robberMap.get(id);
 	}
 	
