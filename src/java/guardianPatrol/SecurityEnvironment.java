@@ -30,9 +30,11 @@ public class SecurityEnvironment extends Environment {
     @Override
     public void init(String[] args) {
         super.init(args);
-        
-        // test filepath : String testFilepath = "/home/conor/Antoine-Conor/tests/inputPDF.json";
+       
         String filepath = System.getenv(JSON_FILE_ENVIRONMENT_VARIABLE);
+        
+        // For testing, uncommen following line :
+        filepath = "/home/conor/Antoine-Conor/tests/inputPDF.json";
         
         JSONObject json = null;
         JSONParser parser = new JSONParser();

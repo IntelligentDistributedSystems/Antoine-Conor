@@ -2,6 +2,7 @@ package guardianPatrol;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.json.simple.JSONObject;
@@ -31,9 +32,12 @@ public class PatrolVertex {
 		this.guardiansReward = ((Number) vertexMap.get("guardiansReward")).doubleValue();
 		
 		JSONObject robberSettings = (JSONObject) vertexMap.get("robberSettings");
-		Set<Integer> robberIds = Robber.getRobberIds();
-		for(Integer id : robberIds){
-			JSONObject robberValues = (JSONObject)(robberSettings.get(String.valueOf(id)));
+		
+		Map<Integer, Integer> idsByGuiIds = Robber.getIdsByGuiIds();
+		for(Entry<Integer, Integer> entry : idsByGuiIds.entrySet()){
+			int guiId = entry.getKey();
+			int id = entry.getValue();
+			JSONObject robberValues = (JSONObject)(robberSettings.get(String.valueOf(guiId)));
 			robbersCost.put(id, ((Number) robberValues.get("cost")).doubleValue());
 			robbersReward.put(id, ((Number) robberValues.get("reward")).doubleValue());
 		}

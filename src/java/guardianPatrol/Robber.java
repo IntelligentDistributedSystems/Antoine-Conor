@@ -1,6 +1,8 @@
 package guardianPatrol;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -9,10 +11,10 @@ import org.json.simple.JSONObject;
 
 public class Robber {
 	/* Static context */
-	private static Map<Integer, Robber> robberMap;
+	private static List<Robber> robbers;
 
     public static void create(JSONObject json) {
-    	robberMap = new HashMap<>();
+    	robbers = new ArrayList<>();
         JSONObject robbers;
         JSONArray robberList;
         robbers = (JSONObject)json.get("robbers");
@@ -24,36 +26,52 @@ public class Robber {
     }
 
 	private static void addRobber(Integer id, JSONObject json) {
-		robberMap.put(id, new Robber(id, json));
+		robbers.add(new Robber(id, json));
 	}
 	
 	public static Robber getRobber(Integer id) {
-		return robberMap.get(id);
+		return robbers.get(id);
+	}   
+	
+	public static Map<Integer, Integer> getIdsByGuiIds() {
+		Map<Integer, Integer> map = new HashMap<>();
+		for(int id = 0; id < robbers.size(); id++){
+			map.put(robbers.get(id).getGuiId(), id);
+		}
+		return map;
+	}    
+	
+	public static int getNumberOfRobbers(){
+		return robbers.size();
 	}
 	
-	public static Set<Integer> getRobberIds(){
-		return robberMap.keySet();
+	public static String allRobbersToString() {
+		String res = "";
+		for(Robber r : robbers){
+			res += r.toString();
+		}
+		return res;
 	}
-    
+	
 	
     /* Instance context */
-	private Integer id;
+	private Integer guiId;
 	private double catchProbabilityBase;
 	
 	public Robber(Integer id, JSONObject json) {
-		this.setId(id);
+		this.setGuiId(id);
 		JSONObject robbers = (JSONObject)json.get("robbers");
 		JSONObject catchProbability = (JSONObject) robbers.get("catchProbability");
 		this.setCatchProbabilityBase(((Number)catchProbability.get(String.valueOf(id))).doubleValue());
 	}
 
 
-	public Integer getId() {
-		return id;
+	public Integer getGuiId() {
+		return guiId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setGuiId(Integer guiId) {
+		this.guiId = guiId;
 	}
 	
 	public double getCatchProbabilityBase() {
@@ -63,17 +81,9 @@ public class Robber {
 	public void setCatchProbabilityBase(double catchProbabilityBase) {
 		this.catchProbabilityBase = catchProbabilityBase;
 	}
-
-	public static String allRobbersToString() {
-		String res = "";
-		for(Integer robberId : Robber.robberMap.keySet()){
-			res += Robber.robberMap.get(robberId).toString();
-		}
-		return res;
-	}
 	
 	@Override
 	public String toString() {
-		return "Robber [id=" + id + ", catchProbabilityBase=" + catchProbabilityBase + "]"  + "\n";
+		return "Robber [guiId=" + guiId + ", catchProbabilityBase=" + catchProbabilityBase + "]"  + "\n";
 	}
 }

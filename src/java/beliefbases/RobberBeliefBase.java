@@ -16,7 +16,7 @@ public class RobberBeliefBase extends PatrolBeliefBase {
 		this.addLiteral(NUMBER_POSSIBLE_ATTACKS, config.getNumberPossibleAttacks() - 1);
 		this.addLiteral(STRATEGY, getStrategy(config.getNumberPossibleAttacks() - 1));
 		this.addLiteral(NUMBER_ITERATIONS, config.getRobberIterations());
-		this.addLiteral(NUMBER_ROBBER_TYPES, Robber.getRobberIds().size());
+		this.addLiteral(NUMBER_ROBBER_TYPES, Robber.getNumberOfRobbers());
 	}
 	
 	/**
