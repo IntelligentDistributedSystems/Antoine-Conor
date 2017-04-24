@@ -111,6 +111,11 @@ gen_prob([X | Xs],K,[X/K | Ys]) :-
     -+guardian_strategy(Strategy,L);
     !do_episodes.
 
+//When the first element of L1 is -1, it means all strats have been done, can stop
++!do_episodes : guardian_strategy(_,[-1 | L1s]) <-
+    .println("Finished working !");
+    .send(stopper,tell,stopguardian).
+    
 +!do_episodes : guardian_strategy(S,_) <-
     ?iterations(MaxIter);
     !do_actions(1,MaxIter).
@@ -144,6 +149,3 @@ gen_prob([X | Xs],K,[X/K | Ys]) :-
     .println(Iter," : ", percept(I,R,A,P,Ur,Ug));
     ?iterations(MaxIter);
     !do_actions(Iter+1,MaxIter).
-    
-+hello : true <-
-    -hello[source(sender)].

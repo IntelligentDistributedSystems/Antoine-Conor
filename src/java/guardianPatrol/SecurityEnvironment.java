@@ -12,11 +12,15 @@ import java.util.logging.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 @SuppressWarnings("unused")
 public class SecurityEnvironment extends Environment {
+	
+	private static final String JSON_FILE_ENVIRONMENT_VARIABLE = "PATROL_JSON_NAME";
 	
 	private PatrolGraph graph;
 	private Config config;
@@ -26,15 +30,10 @@ public class SecurityEnvironment extends Environment {
     @Override
     public void init(String[] args) {
         super.init(args);
-        /*
-         * Initilizing input from user
-         * input2.json : graph on paper
-         * input3.json : graph on pdf by CB
-         * TODO : set path dynamically (environment variable ?)
-         * name : $(configFileID).json
-         */
         
-        String filepath = "/home/conor/Antoine-Conor/tests/inputPDF.json";
+        // test filepath : String testFilepath = "/home/conor/Antoine-Conor/tests/inputPDF.json";
+        String filepath = System.getenv(JSON_FILE_ENVIRONMENT_VARIABLE);
+        
         JSONObject json = null;
         JSONParser parser = new JSONParser();
         try {
@@ -44,18 +43,13 @@ public class SecurityEnvironment extends Environment {
         }
         
         Robber.create(json);
-        // System.out.println(Robber.allRobbersToString());
+
         graph = new PatrolGraph(json);
-        // System.out.println(graph.toString());
-        config = Config.create();
-        // System.out.println(config.toString());
+
+        config = Config.create(json);
     }
 	
     private Logger logger = Logger.getLogger("GuardianPatrol.mas2j."+SecurityEnvironment.class.getName());
-    /*
-     * Following line can be used to log from any class for debug
-     * public static Logger logger = Logger.getLogger("GuardianPatrol.mas2j."+SecurityEnvironment.class.getName());
-     */
     
     // Number of patrols, attacks and robber types
     //private final int nPatrols = 4;
@@ -70,7 +64,7 @@ public class SecurityEnvironment extends Environment {
     // Agent types
     private final int ROBBER = 1;
 	private final int GUARDIAN = 2;
-    
+    /*
     // Robber parameters
     private final double p1[] = {1.0,0.7};
     private final double p2[] = {0.7,0.4};
@@ -108,6 +102,7 @@ public class SecurityEnvironment extends Environment {
         {1.0, 2.0, 3.0},
         {2.0, 4.0, 6.0}
     };
+    */
     
     private int iPercept = 0;
     
@@ -131,20 +126,21 @@ public class SecurityEnvironment extends Environment {
     // Robber utility
     // RobberType x Attack x Patrol
     private double rUtility(int r, int a, int p) {
+    	
     	double newRReward = graph.getAttack(a).getRobberReward(r);
         double newRCost = graph.getAttack(a).getRobberCost(r);
         double newProb = graph.getPatrol(p).getCatchProbability(a, r);
         
-        
+        /*
         double oldRReward = rReward[r][a];
         double oldRCost = rCost[r][a];
         double oldProb = pCaught[r][a][p];
-        System.out.println("Reward, Old : " + oldRReward + " | New : " + newRReward);
-        System.out.println("Cost, Old : " + oldRCost + " | New : " + newRCost);
-        System.out.println("Prob, Old : " + oldProb + " | New : " + newProb);
-        // System.out.println("P : " + p + " | a : " + a +" | r "+ r +" | New : " + newProb + " | Old : " + oldProb);
-        System.out.println("Result, Old : "+(oldProb*(-oldRCost) + (1-oldProb)*oldRReward)+" | New : " + (newProb*(-newRCost) + (1-newProb)*newRReward));
-        return newProb*(-newRCost) + (1-newProb)*newRReward;
+        double oldRes = oldProb*(-oldRCost) + (1-oldProb)*oldRReward;
+        */
+        
+        double newRes = newProb*(-newRCost) + (1-newProb)*newRReward;
+        
+        return newRes;
     }   
     
     // Guardian utility
@@ -154,16 +150,16 @@ public class SecurityEnvironment extends Environment {
         double newGCost = graph.getAttack(a).getGuardiansCost();
         double newProb = graph.getPatrol(p).getCatchProbability(a, r);
         
+        /*
         double oldGReward = gReward[a];
         double oldGCost = gCost[a];
         double oldProb = pCaught[r][a][p];
+        double oldRes = oldProb*oldGReward + (1-oldProb)*(-oldGCost);
+        */
         
-        System.out.println("Reward, Old : " + oldGReward + " | New : " + newGReward);
-        System.out.println("Cost, Old : " + oldGCost + " | New : " + newGCost);
-        System.out.println("Prob, Old : " + oldProb + " | New : " + newProb);
-        System.out.println("Result, Old : " + (oldProb*oldGReward + (1-oldProb)*(-oldGCost)) + " | New : "+ (newProb*newGReward + (1-newProb)*(-newGCost)));
-        double old = oldProb*oldGReward + (1-oldProb)*(-oldGCost);
-        return newProb*newGReward + (1-newProb)*(-newGCost);
+        double newRes = newProb*newGReward + (1-newProb)*(-newGCost);
+        
+        return newRes;
     }
 
     @Override
@@ -278,16 +274,16 @@ public class SecurityEnvironment extends Environment {
 	        logger.info(per.i+","+per.r+","+per.a+","+per.p+","+per.ur+","+per.ug);
 	    }
 	    */
-    	double tur = 0;
-    	double tug = 0;
+    	double averageRobberUtility = 0;
+    	double averageGuardianUtility = 0;
     	
     	for (EnvPercept per : history) {
-	        tur += per.ur;
-	        tug += per.ug;
+    		averageRobberUtility += per.ur;
+    		averageGuardianUtility += per.ug;
 	    }
-    	tur /= history.size();
-    	tug /= history.size();
-	    System.out.println("AVERAGE UG : " + tug + ", TOTAL UR : " + tur);
+    	averageRobberUtility /= history.size();
+    	averageGuardianUtility /= history.size();
+	    System.out.println("AVERAGE UG : " + averageGuardianUtility + ", TOTAL UR : " + averageRobberUtility);
         super.stop();
     }
 

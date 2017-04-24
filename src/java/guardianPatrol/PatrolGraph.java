@@ -58,22 +58,22 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 		attacks = new ArrayList<>();
 		patrols = new ArrayList<>();
 		
-		JSONObject graph;
+		JSONObject paths;
 		JSONArray vertices;
 		JSONArray edges;
 		
-		graph = (JSONObject) json.get("paths");
-		vertices = (JSONArray) graph.get("vertices");
-		edges = (JSONArray) graph.get("edges");
+		paths = (JSONObject) json.get("paths");
+		vertices = (JSONArray) paths.get("vertices");
+		edges = (JSONArray) paths.get("edges");
 		
-		// vertices.toArray() == java.util.ArrayList<HashMap>
+		// Add all vertices in JSON
 		for(Object vertex : vertices.toArray()){
 			@SuppressWarnings("unchecked")
 			HashMap<String, Object> vertexMap = (HashMap<String, Object>)(vertex);
 			this.addVertex(new PatrolVertex(vertexMap));
 		}
 		
-		// edges.toList().getClass() == java.util.ArrayList<HashMap>
+		// Read each edge in JSON and determine the two vertices, before adding edge
 		for(Object edge : edges.toArray()){
 			@SuppressWarnings("unchecked")
 			HashMap<String, Integer> edgeMap = (HashMap<String, Integer>)(edge);
@@ -90,22 +90,7 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 		for(GraphPath<PatrolVertex, DefaultEdge> graphPath : this.getAllPossiblePaths()){
 			patrols.add(new PatrolPath(this, graphPath));
 		}
-		System.out.println(patrols);
-		
-		// TODO START REMOVE HERE (TESTING PURPOSES)
-		PatrolPath p0 = patrols.get(0);
-		PatrolPath p1 = patrols.get(1);
-		PatrolPath p2 = patrols.get(2);
-		PatrolPath p3 = patrols.get(3);
-		
-		patrols.set(0, p1);
-		patrols.set(1, p3);
-		patrols.set(2, p2);
-		patrols.set(3, p0);
-		
-		System.out.println(patrols);
-		
-		// END REMOVE HERE
+
 		config.setNumberPossiblePatrols(patrols.size());
 		config.setNumberPossibleAttacks(attacks.size());
 	}

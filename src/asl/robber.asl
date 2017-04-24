@@ -6,7 +6,7 @@
 
 
 /* Robber types: 1, 2 */
-robber_types(2).
+// UNUSED robber_types(2).
 
 /* Robber attacks: 1, 2, 3 */
 /* action(attack,Type,Parameter) */
@@ -104,7 +104,3 @@ interval(X,[P | L],I,Pt,It) :-
     .println(Iter," : ", percept(I,R,A,P,Ur,Ug));
     ?iterations(MaxIter);
     !do_actions(Iter+1,MaxIter).
-
-+hello : true <-
-//    .println("Hello");
-    -hello[source(sender)].

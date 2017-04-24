@@ -1,5 +1,7 @@
 package guardianPatrol;
 
+import org.json.simple.JSONObject;
+
 import helpers.Helpers;
 
 /**
@@ -9,10 +11,10 @@ import helpers.Helpers;
  */
 public class Config {
 	// Guardian Configuration
-	/* TODO : remove default values, when properly calculated from graph and user input */
+	/* TODO : ask C. Badica what to set as probability resultion (= N for all strats ?) */
 	private int numberPossiblePatrols;
 	private int probabilityResolution = 3;
-	private int guardianIterations = 20;
+	private int guardianIterations;
 	
 	// Robber Configuration
 	private int numberPossibleAttacks;
@@ -36,6 +38,19 @@ public class Config {
             singleton = new Config();
         return singleton;
     }
+    
+    public static Config create(JSONObject json) {
+        if (singleton == null){
+            singleton = new Config();
+        }
+        singleton.loadJason(json);
+        return singleton;
+    }
+    
+    private void loadJason(JSONObject json){
+		JSONObject general = (JSONObject) json.get("general");
+		this.guardianIterations = ((Number) general.get("numberOfIterations")).intValue();
+	}
     
     
     //GUARDIAN CONFIGURATION
