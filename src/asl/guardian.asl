@@ -7,10 +7,10 @@
 /* Parameter = identify patrol: 1, 2, 3, 4 */
 /* action(patrol,2) */
 /* N = 4 */
-// Uneeded : guardian_patrols(4).
+// Dynamically loaded : guardian_patrols(N).
 
 /* Maximum number of iterations per episode */
-// Uneeded : iterations(20).
+// Dynamically loaded : iterations(I).
 
 /* Guardian strategy: [q1, q2, ..., qn] such that
 -- n is the number of patrols
@@ -19,12 +19,12 @@
 -- Number of strategies is comb(n+k-1,n-1)
 -- comb(3+4-1,4-1) = comb(6,3) = 20
 */
-guardian_strategy([0,0,0,1],[0,0,0,4]).
+// Unneeded at start (init does it): guardian_strategy([0,0,0,1],[0,0,0,4]).
 
 
 /* Probability resolution: K */
 /* K = 3 */
-// Uneeded : probability_resolution(3).
+// Dynamically loaded : probability_resolution(K).
 
 /* Select guardian patrol according to the current strategy. *
 /* select_patrol(+X,+L,-I)
@@ -146,6 +146,6 @@ gen_prob([X | Xs],K,[X/K | Ys]) :-
 
 +perc(I,R,A,P,Ur,Ug)[source(percept)] : crt_iter(Iter) <-
     -perc(I,R,A,P,Ur,Ug)[source(percept)];
-    .println(Iter," : ", percept(I,R,A,P,Ur,Ug));
+    // .println(Iter," : ", percept(I,R,A,P,Ur,Ug));
     ?iterations(MaxIter);
     !do_actions(Iter+1,MaxIter).

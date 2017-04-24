@@ -56,6 +56,8 @@ public class Config {
     //GUARDIAN CONFIGURATION
     public void setNumberPossiblePatrols(int n){
     	this.numberPossiblePatrols = n;
+    	//TODO remove next line after talking to badica
+    	this.probabilityResolution = n;
     }
     
     public int getNumberPossiblePatrols(){

@@ -1,29 +1,27 @@
 // Agent robber in project GuardianPatrol.mas2j
 
-
-
 /* Initial beliefs and rules */
 
 
 /* Robber types: 1, 2 */
-// UNUSED robber_types(2).
+// Dynamically loaded : robber_types(R).
 
 /* Robber attacks: 1, 2, 3 */
 /* action(attack,Type,Parameter) */
 /* Type = robber type */
 /* Parameter = identify attack: 1, 2, 3 */
 /* action(attack,1,3) */
-// UNUSED robber_attacks(3).
+// Dynamically loaded : robber_attacks(A).
 
 /* Maximum number of iterations */
-// UNUSED iterations(400).
+// Dynamically loaded :  iterations(I).
 
 /* Robber strategy: [p1, p2, ..., pn] such that
 -- n is the number of attacks
 -- 1 >= pi >= 0 is probability of attack i
 -- sum pi = 1
 */
-// UNUSED robber_strategy([0.33,0.33,0.34]).
+// Dynamically loaded :  robber_strategy(Strat). (, mixed equally for now)
 
 /* Select robber type. */  
 select_type(T) :-
@@ -66,15 +64,9 @@ interval(X,[P | L],I,Pt,It) :-
 
 /* Initial goals */
 
-
-
 !start.
 
-
-
 /* Plans */
-
-
 
 +!start : true <- 
 //    .println("Hello world !");
@@ -101,6 +93,6 @@ interval(X,[P | L],I,Pt,It) :-
 
 +perc(I,R,A,P,Ur,Ug)[source(percept)] : crt_iter(Iter) <-
     -perc(I,R,A,P,Ur,Ug)[source(percept)];
-    .println(Iter," : ", percept(I,R,A,P,Ur,Ug));
+    // .println(Iter," : ", percept(I,R,A,P,Ur,Ug));
     ?iterations(MaxIter);
     !do_actions(Iter+1,MaxIter).

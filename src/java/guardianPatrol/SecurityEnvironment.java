@@ -31,10 +31,10 @@ public class SecurityEnvironment extends Environment {
     public void init(String[] args) {
         super.init(args);
        
-        String filepath = "./config/" + System.getenv(JSON_FILE_ENVIRONMENT_VARIABLE);
-        
+        String filepath = "./configs/" + System.getenv(JSON_FILE_ENVIRONMENT_VARIABLE);
+        System.out.println(filepath);
         // For testing, uncomment following line :
-        // filepath = "./tests/inputPDF.json";
+        // filepath = "./config/inputPDF.json";
         
         JSONObject json = null;
         JSONParser parser = new JSONParser();
@@ -196,7 +196,7 @@ public class SecurityEnvironment extends Environment {
         }
         catch(NoValueException e) {}
 
-        logger.info("Robber type: "+iRobberType+" Attack: "+iAttack);
+//        logger.info("Robber type: "+iRobberType+" Attack: "+iAttack);
         
         updatePercepts();
 
@@ -211,12 +211,13 @@ public class SecurityEnvironment extends Environment {
         
         patrol = (NumberTerm)action.getTerm(1);
         
+        
         try {
             iPatrol = (int)patrol.solve();
         }
         catch(NoValueException e) {}
         
-//        logger.info("Patrol: "+iPatrol);
+        // logger.info("Patrol: "+iPatrol);
 
         updatePercepts();
                 
