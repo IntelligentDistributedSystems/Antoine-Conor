@@ -12,7 +12,7 @@ class Interface{
 
 		// Fields
 
-		this.socket = io.connect(`http://${window.location.hostname}:8081`)
+		this.socket = io.connect(`http://${window.location.hostname}:8083`)
 		this.settings = new Settings()
 		this.results = new Results()
 		this.simulationRunning = false

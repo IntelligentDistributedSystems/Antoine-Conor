@@ -4,8 +4,8 @@ const Simulation = require('./classes/Simulation')
 
 // Configuration
 
-const httpPort = 8080
-const webSocketsPort = 8081
+const httpPort = 8082
+const webSocketsPort = 8083
 
 // Express
 

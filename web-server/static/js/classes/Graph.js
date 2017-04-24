@@ -211,7 +211,7 @@ class Graph {
 	addNode(position, base = false){
 		const newNode = this.cy.add({
 			data: {
-				id: this.nbrNodesCreated++,
+				id: this.cy.nodes().length,
 				robbersInterest: 1,
 				guardiansCost: 2,
 				guardiansReward: 1,
