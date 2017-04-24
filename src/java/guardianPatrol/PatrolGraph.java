@@ -27,9 +27,13 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 	
 	
 	private static final long serialVersionUID = -7038166255538966671L;
-	private static final String baseID = "0";
+	private static final int baseID = 0;
 	
 	private Config config;
+	
+	List<PatrolVertex> vertices;
+	
+	private List<GraphPath<PatrolVertex, DefaultEdge>> paths;
 	
 	/**
 	 * Constructor for PatrolGraph class
@@ -38,7 +42,9 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 	public PatrolGraph(JSONObject json) {
 		super(DefaultEdge.class);
 		config = Config.create();
-
+		vertices = new ArrayList<>();
+		paths = new ArrayList<>();
+		
 		JSONObject graph;
 		JSONArray vertices;
 		JSONArray edges;
@@ -57,28 +63,39 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 		// edges.toList().getClass() == java.util.ArrayList<HashMap>
 		for(Object edge : edges.toArray()){
 			@SuppressWarnings("unchecked")
-			HashMap<String, String> edgeMap = (HashMap<String, String>)(edge);
-			PatrolVertex source = this.getVertex(edgeMap.get("source"));
-			PatrolVertex target = this.getVertex(edgeMap.get("target"));
+			HashMap<String, Integer> edgeMap = (HashMap<String, Integer>)(edge);
+			PatrolVertex source = this.getVertex(((Number)(edgeMap.get("source"))).intValue());
+			PatrolVertex target = this.getVertex(((Number)(edgeMap.get("target"))).intValue());
 			this.addEdge(source, target);
 		}
 		
-		config.setNumberPossiblePatrols(this.getAllPossiblePaths().size());
-		config.setNumberPossibleAttacks(this.vertexSet().size());
+		
+		paths.addAll(this.getAllPossiblePaths());
+		config.setNumberPossiblePatrols(paths.size());
+		config.setNumberPossibleAttacks(vertices.size());
 	}
 
-	public PatrolVertex getVertex(String id){
-		for(PatrolVertex vertex : this.vertexSet()){
-			if(vertex.getId().equals(id)){
-				return vertex;
-			}
-		}
-		return null;
+	/**
+	 * Adds a vertex to the PatrolGraph. Adds the vertex to the Map of vertices
+	 * for better speed to access vertices
+	 * @param v the vertex to add
+	 * @return true if the add is successful
+	 */
+	@Override 
+	public boolean addVertex(PatrolVertex v){
+		this.vertices.add(v);
+		return super.addVertex(v);
+	}
+	
+	
+	public PatrolVertex getVertex(int id){
+		return vertices.get(id);
 	}
 	
 	/**
 	 * Default usage for getAllPossiblePaths (from base vertex)
-	 * @return A set of all possible simple paths from the base 
+	 * @return A set of all possible simple paths from the base
+	 * @see guardianPatrol.PatrolGraph#getAllPossiblePaths(PatrolVertex, List) 
 	 */
 	private Set<GraphPath<PatrolVertex, DefaultEdge>> getAllPossiblePaths(){
 		return this.getAllPossiblePaths(this.getVertex(PatrolGraph.baseID), new ArrayList<PatrolVertex>());

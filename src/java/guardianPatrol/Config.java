@@ -68,13 +68,9 @@ public class Config {
 		return numberPossibleAttacks;
 	}
 
-	/**
-	 * This method sets the number of possible attack points for the robber.
-	 * Attacks = Vertices - 1 , because the robber cannot attack the base
-	 * @param numberOfVertices Number of vertices of the graph
-	 */
-	public void setNumberPossibleAttacks(int numberOfVertices) {
-		this.numberPossibleAttacks = numberOfVertices - 1;
+	
+	public void setNumberPossibleAttacks(int numberPossibleAttacks) {
+		this.numberPossibleAttacks = numberPossibleAttacks;
 	}
 
 	/* For each possible strategy (N total), the guardian does I iterations.

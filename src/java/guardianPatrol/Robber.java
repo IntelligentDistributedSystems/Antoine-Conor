@@ -9,7 +9,7 @@ import org.json.simple.JSONObject;
 
 public class Robber {
 	/* Static context */
-	private static Map<String, Robber> robberMap;
+	private static Map<Integer, Robber> robberMap;
 
     public static void create(JSONObject json) {
     	robberMap = new HashMap<>();
@@ -19,11 +19,11 @@ public class Robber {
         robberList = (JSONArray)robbers.get("list");
         
         for(Object id : robberList.toArray()){
-        	Robber.addRobber(String.valueOf(id), json);
+        	Robber.addRobber(((Number) id).intValue(), json);
         }
     }
 
-	private static void addRobber(String id, JSONObject json) {
+	private static void addRobber(Integer id, JSONObject json) {
 		robberMap.put(id, new Robber(id, json));
 	}
 	
@@ -31,28 +31,28 @@ public class Robber {
 		return robberMap.get(id);
 	}
 	
-	public static Set<String> getRobberIds(){
+	public static Set<Integer> getRobberIds(){
 		return robberMap.keySet();
 	}
     
 	
     /* Instance context */
-	private String id;
+	private Integer id;
 	private double catchProbabilityBase;
 	
-	public Robber(String id, JSONObject json) {
+	public Robber(Integer id, JSONObject json) {
 		this.setId(id);
 		JSONObject robbers = (JSONObject)json.get("robbers");
 		JSONObject catchProbability = (JSONObject) robbers.get("catchProbability");
-		this.setCatchProbabilityBase(((Number)catchProbability.get(id)).doubleValue());
+		this.setCatchProbabilityBase(((Number)catchProbability.get(String.valueOf(id))).doubleValue());
 	}
 
 
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	
@@ -66,7 +66,7 @@ public class Robber {
 
 	public static String allRobbersToString() {
 		String res = "";
-		for(String robberId : Robber.robberMap.keySet()){
+		for(Integer robberId : Robber.robberMap.keySet()){
 			res += Robber.robberMap.get(robberId).toString();
 		}
 		return res;

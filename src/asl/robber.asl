@@ -23,7 +23,7 @@ robber_types(2).
 -- 1 >= pi >= 0 is probability of attack i
 -- sum pi = 1
 */
-robber_strategy([0.33,0.33,0.34]).
+// UNUSED robber_strategy([0.33,0.33,0.34]).
 
 /* Select robber type. */  
 select_type(T) :-

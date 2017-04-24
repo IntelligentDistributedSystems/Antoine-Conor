@@ -34,7 +34,7 @@ public class SecurityEnvironment extends Environment {
          * name : $(configFileID).json
          */
         
-        String filepath = "/home/conor/Antoine-Conor/tests/input4.json";
+        String filepath = "/home/conor/Antoine-Conor/tests/inputPDF.json";
         JSONObject json = null;
         JSONParser parser = new JSONParser();
         try {
@@ -132,6 +132,7 @@ public class SecurityEnvironment extends Environment {
     // RobberType x Attack x Patrol
     private double rUtility(int r, int a, int p) {
         double prob = pCaught[r][a][p];
+        //TODO
         return prob*(-rCost[r][a]) + (1-prob)*rReward[r][a];
     }   
     
