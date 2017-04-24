@@ -34,7 +34,7 @@ public class SecurityEnvironment extends Environment {
         String filepath = "./configs/" + System.getenv(JSON_FILE_ENVIRONMENT_VARIABLE);
         System.out.println(filepath);
         // For testing, uncomment following line :
-        // filepath = "./config/inputPDF.json";
+        // filepath = "./configs/test.json";
         
         JSONObject json = null;
         JSONParser parser = new JSONParser();
