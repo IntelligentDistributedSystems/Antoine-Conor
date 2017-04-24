@@ -11,7 +11,7 @@ public class Config {
 	// Guardian Configuration
 	/* TODO : remove default values, when properly calculated from graph and user input */
 	private int numberPossiblePatrols;
-	private int probabilityResolution = 4;
+	private int probabilityResolution = 3;
 	private int guardianIterations = 20;
 	
 	// Robber Configuration

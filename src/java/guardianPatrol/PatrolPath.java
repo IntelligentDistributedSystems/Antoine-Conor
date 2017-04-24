@@ -29,7 +29,7 @@ public class PatrolPath {
 		int positionOnPath = this.verticesIds.indexOf(vertexId);
 		//If the attack is not on the patrol path
 		if(positionOnPath == -1){
-			return 0.001;
+			return 0.0;
 		}
 		
 		return baseCatch * Math.pow(0.7, positionOnPath);

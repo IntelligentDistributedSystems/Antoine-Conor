@@ -45,6 +45,16 @@ public class PatrolVertex {
 	}
 
 
+	public double getGuardiansCost() {
+		return guardiansCost;
+	}
+
+
+	public double getGuardiansReward() {
+		return guardiansReward;
+	}
+
+
 	public double getRobberCost(int id){
 		return this.robbersCost.get(id);
 	}

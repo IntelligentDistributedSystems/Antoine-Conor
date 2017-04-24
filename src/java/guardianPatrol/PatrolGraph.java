@@ -91,6 +91,21 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 			patrols.add(new PatrolPath(this, graphPath));
 		}
 		System.out.println(patrols);
+		
+		// TODO START REMOVE HERE (TESTING PURPOSES)
+		PatrolPath p0 = patrols.get(0);
+		PatrolPath p1 = patrols.get(1);
+		PatrolPath p2 = patrols.get(2);
+		PatrolPath p3 = patrols.get(3);
+		
+		patrols.set(0, p1);
+		patrols.set(1, p3);
+		patrols.set(2, p2);
+		patrols.set(3, p0);
+		
+		System.out.println(patrols);
+		
+		// END REMOVE HERE
 		config.setNumberPossiblePatrols(patrols.size());
 		config.setNumberPossibleAttacks(attacks.size());
 	}

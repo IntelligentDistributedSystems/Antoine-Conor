@@ -131,20 +131,39 @@ public class SecurityEnvironment extends Environment {
     // Robber utility
     // RobberType x Attack x Patrol
     private double rUtility(int r, int a, int p) {
-        double prob = pCaught[r][a][p];
-        //TODO cost and reward ok, prob left
+    	double newRReward = graph.getAttack(a).getRobberReward(r);
         double newRCost = graph.getAttack(a).getRobberCost(r);
-        double newRReward = graph.getAttack(a).getRobberReward(r);
         double newProb = graph.getPatrol(p).getCatchProbability(a, r);
-        System.out.println("P : " + p + " | a : " + a +" | r "+ r +" | New : " + newProb + " | Old : " + prob);
-        return prob*(-rCost[r][a]) + (1-prob)*rReward[r][a];
+        
+        
+        double oldRReward = rReward[r][a];
+        double oldRCost = rCost[r][a];
+        double oldProb = pCaught[r][a][p];
+        System.out.println("Reward, Old : " + oldRReward + " | New : " + newRReward);
+        System.out.println("Cost, Old : " + oldRCost + " | New : " + newRCost);
+        System.out.println("Prob, Old : " + oldProb + " | New : " + newProb);
+        // System.out.println("P : " + p + " | a : " + a +" | r "+ r +" | New : " + newProb + " | Old : " + oldProb);
+        System.out.println("Result, Old : "+(oldProb*(-oldRCost) + (1-oldProb)*oldRReward)+" | New : " + (newProb*(-newRCost) + (1-newProb)*newRReward));
+        return newProb*(-newRCost) + (1-newProb)*newRReward;
     }   
     
     // Guardian utility
     // RobberType x Attack x Patrol
     private double gUtility(int r, int a, int p) {
-        double prob = pCaught[r][a][p];
-        return prob*gReward[a] + (1-prob)*(-gCost[a]);
+    	double newGReward = graph.getAttack(a).getGuardiansReward();
+        double newGCost = graph.getAttack(a).getGuardiansCost();
+        double newProb = graph.getPatrol(p).getCatchProbability(a, r);
+        
+        double oldGReward = gReward[a];
+        double oldGCost = gCost[a];
+        double oldProb = pCaught[r][a][p];
+        
+        System.out.println("Reward, Old : " + oldGReward + " | New : " + newGReward);
+        System.out.println("Cost, Old : " + oldGCost + " | New : " + newGCost);
+        System.out.println("Prob, Old : " + oldProb + " | New : " + newProb);
+        System.out.println("Result, Old : " + (oldProb*oldGReward + (1-oldProb)*(-oldGCost)) + " | New : "+ (newProb*newGReward + (1-newProb)*(-newGCost)));
+        double old = oldProb*oldGReward + (1-oldProb)*(-oldGCost);
+        return newProb*newGReward + (1-newProb)*(-newGCost);
     }
 
     @Override
