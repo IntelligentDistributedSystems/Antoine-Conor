@@ -141,7 +141,7 @@ gen_prob([X | Xs],K,[X/K | Ys]) :-
     !do_episodes.
 
 -!do_actions(_,_) : true <-
-    .println("Finished working !");
+    //.println("Finished working !");
     .send(stopper,tell,stopguardian).
 
 +perc(I,R,A,P,Ur,Ug)[source(percept)] : crt_iter(Iter) <-

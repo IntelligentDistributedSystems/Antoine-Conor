@@ -27,18 +27,6 @@
                         "reward": 1
                     }
                 }
-            },
-{
-                "id": 2,
-                "robbersInterest": 1,
-                "guardiansCost": 2,
-                "guardiansReward": 1,
-                "robberSettings": {
-                    "0": {
-                        "cost": 2,
-                        "reward": 1
-                    }
-                }
             }
         ],
         "edges": [

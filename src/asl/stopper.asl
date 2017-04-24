@@ -17,5 +17,5 @@
 	!stop.
 
 +!stop <-
-	.println("End of simulation");
+	//.println("End of simulation");
 	.stopMAS.

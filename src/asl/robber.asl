@@ -69,8 +69,8 @@ interval(X,[P | L],I,Pt,It) :-
 /* Plans */
 
 +!start : true <- 
-//    .println("Hello world !");
-//    .wait(10000);
+//  .println("Hello world !");
+//  .wait(10000);
     ?iterations(MaxIter);
     !do_actions(1,MaxIter).
     
@@ -88,7 +88,7 @@ interval(X,[P | L],I,Pt,It) :-
     Action.
   
 +!do_actions(Iter,MaxIter) : Iter > MaxIter <-
-    .println("Finished working !");
+    //.println("Finished working !");
     .send(stopper,tell,stoprobber).
 
 +perc(I,R,A,P,Ur,Ug)[source(percept)] : crt_iter(Iter) <-
