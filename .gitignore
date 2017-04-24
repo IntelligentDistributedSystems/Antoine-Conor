@@ -1,6 +1,5 @@
 .project
 .classpath
-/.settings/
 .idea
 .stop___MAS
 APDescription.txt
@@ -9,3 +8,4 @@ MTPs-Main-Container.txt
 *.log
 /bin/
 /.settings/
+web-server/configs/*
