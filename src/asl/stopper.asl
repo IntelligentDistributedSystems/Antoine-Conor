@@ -18,5 +18,4 @@
 
 +!stop <-
 	.println("End of simulation");
-	.wait(200);
 	.stopMAS.

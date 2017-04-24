@@ -31,10 +31,10 @@ public class SecurityEnvironment extends Environment {
     public void init(String[] args) {
         super.init(args);
        
-        String filepath = System.getenv(JSON_FILE_ENVIRONMENT_VARIABLE);
+        String filepath = "./config/" + System.getenv(JSON_FILE_ENVIRONMENT_VARIABLE);
         
-        // For testing, uncommen following line :
-        filepath = "/home/conor/Antoine-Conor/tests/inputPDF.json";
+        // For testing, uncomment following line :
+        // filepath = "./tests/inputPDF.json";
         
         JSONObject json = null;
         JSONParser parser = new JSONParser();
