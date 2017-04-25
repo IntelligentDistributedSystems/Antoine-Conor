@@ -90,7 +90,7 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 		for(GraphPath<PatrolVertex, DefaultEdge> graphPath : this.getAllPossiblePaths()){
 			patrols.add(new PatrolPath(this, graphPath));
 		}
-
+		
 		config.setNumberPossiblePatrols(patrols.size());
 		config.setNumberPossibleAttacks(attacks.size());
 	}
@@ -135,6 +135,17 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 	public PatrolPath getPatrol(int index){
 		return this.patrols.get(index);
 	}
+	
+	public JSONObject getPatrolsJSONString(){
+		JSONObject object = new JSONObject();
+		JSONArray array = new JSONArray();
+		for(PatrolPath p : patrols){
+			array.add(p.getPathByGuiIds());
+		}
+		object.put("patrols", array);
+		return object;
+	}
+	
 	/**
 	 * Default usage for getAllPossiblePaths (from base vertex)
 	 * @return A set of all possible simple paths from the base

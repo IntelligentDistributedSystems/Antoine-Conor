@@ -12,6 +12,8 @@ import java.util.logging.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import helpers.printer;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -22,6 +24,8 @@ public class SecurityEnvironment extends Environment {
 	
 	private static final String JSON_FILE_ENVIRONMENT_VARIABLE = "PATROL_JSON_NAME";
 	
+	private Logger logger = Logger.getLogger("GuardianPatrol.mas2j."+SecurityEnvironment.class.getName());
+	
 	private PatrolGraph graph;
 	private Config config;
 	
@@ -30,12 +34,11 @@ public class SecurityEnvironment extends Environment {
     @Override
     public void init(String[] args) {
         super.init(args);
-       
+
         String filepath = "./configs/" + System.getenv(JSON_FILE_ENVIRONMENT_VARIABLE);
-        // For testing, uncomment following line :
-        // filepath = "./configs/test.json";
         
-        System.out.println("Config file : " + filepath);
+        // For testing, uncomment following line :
+        // filepath = "./configs/inputPDF.json";
         
         JSONObject json = null;
         JSONParser parser = new JSONParser();
@@ -50,9 +53,10 @@ public class SecurityEnvironment extends Environment {
         graph = new PatrolGraph(json);
 
         config = Config.create(json);
+        
+        //Send JSON with paths to StdOut
+        printer.printStart(graph);
     }
-	
-    private Logger logger = Logger.getLogger("GuardianPatrol.mas2j."+SecurityEnvironment.class.getName());
 
     
     // Current patrol, attack and robber type
@@ -62,9 +66,9 @@ public class SecurityEnvironment extends Environment {
     
     private int iPercept = 0;
     
-    class EnvPercept {
-        int i,r,a,p;
-        double ur,ug;
+    public class EnvPercept {
+        public int i,r,a,p;
+        public double ur,ug;
         
         EnvPercept(int i1,int r1,int a1,int p1,double ur1,double ug1) {
             i = i1;
@@ -74,7 +78,24 @@ public class SecurityEnvironment extends Environment {
             ur = ur1;
             ug = ug1;
         }
-   
+        
+        public String toLiteral(){
+        	String percept = new String("perc(");
+        	percept += iPercept;
+            percept += ",";
+            percept += iRobberType;
+            percept += ",";
+            percept += iAttack;
+            percept += ",";
+            percept += iPatrol;
+            percept += ",";
+            percept += ur;
+            percept += ",";
+            percept += ug;
+            percept += ")";
+            return percept;
+        }
+
     };
     
     private ArrayList<EnvPercept> history = new ArrayList<EnvPercept>();
@@ -165,7 +186,7 @@ public class SecurityEnvironment extends Environment {
     state of the world model */
     private void updatePercepts() {
         
-//        logger.info("updatePercepts: "+ iRobberType + "  " + iAttack + "  " + iPatrol); 
+        // logger.info("updatePercepts: "+ iRobberType + "  " + iAttack + "  " + iPatrol); 
         
         if ((iPatrol > 0) && (iAttack > 0) && (iRobberType > 0)) {
             clearPercepts();    // remove previous percepts
@@ -173,26 +194,12 @@ public class SecurityEnvironment extends Environment {
 //            clearPercepts("robber");    // remove previous percepts
             double ur = rUtility(iRobberType-1,iAttack-1,iPatrol-1);
             double ug = gUtility(iRobberType-1,iAttack-1,iPatrol-1);
-            String percept = new String("perc(");
             iPercept++;
-            history.add(new EnvPercept(iPercept,iRobberType,iAttack,iPatrol,ur,ug));
-            percept += iPercept;
-            percept += ",";
-            percept += iRobberType;
-            percept += ",";
-            percept += iAttack;
-            percept += ",";
-            percept += iPatrol;
-            percept += ",";
-            percept += ur;
-            percept += ",";
-            percept += ug;
-            percept += ")";
-            addPercept(Literal.parseLiteral(percept));
+            EnvPercept percept = new EnvPercept(iPercept,iRobberType,iAttack,iPatrol,ur,ug);
+            history.add(percept);
+            printer.printIteration(percept);
+            addPercept(Literal.parseLiteral(percept.toLiteral()));
             iPatrol = iAttack = iRobberType = -1;
-//            logger.info("added percept: "+ percept); 
-//            addPercept("guardian",Literal.parseLiteral(percept));
-//            addPercept("robber",Literal.parseLiteral(percept));
         }
     }
     
@@ -207,23 +214,18 @@ public class SecurityEnvironment extends Environment {
     @Override
     public void stop() {
 	    
-    	/*
-	    logger.info("History size : "+history.size());
-	    for (EnvPercept per : history) {
-	        logger.info(per.i+","+per.r+","+per.a+","+per.p+","+per.ur+","+per.ug);
-	    }
-	    */
-    	double averageRobberUtility = 0;
     	double averageGuardianUtility = 0;
+    	double averageRobberUtility = 0;
     	
     	for (EnvPercept per : history) {
-    		averageRobberUtility += per.ur;
     		averageGuardianUtility += per.ug;
+    		averageRobberUtility += per.ur;
 	    }
-    	averageRobberUtility /= history.size();
     	averageGuardianUtility /= history.size();
-	    System.out.println("Average guardian utility : " + averageGuardianUtility);
-	    System.out.println("Average robber   utility : " + averageRobberUtility);
+	    averageRobberUtility /= history.size();
+    	
+    	printer.printEnd(averageGuardianUtility, averageGuardianUtility);
+	  
         super.stop();
     }
 

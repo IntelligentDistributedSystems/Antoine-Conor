@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultEdge;
+import org.json.simple.JSONArray;
 
 public class PatrolPath {
 	PatrolGraph graph;
@@ -35,10 +36,11 @@ public class PatrolPath {
 		return baseCatch * Math.pow(0.7, positionOnPath);
 	}
 	
-	public List<Integer> getPathByGuiIds(){
-		List<Integer> list = new ArrayList<>();
-		for(int i : verticesIds){
-			list.add(graph.getAttack(i).getGuiId());
+	public JSONArray getPathByGuiIds(){
+		JSONArray list = new JSONArray();
+		list.add(0);
+		for(int i = 0; i < verticesIds.size(); i++){
+			list.add(graph.getAttack(verticesIds.get(i)).getGuiId());
 		}
 		return list;
 	}

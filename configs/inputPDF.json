@@ -67,38 +67,6 @@
                         "reward": 6
                     }
                 }
-            },
-{
-                "id": 4,
-                "robbersInterest": 1,
-                "guardiansCost": 3,
-                "guardiansReward": 3,
-                "robberSettings": {
-                    "0": {
-                        "cost": 3,
-                        "reward": 3
-                    },
-                    "1": {
-                        "cost": 6,
-                        "reward": 6
-                    }
-                }
-            },
-{
-                "id": 5,
-                "robbersInterest": 1,
-                "guardiansCost": 3,
-                "guardiansReward": 3,
-                "robberSettings": {
-                    "0": {
-                        "cost": 3,
-                        "reward": 3
-                    },
-                    "1": {
-                        "cost": 6,
-                        "reward": 6
-                    }
-                }
             }
         ],
         "edges": [
@@ -120,24 +88,8 @@
             },
             {
                 "source": 2,
-                "target": 3
-            },
- {
-                "source": 0,
-                "target": 5
-            },
- {
-                "source": 2,
-                "target": 3
-            },
- {
-                "source": 4,
-                "target": 5
-            },
- {
-                "source": 4,
-                "target": 3
-            }
+		"target": 3
+		}
         ]
     },
     "robbers": {

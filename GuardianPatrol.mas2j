@@ -8,7 +8,6 @@ MAS guardianPatrol {
 
     agents:
     	robber beliefBaseClass beliefbases.RobberBeliefBase;
-		sender;
 		stopper;
 		guardian beliefBaseClass beliefbases.GuardianBeliefBase;
 		// tester beliefBaseClass beliefbases.GuardianBeliefBase;

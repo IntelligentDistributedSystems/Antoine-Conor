@@ -113,10 +113,12 @@ gen_prob([X | Xs],K,[X/K | Ys]) :-
 
 //When the first element of L1 is -1, it means all strats have been done, can stop
 +!do_episodes : guardian_strategy(_,[-1 | L1s]) <-
-    .println("Finished working !");
+    //.println("Finished working !");
     .send(stopper,tell,stopguardian).
     
 +!do_episodes : guardian_strategy(S,_) <-
+	//Next line prints to console the JSON Object representing the current strategy
+	helpers.printer(strategy, S);
     ?iterations(MaxIter);
     !do_actions(1,MaxIter).
      
@@ -139,10 +141,6 @@ gen_prob([X | Xs],K,[X/K | Ys]) :-
     ?gen_prob(L1,K,Strategy);
     -+guardian_strategy(Strategy,L1);
     !do_episodes.
-
--!do_actions(_,_) : true <-
-    //.println("Finished working !");
-    .send(stopper,tell,stopguardian).
 
 +perc(I,R,A,P,Ur,Ug)[source(percept)] : crt_iter(Iter) <-
     -perc(I,R,A,P,Ur,Ug)[source(percept)];
