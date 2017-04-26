@@ -46,31 +46,116 @@ class Results{
 
 		console.log(data)
 
+		// Building the list of patrols.
+
+		let patrolsTableHTML = `
+			<table class="striped centered">
+				<thead>
+					<tr>
+						<th>Patrol ID</th>
+						<th>Path</th>
+					</tr>
+				</thead>
+
+				<tbody>`
+
+		data.patrols.forEach((patrol, index) => {
+
+			patrolsTableHTML += `
+				<tr>
+					<td>${index}</td>
+					<td>${patrol.reduce((sum, target) => `${sum}${target}=>`, '').slice(0,-2)}</td>
+				</tr>`
+		})
+
+		patrolsTableHTML += `
+				</tbody>
+			</table>`
+
+		// We have to find the best strategy.
+
+		const statisticsTable = []
+
+		data.strategies.forEach(strategy => {
+
+			const averageGuardianUtility = strategy.iterations.reduce((sum, iteration) => sum+iteration.guardianUtility, 0) / strategy.iterations.length
+			const averageRobberUtility = strategy.iterations.reduce((sum, iteration) => sum+iteration.robberUtility, 0) / strategy.iterations.length
+
+			statisticsTable.push({
+				iterations: strategy.iterations,
+				probabilities: strategy.probabilities.reduce((sum, probability) => `${sum}${probability.toFixed(2)} | `, '').slice(0, -3),
+				guardianUtility: averageGuardianUtility,
+				robberUtility: averageRobberUtility
+			})
+
+		})
+
+		const sortedStatisticsTable = statisticsTable.sort((s1, s2) => s2.guardianUtility - s1.guardianUtility)
+
+		// We feed the graph with average evolution for the best strategy.
+
+		let chartData = []
+		let sum = 0
+
+		sortedStatisticsTable[0].iterations.forEach(iteration => {
+
+			chartData.push({
+				x: chartData.length,
+				y: (sum+=iteration.guardianUtility)/(chartData.length+1)
+			})
+
+		})
+
+		// Building the list of statistics.
+
+		let statisticsTableHTML = `
+			<table class="striped centered">
+				<thead>
+					<tr>
+						<th>Probabilities</th>
+						<th>Guardian utility</th>
+						<th>Robber utility</th>
+					</tr>
+				</thead>
+
+				<tbody>`
+
+		sortedStatisticsTable.forEach(strategy => {
+
+			statisticsTableHTML += `
+				<tr>
+					<td>${strategy.probabilities}</td>
+					<td>${strategy.guardianUtility}</td>
+					<td>${strategy.robberUtility}</td>
+				</tr>`
+		})
+
+		statisticsTableHTML += `
+				</tbody>
+			</table>`
+
 		$('#modal-results p').html(`
 
 			<div class="row">
 				<div class="col s12">
 					<ul class="tabs">
-						<li class="tab col s4"><a class="active" href="#charts">Charts</a></li>
-						<li class="tab col s4"><a href="#visualisation">Strategy visualisation</a></li>
-						<li class="tab col s4"><a href="#statistics">Statistics</a></li>
+						<li class="tab col s3"><a class="active" href="#chart">Chart</a></li>
+						<li class="tab col s3"><a href="#visualisation">Visualisation</a></li>
+						<li class="tab col s3"><a href="#patrols">Patrols</a></li>
+						<li class="tab col s3"><a href="#statistics">Statistics</a></li>
 					</ul>
 				</div>
-				<div id="charts" class="col s12">
+				<div id="chart" class="col s12">
 					<canvas width="100%" height="400" id="line-chart"></canvas>
 				</div>
 				<div id="visualisation" class="col s12">
 					Same path as in settings with animation.
 				</div>
+				<div id="patrols" class="col s12">
+					${patrolsTableHTML}
+				</div>
 				<div id="statistics" class="col s12">
-					<table class="striped">
-						<thead>
-
-						</thead>
-						<tbody>
-
-						</tbody>
-					</table>
+					${statisticsTableHTML}
 				</div>
 			</div>
 
@@ -83,16 +168,7 @@ class Results{
 			data: {
 				datasets: [{
 					label: 'Best strategy utility over time.',
-					data: [{
-						x: -10,
-						y: 0
-					}, {
-						x: 0,
-						y: 10
-					}, {
-						x: 10,
-						y: 5
-					}]
+					data: chartData
 				}]
 			},
 			options: {

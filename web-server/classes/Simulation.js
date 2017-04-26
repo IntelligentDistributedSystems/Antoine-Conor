@@ -15,7 +15,7 @@ class Simulation{
 		this.logParser = new LogParser(this)
 
 		this.progress = 0
-		this.results = {message: ''}
+		this.results = {message: '', patrols:[], strategies:[]}
 	}
 
 	run(){
@@ -40,11 +40,11 @@ class Simulation{
 		// We set the env. variable configFileID so that the jar executable can know which config file to load.
 
 		const env = Object.create(process.env)
-		env.configFileID = configFileID
+		env.PATROL_JSON_NAME = `${configFileID}.json`
 
 		// We run the jar with the new environnement.
 
-		const ls = spawn('echo', ['il faut me faire exécuter le .jar'], {env: env})
+		const ls = spawn('java', ['-jar', './../guardianPatrol.jar'], {env: env})
 
 		// We analyze the output.
 

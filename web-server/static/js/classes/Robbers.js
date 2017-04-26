@@ -72,7 +72,7 @@ class Robbers{
 	*/
 	newRobber(){
 
-		const robberId = `${this.numberOfRobbersCreated++}`
+		const robberId = this.numberOfRobbersCreated++
 
 		this.list.add(robberId)
 
@@ -127,7 +127,6 @@ class Robbers{
 
 		console.log(`Configuring robber ${robberId}.`)
 
-		// TODO : Setup the modal content.
 		let table = `
 			<table class="striped centered">
 				<thead>
