@@ -83,7 +83,7 @@ class Graph {
 		// DOM listeners
 
 		$(document).on('click', '.qtip-content .link', event => {
-			console.log("linking")
+			console.info("Linking a target to another...")
 			this.currentAction = 'linking'
 			$('.qtip').qtip('hide')
 		})
@@ -193,7 +193,7 @@ class Graph {
 			grabbable: true,
 			classes: ''
 		})
-		console.log(`Edge added linking ${source} to ${target}.`)
+		console.info(`Edge added linking ${source} to ${target}.`)
 
 		return this
 	}

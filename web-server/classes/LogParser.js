@@ -6,7 +6,11 @@ class LogParser{
 
 	handleOutput(data){
 
-		this.simulation.results.message += data
+		if ((data = data.replace('\n', '')) == '')
+			return this
+
+		this.simulation.logInfo(`Parsing : '${data}'`)
+
 		let objectString = `${data}`
 
 		if (objectString.startsWith('[start]')){
@@ -29,6 +33,8 @@ class LogParser{
 
 			return this
 		}
+
+		this.simulation.logError(`Unhandled output: ${objectString}`)
 
 		return this
 	}

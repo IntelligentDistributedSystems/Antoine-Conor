@@ -21,7 +21,7 @@ class Interface{
 
 		this.socket.on('connect', () => {
 		
-			console.log('Connection to the remote server established.')
+			console.info('Connection to the remote server established.')
 
 		})
 	}
@@ -43,8 +43,6 @@ class Interface{
 
 			if (!this.simulationRunning)
 				return
-
-			console.log(`Something received.`)
 
 			if (results.error)
 				return this.results.error(results.error)

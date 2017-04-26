@@ -12,12 +12,12 @@ class Results{
 	*/
 	error(err){
 
-		console.log(err)
+		console.error(`Error: ${err}`)
 
 		$('#modal-results p').html(`
 
 			<div class="center">
-				Error encountered while computing the results : <br>
+				Error encountered while computing the results: <br>
 				${err}
 			</div>
 		`).modal('open')
@@ -44,7 +44,7 @@ class Results{
 	*/
 	showResults(data){
 
-		console.log(data)
+		console.info('Results received.')
 
 		// Building the list of patrols.
 
@@ -140,7 +140,7 @@ class Results{
 				<div class="col s12">
 					<ul class="tabs">
 						<li class="tab col s3"><a class="active" href="#chart">Chart</a></li>
-						<li class="tab col s3"><a href="#visualisation">Visualisation</a></li>
+						<li class="tab col s3"><a href="#visualization">Visualization</a></li>
 						<li class="tab col s3"><a href="#patrols">Patrols</a></li>
 						<li class="tab col s3"><a href="#statistics">Statistics</a></li>
 					</ul>
@@ -148,7 +148,7 @@ class Results{
 				<div id="chart" class="col s12">
 					<canvas width="100%" height="400" id="line-chart"></canvas>
 				</div>
-				<div id="visualisation" class="col s12">
+				<div id="visualization" class="col s12">
 					Same path as in settings with animation.
 				</div>
 				<div id="patrols" class="col s12">

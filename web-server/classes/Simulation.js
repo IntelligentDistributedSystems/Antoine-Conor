@@ -15,7 +15,7 @@ class Simulation{
 		this.logParser = new LogParser(this)
 
 		this.progress = 0
-		this.results = {message: '', patrols:[], strategies:[]}
+		this.results = {patrols:[], strategies:[]}
 	}
 
 	run(){
@@ -64,18 +64,33 @@ class Simulation{
 		return this
 	}
 
+	logInfo(message){
+		console.info(`[${this.socket.id}] ${message}`)
+
+		return this
+	}
+
+	logError(message){
+		console.error(`[${this.socket.id}] Error encountered : ${message}`)
+
+		return this
+	}
+
 	sendResults(){
+
 		this.fn({
 			error: false,
 			data: this.results
 		})
+
+		this.logInfo('Results sent')
 
 		return this
 	}
 
 	sendError(error){
 
-		console.error(`[${this.socket.id}] Error encountered : ${error}`)
+		this.logError(error)
 
 		this.fn({
 			error: error

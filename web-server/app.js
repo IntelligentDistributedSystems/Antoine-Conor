@@ -14,7 +14,7 @@ const app = express()
 
 app.use('/', express.static('static'))
 
-app.listen(httpPort, () => console.log(`Web-GUI hosted on port ${httpPort}.`))
+app.listen(httpPort, () => console.info(`Web-GUI hosted on port ${httpPort}.`))
 
 // Socket.io
 
@@ -22,7 +22,7 @@ const io = require('socket.io')(webSocketsPort)
 
 io.on('connection', socket => {
 
-	console.log(socket.conn.id)
+	console.info(`[${socket.id}] Connected`)
 
 	socket.on('startSimulation', (settings, fn) => {
 
@@ -31,6 +31,8 @@ io.on('connection', socket => {
 		simulation.run()
 
 	})
+
+	socket.on('disconnect', () => console.info(`[${socket.id}] Disconnected`))
 })
 
-console.log(`WebSockets listening on port ${webSocketsPort}.`)
+console.info(`WebSockets listening on port ${webSocketsPort}.`)

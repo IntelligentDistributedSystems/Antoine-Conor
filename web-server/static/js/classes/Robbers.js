@@ -57,7 +57,7 @@ class Robbers{
 			const setting = $(event.currentTarget).data('setting')
 			const newValue = parseFloat($(event.currentTarget).val())
 
-			console.log(`${setting} changed for node ${nodeId} : ${newValue}`)
+			console.info(`${setting} changed for target ${nodeId}, new value is ${newValue}.`)
 
 			this.settings.path.cy.nodes(`[id = "${nodeId}"]`).data('robberSettings').get(robberId)[setting] = newValue
 
@@ -110,7 +110,7 @@ class Robbers{
 	*/
 	removeRobber(robberId){
 
-		console.log(`Removing robber ${robberId}.`)
+		console.info(`Removing robber ${robberId}...`)
 
 		this.list.delete(robberId)
 
@@ -125,7 +125,7 @@ class Robbers{
 	*/
 	configureRobber(robberId){
 
-		console.log(`Configuring robber ${robberId}.`)
+		console.info(`Configuring robber ${robberId}.`)
 
 		let table = `
 			<table class="striped centered">
