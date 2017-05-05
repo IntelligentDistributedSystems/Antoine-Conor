@@ -56,7 +56,13 @@ interval(X,[P | L],I,Pt,It) :-
    element of Xs has the smallest rank.
    The first element for starting the generating process must be the N-element
    list [K, 0, ..., 0].
+   
+   If there is only one strategy ( next([X], _) ) then we can set the strategy to [-1]
+   to set stop condition
 */
+next([X], Y) :-
+	Y = [-1].
+
 next(Xs,Ys) :-
    count_0(Xs,Ys,0).
 

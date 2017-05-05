@@ -5,15 +5,17 @@ import org.json.simple.JSONObject;
 import helpers.Helpers;
 
 /**
- * This class is used to store the user inputed configuration
+ * This class is used to store the user input configuration
  * @author ConorRyan
  *
  */
 public class Config {
 	// Guardian Configuration
-	/* TODO : ask C. Badica what to set as probability resultion (= N for all strats ?) */
 	private int numberPossiblePatrols;
-	private int probabilityResolution = 3;
+	/* After meeting with C. Badica, it has been decided to have probabilityResolution (K) equal
+	 * to the number of possible patrols. This way, we get a least one full mixed strategy 
+	 * as [1,1,... 1,1] */
+	private int probabilityResolution;
 	private int guardianIterations;
 	
 	// Robber Configuration
@@ -56,18 +58,15 @@ public class Config {
     //GUARDIAN CONFIGURATION
     public void setNumberPossiblePatrols(int n){
     	this.numberPossiblePatrols = n;
+    	this.probabilityResolution = n;
     }
     
     public int getNumberPossiblePatrols(){
     	return this.numberPossiblePatrols;
     }
     
-    public int getProbabilityResolution() {
-		return probabilityResolution;
-	}
-
-	public void setProbabilityResolution(int probabilityResolution) {
-		this.probabilityResolution = probabilityResolution;
+	public int getProbabilityResolution() {
+		return this.probabilityResolution;
 	}
 	
 	public int getNumberOfStrategies(){

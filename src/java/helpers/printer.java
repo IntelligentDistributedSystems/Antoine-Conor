@@ -4,19 +4,21 @@ package helpers;
 
 import org.json.simple.JSONObject;
 
-import guardianPatrol.Config;
 import guardianPatrol.PatrolGraph;
 import guardianPatrol.SecurityEnvironment.EnvPercept;
 import jason.asSemantics.*;
 import jason.asSyntax.*;
 
-
+/**
+ * This class is used to print relevant data to be parsed by the GUI for
+ * the creation of visuals for the user. All data is sent in JSON form.
+ * 
+ * It is also an InternalAction, to be able to be called from agents directly (for strategy)
+ * @author ConorRyan
+ *
+ */
 public class printer extends DefaultInternalAction {
 	private static final long serialVersionUID = 4740178248861241577L;
-	
-	private Config config = Config.create();
-	
-	private String buffer = "";
 
     /**
      * Used to set the minimum number of arguments expected.
@@ -34,6 +36,10 @@ public class printer extends DefaultInternalAction {
         return 2;
     }
     
+    /**
+     * Method to print out all possible patrols (indexed correctly) to describe each patrol to the user
+     * @param graph the generated PatrolGraph
+     */
     public static void printStart(PatrolGraph graph){
     	System.out.println("[start]" + graph.getPatrolsJSONString().toJSONString());
     }

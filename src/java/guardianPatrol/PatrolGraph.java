@@ -79,7 +79,11 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 			HashMap<String, Integer> edgeMap = (HashMap<String, Integer>)(edge);
 			PatrolVertex source = this.getVertexByGuiId(((Number)(edgeMap.get("source"))).intValue());
 			PatrolVertex target = this.getVertexByGuiId(((Number)(edgeMap.get("target"))).intValue());
-			this.addEdge(source, target);
+			try {
+				this.addEdge(source, target);
+			} catch (NullPointerException npe) {
+				System.out.println("JSON invalid - edge references non existing vertex");
+			}
 		}
 		
 

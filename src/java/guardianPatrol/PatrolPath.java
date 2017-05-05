@@ -7,6 +7,12 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultEdge;
 import org.json.simple.JSONArray;
 
+/**
+ * This class represents a path throughout the PatrolGraph. All paths start with the base but it 
+ * is removed to simplify following methods.
+ * @author ConorRyan
+ *
+ */
 public class PatrolPath {
 	PatrolGraph graph;
 	List<Integer> verticesIds;
@@ -36,6 +42,10 @@ public class PatrolPath {
 		return baseCatch * Math.pow(0.7, positionOnPath);
 	}
 	
+	/**
+	 * Method to get a list of points from the graph using GUI id, as the GUI uses different IDs
+	 * to the Jason application (to simplify agent code)
+	 */
 	public JSONArray getPathByGuiIds(){
 		JSONArray list = new JSONArray();
 		list.add(0);

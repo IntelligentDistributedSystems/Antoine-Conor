@@ -38,7 +38,7 @@ public class SecurityEnvironment extends Environment {
         String filepath = "./configs/" + System.getenv(JSON_FILE_ENVIRONMENT_VARIABLE);
         
         // For testing, uncomment following line :
-        // filepath = "./configs/inputPDF.json";
+        filepath = "./configs/inputPDF.json";
         
         JSONObject json = null;
         JSONParser parser = new JSONParser();
@@ -224,7 +224,7 @@ public class SecurityEnvironment extends Environment {
     	averageGuardianUtility /= history.size();
 	    averageRobberUtility /= history.size();
     	
-    	printer.printEnd(averageGuardianUtility, averageGuardianUtility);
+    	printer.printEnd(averageGuardianUtility, averageRobberUtility);
 	  
         super.stop();
     }
