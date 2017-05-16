@@ -9,7 +9,7 @@ import Results from './interface/Results'
 *	Java MAS simulation.
 */
 
-export default class Interface{
+export default class Interface{  
 	
 	constructor(){
 
@@ -33,6 +33,8 @@ export default class Interface{
 	*	Start the simulation by sending the settings to the back-end
 	*	along the message 'startSimulation'.
 	*/
+
+	// Que pensez vous de ?
 
 	startSimulation(){
 
