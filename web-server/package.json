@@ -4,12 +4,13 @@
   "description": "Host remote web-GUI for our simulation.",
   "main": "app.js",
   "scripts": {
-    "build": "npm run build-js && npm run build-css && npm run clean",
+    "build": "npm run build-js && npm run build-css && npm run clean && npm run beep",
     "build-js": "npm run babelify && npm run browserify",
     "babelify": "babel client/src/js --presets es2015 -d client/dist/js",
     "browserify": "browserify client/dist/js/main.js -o client/static/js/bundle.js --debug",
     "build-css": "sassc client/src/sass/stylesheet.scss client/static/css/stylesheet.css 2> /dev/null || true",
-    "clean": "rm client/dist -rf"
+    "clean": "rm client/dist -rf",
+    "beep": "( speaker-test -t sine -f 1000 )& pid=$! ; sleep 0.2s ; kill -9 $pid"
   },
   "author": "Antoine Murat",
   "license": "ISC",

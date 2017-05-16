@@ -59,6 +59,15 @@ module.exports = {
 			if (typeof vertice.robberSettings === 'undefined')
 				return `No robber settings submitted for target ${vertice.id}.`
 
+			if (typeof vertice.position !== 'object')
+				return `No position settings submitted for target ${vertice.id}.`
+
+			if (typeof vertice.position.x !== 'number')
+				return `Invalid x position submitted for target ${vertice.id}.`
+
+			if (typeof vertice.position.y !== 'number')
+				return `Invalid y position submitted for target ${vertice.id}.`
+
 			for (let robber of robbersList){
 
 				if (typeof vertice.robberSettings[robber] === 'undefined')
@@ -79,9 +88,11 @@ module.exports = {
 
 		for (let edge of settings.paths.edges){
 			if (typeof edge.source === 'undefined')
-				return `No source submitted a given edge.`
+				return `No source submitted for a given edge.`
 			if (typeof edge.target === 'undefined')
-				return `No target submitted a given edge.`
+				return `No target submitted for a given edge.`
+			if (edge.length < 0)
+				return `Invalid length submitted for a given edge.`
 			if (! (verticesSet.has(edge.source)))
 				return `The source ${edge.source} does not exist.`
 			if (! (verticesSet.has(edge.target)))

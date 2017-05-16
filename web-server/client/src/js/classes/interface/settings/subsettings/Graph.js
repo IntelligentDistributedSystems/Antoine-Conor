@@ -41,7 +41,8 @@ export default class Graph {
 					'haystack-radius': 0,
 					width: 5,
 					opacity: 0.5,
-					'line-color': '#a2efa2'
+					'line-color': '#a2efa2',
+					content: edge => Math.floor(this.length(edge))
 				}
 			},
 			{
@@ -79,6 +80,10 @@ export default class Graph {
 
 		this.lastSelectedNode = null
 		this.currentAction = null
+
+		// Refreshing the length
+
+		this.refreshInterval = setInterval(() => cy.edges().forEach(edge => edge.data('refresh', Math.random())), 250)
 
 		// DOM listeners
 
@@ -263,6 +268,20 @@ export default class Graph {
 	}
 
 	/*
+	*	Return the length of an edge.
+	*/
+	length(edge){
+		return this.distance(edge.source(), edge.target())
+	}
+
+	/*
+	*	Return the distance between dwo vertices.
+	*/
+	distance(node1, node2){
+		return ((node1.position().x - node2.position().x)**2 + (node1.position().y - node2.position().y))**0.5
+	}
+
+	/*
 	*	Concatenate settings into a JSON object.
 	*/
 	getSettings(){
@@ -271,6 +290,7 @@ export default class Graph {
 							 .filter(key => !isNaN(key))
 							 .map(key => ({
 							 	id: parseInt(cy.nodes()[key].id()),
+							 	position: cy.nodes()[key].position(),
 							 	robbersInterest: cy.nodes()[key].data('robbersInterest'),
 							 	guardiansCost: cy.nodes()[key].data('guardiansCost'),
 								guardiansReward: cy.nodes()[key].data('guardiansReward'),
@@ -280,7 +300,8 @@ export default class Graph {
 						 .filter(key => !isNaN(key))
 						 .map(key => ({
 						 	source: parseInt(cy.edges()[key].source().id()),
-						 	target: parseInt(cy.edges()[key].target().id())
+						 	target: parseInt(cy.edges()[key].target().id()),
+						 	length: this.length(cy.edges()[key])
 						 }))
 		}
 	}
