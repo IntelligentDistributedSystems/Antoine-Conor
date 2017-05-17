@@ -6,12 +6,6 @@ export default class Robbers{
 
 		this.settings = settings
 
-		this.numberOfRobbersCreated = 0
-
-		this.list = new Set()
-
-		this.catchProbability = new Map()
-
 		// DOM listeners
 
 		$(document).on('click', '#robbers .delete', event => {
@@ -59,10 +53,27 @@ export default class Robbers{
 
 			console.info(`${setting} changed for target ${nodeId}, new value is ${newValue}.`)
 
-			this.settings.path.cy.nodes(`[id = "${nodeId}"]`).data('robberSettings').get(robberId)[setting] = newValue
+			this.settings.graph.cy.nodes(`[id = "${nodeId}"]`).data('robberSettings').get(robberId)[setting] = newValue
 
 		})
 
+		this.init()
+
+	}
+
+	/*
+	*	Initialize the robbers by setting default values.
+	*/
+	init(){
+
+		if (typeof this.list !== 'undefined')
+			[...this.list].forEach(robberId => this.removeRobber(robberId))
+
+		this.numberOfRobbersCreated = 0
+
+		this.list = new Set()
+
+		this.catchProbability = new Map()
 	}
 
 	/*
@@ -70,15 +81,15 @@ export default class Robbers{
 	*	His card can be seen in the "Robbers" tab.
 	*	His settings are set to default in every target.
 	*/
-	newRobber(){
+	newRobber(catchProbability = 0.5){
 
 		const robberId = this.numberOfRobbersCreated++
 
 		this.list.add(robberId)
 
-		this.catchProbability.set(robberId, 0.5)
+		this.catchProbability.set(robberId, catchProbability)
 
-		this.settings.path.cy.nodes().each(node => node.data('robberSettings').set(robberId, {
+		this.settings.graph.cy.nodes().each(node => node.data('robberSettings').set(robberId, {
 			cost: 2,
 			reward: 1
 		}))
@@ -93,7 +104,7 @@ export default class Robbers{
 					<div class="card-action">
 						<div class="discretionContainer">
 							<span>Discretion</span>
-							<input type="number" step="0.05" class="discretion" min="0" max="1" value="0.5">
+							<input type="number" step="0.05" class="discretion" min="0" max="1" value="${catchProbability}">
 						</div>
 						<a class="waves-effect waves-light btn blue configure" style="width: 100%; margin-top: 10px;"><i class="material-icons right">mode_edit</i>Rewards</a>
 						<a class="waves-effect waves-light btn red delete" style="width: 100%; margin-top: 10px"><i class="material-icons right">delete</i>Delete</a>
@@ -102,7 +113,7 @@ export default class Robbers{
 			</div>
 		`)
 
-		return this
+		return robberId
 	}
 
 	/*
@@ -116,7 +127,7 @@ export default class Robbers{
 
 		this.list.delete(robberId)
 
-		this.settings.path.cy.nodes().each(node => node.data('robberSettings').delete(robberId))
+		this.settings.graph.cy.nodes().each(node => node.data('robberSettings').delete(robberId))
 
 		$('#robbers').find(`[data-robberid=${robberId}]`).remove()
 
@@ -143,7 +154,7 @@ export default class Robbers{
 
 				<tbody>`
 
-		this.settings.path.cy.nodes('[id != "0"]').forEach(node => {
+		this.settings.graph.cy.nodes('[id != "0"]').forEach(node => {
 
 			let settings = node.data('robberSettings').get(robberId)
 

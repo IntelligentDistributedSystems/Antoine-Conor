@@ -1,7 +1,7 @@
 /*
-*	Graph representing the paths of the simulation.
+*	Class representing the graph of the simulation.
 *
-*	You can add targets, deleted target, and link
+*	You can add targets, delete targets, and link
 *	them together.
 *
 *	For each target, you can set :
@@ -74,12 +74,6 @@ export default class Graph {
 		this.cy.maxZoom(2)
 
 		window.graph = this
-
-		this.nbrEdgesCreated = 0
-		this.nbrNodesCreated = 0
-
-		this.lastSelectedNode = null
-		this.currentAction = null
 
 		// Refreshing the length
 
@@ -156,6 +150,21 @@ export default class Graph {
 		this.cy.on('tap', 'edge', event => {
 			event.target.remove()
 		})
+
+		this.init()
+	}
+
+	/*
+	*	Initialize the graph by setting default values.
+	*/
+	init(){
+		this.nbrEdgesCreated = 0
+		this.nbrNodesCreated = 0
+
+		this.lastSelectedNode = null
+		this.currentAction = null
+
+		this.cy.elements().forEach(element => element.remove())
 	}
 
 	/*
@@ -204,7 +213,7 @@ export default class Graph {
 	}
 
 	/*
-	*	Add a node to the path.
+	*	Add a node to the graph.
 	*	
 	*	Arguments :
 	*		- position should be an object with fields x and y.
@@ -213,13 +222,15 @@ export default class Graph {
 	*	Base nodes can not been attacket nor defended.
 	*	Patrols have to start and end at the base.
 	*/
-	addNode(position = {x: 0, y: 0}, base = false){
+	addNode(position = {x: 0, y: 0}, base = false, robbersInterest = 1, guardiansCost = 2, guardiansReward = 1){
+		const newNodeId = this.cy.nodes().length
+
 		const newNode = this.cy.add({
 			data: {
-				id: this.cy.nodes().length,
-				robbersInterest: 1,
-				guardiansCost: 2,
-				guardiansReward: 1,
+				id: newNodeId,
+				robbersInterest: robbersInterest,
+				guardiansCost: guardiansCost,
+				guardiansReward: guardiansReward,
 				robberSettings : new Map()
 			},
 			position: position,
@@ -264,7 +275,7 @@ export default class Graph {
 			reward: 1
 		}))
 
-		return this
+		return newNodeId
 	}
 
 	/*
@@ -278,7 +289,7 @@ export default class Graph {
 	*	Return the distance between dwo vertices.
 	*/
 	distance(node1, node2){
-		return ((node1.position().x - node2.position().x)**2 + (node1.position().y - node2.position().y))**0.5
+		return ((node1.position().x - node2.position().x)**2 + (node1.position().y - node2.position().y)**2)**0.5
 	}
 
 	/*

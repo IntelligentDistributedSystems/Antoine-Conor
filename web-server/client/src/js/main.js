@@ -87,8 +87,10 @@ $(() => {
 	setupDOM()
 	
 	const iface = new Interface()
-	$('#sortNodes').on('click', event => iface.settings.path.sort())
+	$('#sortNodes').on('click', event => iface.settings.graph.sort())
 	$('#newRobber').on('click', event => iface.settings.robbers.newRobber())
 	$('#launchButton').on('click', event => iface.startSimulation())
+	$('#importButton').on('click', event => iface.settings.loader.import())
+	$('#exportButton').on('click', event => iface.settings.saver.save())
 	$('.modal#modal-results').modal({complete: () => iface.stopSimulation()})
 })

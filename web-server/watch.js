@@ -6,25 +6,67 @@ const doing = new Set()
 const todo = new Set()
 const history = new Map()
 
+const notify = (title, message = '', duration = 2000) => {
+    const args = [`Autobuild: ${title}`, '-t', `${duration}`]
+    if (message !== '')
+        args.push(message)
+    spawn('notify-send', args)
+}
+
+const play = path => {
+    spawn('paplay', [path])
+}
+
+const info = (title, message = '') => {
+    notify(title, message, 4000)
+    console.info(title)
+    console.info(message)
+}
+
+const success = (title, message = '') => {
+    notify(title, message, 4000)
+    console.info(title)
+    console.info(message)
+    play('/usr/share/sounds/freedesktop/stereo/complete.oga')
+}
+
+const error = (title, message = '') => {
+    notify(title, message, 20000)
+    console.error(title)
+    console.error(message)
+    play('/usr/share/sounds/freedesktop/stereo/dialog-error.oga')
+}
+
 // Don't compile more than once every 250ms.
 
 const doJob = (script) => {
     doing.add(script)
     history.set(script, new Date())
     todo.delete(script)
-    const p = spawn('npm', ['run', `build-${script}`], {
-            stdio: 'inherit' // pipe output to the console
-        })
+
+    let errorMessage = ''
+
+    const p = spawn('npm', ['run', `build-${script}`])
+
+    p.stderr.on('data', data => {
+
+        const asString = `${data}`
+        console.log(asString)
+        if (asString.includes('SyntaxError')){
+            errorMessage = asString
+        }
+    })
+
     // Print something when the process completes
     p.on('close', code => {
         doing.delete(script)
         if (code === 1) {
-            console.error(`✖ "npm run ${script}" failed.`)
+            error(`✖ ${script} compilation failed`, `${errorMessage}`)
         } else {
-            console.log('Watching for changes...')
+            success(`${script} success`)
         }
         if (todo.size !== 0){
-            console.log(`Doing todo-job ${[...todo][0]}`)
+            info(`doing todo-job ${[...todo][0]}`)
             doJob([...todo][0])
         }
     })
@@ -41,15 +83,15 @@ chokidar.watch('./client/src/').on('all', (event, path) => {
                  return console.log('250ms countdown running.')
             }
 
-            console.log(`Already doing ${script}. Added to todo list.`)
+            info(`already doing ${script}`, `Added to todo list.`)
             return todo.add(script)
 
         }
-        
-        console.log(`${path} change detected.`)
+
+        info(`${path} change detected.`)
         // Spawn the process
         doJob(script)
     }
 })
 
-console.log('Watching for changes...')
+info('Watching for changes...')

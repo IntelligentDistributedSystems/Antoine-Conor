@@ -5,12 +5,11 @@
   "main": "app.js",
   "scripts": {
     "build": "npm run build-js && npm run build-scss && npm run clean",
-    "build-js": "npm run babelify && npm run browserify && npm run beep && npm run clean",
+    "build-js": "npm run babelify && npm run browserify && npm run clean",
     "babelify": "babel client/src/js --presets es2015 -d client/dist/js",
     "browserify": "browserify client/dist/js/main.js -o client/static/js/bundle.js --debug",
-    "build-scss": "sassc client/src/sass/stylesheet.scss client/static/css/stylesheet.css 2> /dev/null || true && npm run beep",
+    "build-scss": "sassc client/src/sass/stylesheet.scss client/static/css/stylesheet.css 2> /dev/null || true",
     "clean": "rm client/dist -rf",
-    "beep": "paplay /usr/share/sounds/freedesktop/stereo/complete.oga",
     "watch": "node watch"
   },
   "author": "Antoine Murat",

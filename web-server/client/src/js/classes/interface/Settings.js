@@ -15,47 +15,24 @@ export default class Settings {
 
 		// Fields
 
-		this.path = new Graph(this)
+		this.graph = new Graph(this)
 		
 		this.robbers = new Robbers(this)
 
+		this.saver = new Saver(this)
+		this.loader = new Loader(this)
+
 		// Default values
 
-		this.initPath()
-
-		this.initRobbers()
+		this.init()
+		this.loader.loadDefault()
 
 	}
 
-	/*
-	*	Create a default path and then sort the targets.
-	*/
-
-	initPath(){
-		
-		this.path.addNode({
-			x: 50,
-			y: 45
-		}, true)
-		.addNode({
-			x: 150,
-			y: 45
-		})
-		.link('0', '1')
-		.sort()
-
-		return this
-	}
-
-	/*
-	*	Create the default robbers.
-	*/
-
-	initRobbers(){
-
-		this.robbers.newRobber()
-
-		return this
+	init(){
+		this.graph.init()
+		this.robbers.init()
+		$('#numberOfIterations').val(20)
 	}
 
 	/*
@@ -67,7 +44,7 @@ export default class Settings {
 	getSettings(){
 		return {
 			general: this.getGeneralSettings(),
-			paths: this.path.getSettings(),
+			paths: this.graph.getSettings(),
 			robbers: this.robbers.getSettings()
 		}
 	}

@@ -42,7 +42,7 @@ export default class Results{
 	}
 
 	/*
-	*	When everything is okay, display graphs, stats and show a simulation.
+	*	When everything is okay, display paths, stats and show a simulation.
 	*/
 	showResults(data){
 
@@ -55,7 +55,7 @@ export default class Results{
 				<thead>
 					<tr>
 						<th>Patrol ID</th>
-						<th>Path</th>
+						<th>path</th>
 					</tr>
 				</thead>
 
@@ -94,7 +94,7 @@ export default class Results{
 
 		const sortedStatisticsTable = statisticsTable.sort((s1, s2) => s2.guardianUtility - s1.guardianUtility)
 
-		// We feed the graph with average evolution for the best strategy.
+		// We feed the chart with average evolution for the best strategy.
 
 		let chartData = []
 		let sum = 0
@@ -151,7 +151,7 @@ export default class Results{
 					<canvas width="100%" height="400" id="line-chart"></canvas>
 				</div>
 				<div id="visualization" class="col s12">
-					Same path as in settings with animation.
+					Same graph as in settings with animation.
 				</div>
 				<div id="patrols" class="col s12">
 					${patrolsTableHTML}

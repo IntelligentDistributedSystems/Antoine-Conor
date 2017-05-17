@@ -34,8 +34,6 @@ export default class Interface{
 	*	along the message 'startSimulation'.
 	*/
 
-	// Que pensez vous de ?
-
 	startSimulation(){
 
 		this.simulationRunning = true
