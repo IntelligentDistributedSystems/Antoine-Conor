@@ -98,7 +98,7 @@ export default class Robbers{
 			<div class="col s4" data-robberid="${robberId}">
 			    <div class="card blue-grey darken-1">
 					<div class="card-content white-text">
-						<span class="card-title">Robber ${robberId}</span>
+						<span class="card-title">Robber ${robberId+1}</span>
 						<!--<p>Some bad guy.</p>-->
 					</div>
 					<div class="card-action">
@@ -107,7 +107,7 @@ export default class Robbers{
 							<input type="number" step="0.05" class="discretion" min="0" max="1" value="${catchProbability}">
 						</div>
 						<a class="waves-effect waves-light btn blue configure" style="width: 100%; margin-top: 10px;"><i class="material-icons right">mode_edit</i>Rewards</a>
-						<a class="waves-effect waves-light btn red delete" style="width: 100%; margin-top: 10px"><i class="material-icons right">delete</i>Delete</a>
+						<a class="waves-effect waves-light btn red delete" style="width: 100%; margin-top: 10px" ${(robberId === 0) ? 'disabled' : ''}><i class="material-icons right">delete</i>Delete</a>
 					</div>
 				</div>
 			</div>
@@ -140,7 +140,7 @@ export default class Robbers{
 	*/
 	configureRobber(robberId){
 
-		console.info(`Configuring robber ${robberId}.`)
+		console.info(`Configuring robber ${robberId+1}.`)
 
 		let table = `
 			<table class="striped centered">
@@ -170,7 +170,7 @@ export default class Robbers{
 				</tbody>
 			</table>`
 
-		$('#modal-robber-config h4').text(`Robber ${robberId} configuration`)
+		$('#modal-robber-config h4').text(`Robber ${robberId+1} configuration`)
 
 		$('#modal-robber-config p').html(table)
 

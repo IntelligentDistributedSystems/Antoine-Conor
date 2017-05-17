@@ -151,6 +151,10 @@ export default class Graph {
 			event.target.remove()
 		})
 
+		// fix a bug when tap doesn't work on page change.
+
+		$(document).on('click', event => this.cy.resize())
+
 		this.init()
 	}
 
