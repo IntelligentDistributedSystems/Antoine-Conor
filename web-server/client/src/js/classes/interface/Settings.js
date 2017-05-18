@@ -11,7 +11,9 @@ import Loader from './settings/files/Loader'
 
 export default class Settings {
 
-	constructor(){
+	constructor(iface){
+
+		this.interface = iface
 
 		// Fields
 

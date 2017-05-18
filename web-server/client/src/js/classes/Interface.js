@@ -16,8 +16,8 @@ export default class Interface{
 		// Fields
 
 		this.socket = io.connect(`http://${window.location.hostname}:8083`)
-		this.settings = new Settings()
-		this.results = new Results()
+		this.settings = new Settings(this)
+		this.results = new Results(this)
 		this.simulationRunning = false
 
 		// Socket listeners

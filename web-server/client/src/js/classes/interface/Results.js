@@ -1,9 +1,12 @@
+import LiveSimulation from './results/LiveSimulation'
+
 /*
 *	Deals with the results sent by the server.
 */
 export default class Results{
 
-	constructor(){
+	constructor(iface){
+		this.interface = iface
 		window.results = this
 	}
 
@@ -151,7 +154,9 @@ export default class Results{
 					<canvas width="100%" height="400" id="line-chart"></canvas>
 				</div>
 				<div id="visualization" class="col s12">
-					Same graph as in settings with animation.
+					<div id="liveSimulation" class="s12">
+					</div>
+					<div id="liveSimulationLog">Iteration running...</div>
 				</div>
 				<div id="patrols" class="col s12">
 					${patrolsTableHTML}
@@ -183,6 +188,8 @@ export default class Results{
 				}
 			}
 		})
+
+		new LiveSimulation(this, statisticsTable, '#liveSimulation').run()
 
 		return this
 

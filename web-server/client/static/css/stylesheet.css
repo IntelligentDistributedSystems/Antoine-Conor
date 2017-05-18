@@ -110,6 +110,9 @@ thead i {
 #modal-results p ul.tabs {
   background-color: initial; }
 
+#modal-results #liveSimulation {
+  height: 400px; }
+
 ::-webkit-scrollbar {
   width: 12px;
   /* for vertical scrollbars */
