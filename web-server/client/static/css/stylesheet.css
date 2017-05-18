@@ -1,0 +1,126 @@
+.header {
+  color: #ee6e73;
+  font-weight: 300; }
+
+.parallax-container {
+  height: 400px; }
+
+footer.page-footer {
+  padding: 0; }
+
+.logo-ul {
+  height: 50px;
+  width: auto; }
+
+.container + p {
+  text-indent: 25px; }
+
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column; }
+
+main {
+  flex: 1 0 auto; }
+
+.card.hoverable {
+  cursor: pointer; }
+
+.nav-wrapper.container {
+  width: 100% !important;
+  padding: 20px 0 !important;
+  text-align: center !important;
+  background-color: white !important;
+  margin: 0 !important;
+  display: block !important;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.07), 0 1px 5px 0 rgba(0, 0, 0, 0.06), 0 3px 1px -2px rgba(0, 0, 0, 0.1) !important;
+  max-width: none !important; }
+  .nav-wrapper.container .brand-logo {
+    display: inline-block !important;
+    font-size: 4vmax !important;
+    padding: 0 !important;
+    font-weight: 300 !important;
+    white-space: nowrap !important;
+    color: #ee6e73 !important;
+    position: relative !important;
+    left: initial !important;
+    -webkit-transform: initial !important;
+    transform: initial !important; }
+
+thead i {
+  margin: 0 0 4px 8px;
+  vertical-align: middle; }
+
+#graph {
+  height: 314px; }
+
+#console {
+  height: 123px;
+  overflow-y: scroll; }
+
+.tabs {
+  overflow: hidden; }
+
+.qtip-content .lighten-2 {
+  margin-top: 10px;
+  padding-left: 10px;
+  width: 30px;
+  vertical-align: middle; }
+
+.qtip-content .label {
+  padding-top: 5px;
+  margin-top: 2px;
+  width: 75px;
+  vertical-align: middle;
+  display: inline-block;
+  text-align: center; }
+
+.discretionContainer {
+  width: 100%;
+  text-decoration: none;
+  color: #fff;
+  text-align: center;
+  letter-spacing: .5px;
+  transition: .2s ease-out;
+  cursor: pointer;
+  outline: 0;
+  border: none;
+  display: inline-block;
+  height: 36px;
+  line-height: 36px;
+  padding: 0 0 0 2rem;
+  text-transform: uppercase;
+  vertical-align: middle;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+  background-color: #4CAF50 !important; }
+  .discretionContainer span {
+    margin-right: 12px;
+    vertical-align: top; }
+  .discretionContainer input.discretion {
+    width: 44px;
+    border-bottom: none !important;
+    box-shadow: none !important;
+    margin-bottom: 0;
+    vertical-align: top;
+    height: 35.5px;
+    float: right;
+    margin-right: 0.4rem; }
+
+#modal-results p ul.tabs {
+  background-color: initial; }
+
+#modal-results #liveSimulation {
+  height: 400px; }
+
+::-webkit-scrollbar {
+  width: 12px;
+  /* for vertical scrollbars */
+  height: 12px;
+  /* for horizontal scrollbars */ }
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1); }
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2); }

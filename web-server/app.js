@@ -1,6 +1,6 @@
 // Imports
 
-const Simulation = require('./classes/Simulation')
+const Simulation = require('./server/classes/Simulation')
 
 // Configuration
 
@@ -12,7 +12,7 @@ const webSocketsPort = 8083
 const express = require('express')
 const app = express()
 
-app.use('/', express.static('static'))
+app.use('/', express.static('client/static'))
 
 app.listen(httpPort, () => console.info(`Web-GUI hosted on port ${httpPort}.`))
 
