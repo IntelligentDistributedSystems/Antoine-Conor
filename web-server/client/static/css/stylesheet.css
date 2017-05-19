@@ -110,6 +110,10 @@ thead i {
 #modal-results p ul.tabs {
   background-color: initial; }
 
+#modal-results #liveSimulationLog {
+  text-align: center;
+  margin-top: 10px; }
+
 #modal-results #liveSimulation {
   height: 400px; }
 

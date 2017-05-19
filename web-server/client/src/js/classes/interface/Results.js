@@ -69,7 +69,7 @@ export default class Results{
 			patrolsTableHTML += `
 				<tr>
 					<td>${index}</td>
-					<td>${patrol.reduce((sum, target) => `${sum}${target}=>`, '').slice(0,-2)}</td>
+					<td>${patrol.reduce((sum, target) => `${sum}${target} ⇒ `, '').slice(0,-3)}</td>
 				</tr>`
 		})
 
@@ -90,12 +90,15 @@ export default class Results{
 				iterations: strategy.iterations,
 				probabilities: strategy.probabilities.reduce((sum, probability) => `${sum}${probability.toFixed(2)} | `, '').slice(0, -3),
 				guardianUtility: averageGuardianUtility,
-				robberUtility: averageRobberUtility
+				robberUtility: averageRobberUtility,
+				strategy: strategy
 			})
 
 		})
 
 		const sortedStatisticsTable = statisticsTable.sort((s1, s2) => s2.guardianUtility - s1.guardianUtility)
+
+		const bestStreategy = sortedStatisticsTable[0].strategy
 
 		// We feed the chart with average evolution for the best strategy.
 
@@ -130,8 +133,8 @@ export default class Results{
 			statisticsTableHTML += `
 				<tr>
 					<td>${strategy.probabilities}</td>
-					<td>${strategy.guardianUtility}</td>
-					<td>${strategy.robberUtility}</td>
+					<td>${Number(strategy.guardianUtility).toFixed(4)}</td>
+					<td>${Number(strategy.robberUtility).toFixed(4)}</td>
 				</tr>`
 		})
 
@@ -154,9 +157,9 @@ export default class Results{
 					<canvas width="100%" height="400" id="line-chart"></canvas>
 				</div>
 				<div id="visualization" class="col s12">
+					<div id="liveSimulationLog">Iteration running...</div>
 					<div id="liveSimulation" class="s12">
 					</div>
-					<div id="liveSimulationLog">Iteration running...</div>
 				</div>
 				<div id="patrols" class="col s12">
 					${patrolsTableHTML}
@@ -189,7 +192,7 @@ export default class Results{
 			}
 		})
 
-		new LiveSimulation(this, statisticsTable, '#liveSimulation').run()
+		new LiveSimulation(this, data, bestStreategy, '#liveSimulation').run()
 
 		return this
 

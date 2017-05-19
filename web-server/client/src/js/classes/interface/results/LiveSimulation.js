@@ -1,15 +1,14 @@
 export default class LiveSimulation{
 
-	constructor(results, statisticsTable, selector){
+	constructor(results, computedData, bestStreategy, selector){
 
 		this.results = results
 		this.originalCy = this.results.interface.settings.graph.cy
 		window.liveSimulation = this
 
-		this.statisticsTable = statisticsTable
+		this.computedData = computedData
+		this.bestStreategy = bestStreategy
 		this.selector = selector
-
-		console.log(statisticsTable)
 
 		this.stylesheet = [{
 				selector: 'node',
@@ -144,7 +143,7 @@ export default class LiveSimulation{
 	newIteration(){
 		this.robberTarget = this.randomTarget()
 		this.iterationStart = new Date()
-		this.countdown = Math.random()*7500 + 2500
+		this.countdown = Math.random()*2500*this.cy.filter('.node').length + 2500
 		this.guardianPath = this.randomPath()
 		this.guardianLastVisit = this.base
 		this.guardian.position(Object.assign({}, this.base.position()))
@@ -178,7 +177,7 @@ export default class LiveSimulation{
 		guardianPosition.y = guardianPosition.y * 0.95 + targetPosition.y * 0.05
 		this.guardian.data('refresh', Math.random())
 
-		if ((guardianPosition.x - targetPosition.x)**2 + (guardianPosition.y - targetPosition.y)**2 < 1){
+		if ((guardianPosition.x - targetPosition.x)**2 + (guardianPosition.y - targetPosition.y)**2 < 5){
 			this.guardianTarget.addClass('secured')
 			this.guardianLastVisit = this.guardianTarget
 			const newGuardianTarget = this.nextGuardianTarget()
@@ -204,7 +203,19 @@ export default class LiveSimulation{
 	}
 
 	randomPath(){
-		return this.cy.filter('.node').filter('[id != "0"]').map(node => node)
+
+		let fairDiceRoll = Math.random()
+
+		let pathNumber = -1
+
+		while(fairDiceRoll > 0){
+			pathNumber++
+			fairDiceRoll-=this.bestStreategy.probabilities[pathNumber]
+		}
+
+		return this.computedData.patrols[pathNumber].slice(1).map(nodeId => 
+			this.cy.nodes(`[id = "${nodeId}"]`)[0]
+		)
 	}
 
 	iterationEnd(){
