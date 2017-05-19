@@ -34,16 +34,20 @@ public class SecurityEnvironment extends Environment {
     @Override
     public void init(String[] args) {
         super.init(args);
+	
 
-        String filepath = "./configs/" + System.getenv(JSON_FILE_ENVIRONMENT_VARIABLE);
-        
-        // For testing, uncomment following line :
-        filepath = "./configs/inputPDF.json";
+	String fileName = System.getenv(JSON_FILE_ENVIRONMENT_VARIABLE);
+	String filePath;
+        if(fileName != null){
+	        filePath = "./configs/" + fileName;
+	} else {
+        	filePath = "./configs/inputPDF.json";
+	}
         
         JSONObject json = null;
         JSONParser parser = new JSONParser();
         try {
-        	json = (JSONObject)parser.parse(new FileReader(filepath));
+        	json = (JSONObject)parser.parse(new FileReader(filePath));
         } catch (Exception e) {
         	System.out.println("Cannot read JSON file");
         }
