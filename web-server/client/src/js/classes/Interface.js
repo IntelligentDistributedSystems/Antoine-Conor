@@ -42,7 +42,9 @@ export default class Interface{
 		
 		this.results.loading(0)
 
-		this.socket.emit('startSimulation', this.settings.getSettings(), (results) => {
+		this.socket.emit('startSimulation', this.settings.getSettings(), results => {
+
+			console.log(results)
 
 			if (!this.simulationRunning)
 				return
@@ -67,6 +69,8 @@ export default class Interface{
 		this.simulationRunning = false
 
 		this.socket.removeListener('loading')
+
+		this.socket.emit('cancel')
 
 		return this
 	}

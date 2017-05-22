@@ -54,12 +54,16 @@ class Simulation{
 
 		ls.on('close', code => {
 
+			this.socket.removeAllListeners('cancel')
+
 			if (code == 0)
 				return this.sendResults()
 
 			this.sendError(`child process exited with code ${code}`)
 
 		})
+
+		this.socket.on('cancel', () => ls.kill('SIGINT'))
 
 		return this
 	}

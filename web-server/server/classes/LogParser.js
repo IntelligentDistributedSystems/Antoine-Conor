@@ -6,35 +6,43 @@ class LogParser{
 
 	handleOutput(data){
 
-		if ((data = data.replace('\n', '')) == '')
-			return this
+		// The buffered data can be multiline.
 
-		this.simulation.logInfo(`Parsing : '${data}'`)
+		const str = data.toString(), lines = str.split(/(\r?\n)/g)
 
-		let objectString = `${data}`
+		lines.forEach(line => {
 
-		if (objectString.startsWith('[start]')){
-			objectString = objectString.slice(7)
-			this.simulation.results.patrols = JSON.parse(objectString).patrols
+			let objectString
 
-			return this
-		}
+			if ((objectString = line.replace('\n', '')) == '')
+				return 
 
-		if (objectString.startsWith('[strategy]')){
-			objectString = objectString.slice(10)
-			this.simulation.results.strategies.push({probabilities: JSON.parse(JSON.parse(objectString).strategy), iterations:[]})
+			//this.simulation.logInfo(`Parsing : '${objectString}'`)
 
-			return this
-		}
+			if (objectString.startsWith('[start]')){
+				objectString = objectString.slice(7)
+				this.simulation.results.patrols = JSON.parse(objectString).patrols
 
-		if (objectString.startsWith('[iteration]')){
-			objectString = objectString.slice(11)
-			this.simulation.results.strategies.slice(-1)[0].iterations.push(JSON.parse(objectString))
+				return
+			}
 
-			return this
-		}
+			if (objectString.startsWith('[strategy]')){
+				objectString = objectString.slice(10)
+				this.simulation.results.strategies.push({probabilities: JSON.parse(JSON.parse(objectString).strategy), iterations:[]})
 
-		this.simulation.logError(`Unhandled output: ${objectString}`)
+				return
+			}
+
+			if (objectString.startsWith('[iteration]')){
+				objectString = objectString.slice(11)
+				this.simulation.results.strategies.slice(-1)[0].iterations.push(JSON.parse(objectString))
+
+				return
+			}
+
+			this.simulation.logError(`Unhandled output: ${objectString}`)
+
+		})
 
 		return this
 	}
