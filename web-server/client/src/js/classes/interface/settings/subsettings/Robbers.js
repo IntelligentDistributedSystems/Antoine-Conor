@@ -74,6 +74,8 @@ export default class Robbers{
 		this.list = new Set()
 
 		this.catchProbability = new Map()
+
+		return this
 	}
 
 	/*

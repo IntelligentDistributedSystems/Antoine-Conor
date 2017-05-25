@@ -148,6 +148,8 @@ export default class LiveSimulation{
 		this.guardianLastVisit = this.base
 		this.guardian.position(Object.assign({}, this.base.position()))
 		this.guardianTarget = this.nextGuardianTarget(true)
+
+		return this
 	}
 
 	nextStep(){
@@ -198,7 +200,7 @@ export default class LiveSimulation{
 			this.robberTarget.removeClass('secured').addClass('caught')
 			$('#liveSimulationLog').text('Caught!')
 		}
-		this.iterationEnd()
+		return this.iterationEnd()
 
 	}
 
@@ -224,6 +226,8 @@ export default class LiveSimulation{
 			this.run()
 			$('#liveSimulationLog').text('Iteration running...')
 		}, 1000)
+
+		return this
 	}
 
 	nextGuardianTarget(init){
@@ -255,6 +259,8 @@ export default class LiveSimulation{
 	run(){
 		this.newIteration()
 		this.nextStep()
+
+		return this
 	}
 
 }

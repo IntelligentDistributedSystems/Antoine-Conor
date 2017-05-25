@@ -17,6 +17,8 @@ class LogParser{
 			if ((objectString = line.replace('\n', '')) == '')
 				return 
 
+			this.simulation.progress = Math.floor(Math.random() * 100)
+
 			//this.simulation.logInfo(`Parsing : '${objectString}'`)
 
 			if (objectString.startsWith('[start]')){

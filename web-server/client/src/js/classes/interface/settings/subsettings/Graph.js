@@ -169,6 +169,8 @@ export default class Graph {
 		this.currentAction = null
 
 		this.cy.elements().forEach(element => element.remove())
+
+		return this
 	}
 
 	/*

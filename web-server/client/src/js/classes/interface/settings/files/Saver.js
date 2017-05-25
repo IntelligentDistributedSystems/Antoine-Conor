@@ -7,7 +7,7 @@ export default class Saver {
 
 		const date = new Date()
 
-		this.download(
+		return this.download(
 			`${date.toLocaleDateString()}-${date.toLocaleTimeString().replace(':', '-')}.json`,
 			JSON.stringify(this.settings.getSettings()))
 	}
@@ -23,5 +23,7 @@ export default class Saver {
 		link.click()
 
 		document.body.removeChild(link)
+
+		return this
 	}
 }

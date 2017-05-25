@@ -15,6 +15,7 @@
   "author": "Antoine Murat",
   "license": "ISC",
   "dependencies": {
+    "blessed": "^0.1.81",
     "express": "^4.15.2",
     "socket.io": "^1.7.3"
   },

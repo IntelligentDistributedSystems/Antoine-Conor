@@ -35,6 +35,8 @@ export default class Settings {
 		this.graph.init()
 		this.robbers.init()
 		$('#numberOfIterations').val(20)
+
+		return this
 	}
 
 	/*

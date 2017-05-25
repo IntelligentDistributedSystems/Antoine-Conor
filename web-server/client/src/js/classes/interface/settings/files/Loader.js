@@ -106,6 +106,8 @@ export default class Loader {
 		this.settings.graph.cy.fit()
 
 		console.log('Settings loaded')
+
+		return this
 	}
 
 	/*
@@ -135,12 +137,14 @@ export default class Loader {
 		document.body.appendChild(input)
 
 		input.click()
+
+		return this
 	}
 
 	/*
 	*	Initialize the graph by setting default values.
 	*/
 	loadDefault(){
-		this.load(this.defaultSettings)
+		return this.load(this.defaultSettings)
 	}
 }

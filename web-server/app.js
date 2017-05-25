@@ -1,11 +1,17 @@
 // Imports
 
 const Simulation = require('./server/classes/Simulation')
+const Dashboard = require('./server/classes/Dashboard')
 
 // Configuration
 
 const httpPort = 8082
 const webSocketsPort = 8083
+
+// Dashboard
+
+const sockets = new Set()
+const dashboard = new Dashboard(sockets, httpPort, webSocketsPort)
 
 // Express
 
@@ -14,7 +20,7 @@ const app = express()
 
 app.use('/', express.static('client/static'))
 
-app.listen(httpPort, () => console.info(`Web-GUI hosted on port ${httpPort}.`))
+app.listen(httpPort, () => dashboard.log(`Web-GUI hosted on port ${httpPort}.`))
 
 // Socket.io
 
@@ -22,17 +28,26 @@ const io = require('socket.io')(webSocketsPort)
 
 io.on('connection', socket => {
 
-	console.info(`[${socket.id}] Connected`)
+	dashboard.log(`[${socket.id}] Connected`)
+
+	socket.dashboard = dashboard
+	sockets.add(socket)
 
 	socket.on('startSimulation', (settings, fn) => {
 
 		const simulation = new Simulation(socket, settings, fn)
 
+		socket.simulation = simulation
+
 		simulation.run()
 
 	})
 
-	socket.on('disconnect', () => console.info(`[${socket.id}] Disconnected`))
+	socket.on('disconnect', () => {
+		dashboard.log(`[${socket.id}] Disconnected`)
+
+		sockets.delete(socket)
+	})
 })
 
-console.info(`WebSockets listening on port ${webSocketsPort}.`)
+dashboard.log(`Web-Sockets listening on port ${webSocketsPort}.`)

@@ -69,13 +69,13 @@ class Simulation{
 	}
 
 	logInfo(message){
-		console.info(`[${this.socket.id}] ${message}`)
+		this.socket.dashboard.log(`[${this.socket.id}] ${message}`)
 
 		return this
 	}
 
 	logError(message){
-		console.error(`[${this.socket.id}] Error encountered : ${message}`)
+		this.socket.dashboard.log(`[${this.socket.id}] Error encountered : ${message}`)
 
 		return this
 	}
