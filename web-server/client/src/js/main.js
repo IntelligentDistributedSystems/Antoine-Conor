@@ -47,7 +47,7 @@ const updateHash = hash => {
 	*/
 
 	setTimeout(() => {
-		$(window).scroll()
+		$(window).scroll().resize()
 	}, 25)
 }
 
