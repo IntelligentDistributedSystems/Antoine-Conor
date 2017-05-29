@@ -1,0 +1,17 @@
+/* Jason Project */
+
+MAS guardianPatrol {
+
+    infrastructure: Centralised
+
+    environment: guardianPatrol.SecurityEnvironment
+
+    agents:
+    	robber beliefBaseClass beliefbases.RobberBeliefBase;
+		stopper;
+		guardian beliefBaseClass beliefbases.GuardianBeliefBase;
+		// tester beliefBaseClass beliefbases.GuardianBeliefBase;
+
+	aslSourcePath:
+		"src/asl";
+}

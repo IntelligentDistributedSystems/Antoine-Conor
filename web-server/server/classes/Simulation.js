@@ -44,7 +44,7 @@ class Simulation{
 
 		// We run the jar with the new environnement.
 
-		const ls = spawn('java', ['-jar', './../guardianPatrol.jar'], {env: env})
+		const ls = spawn('java', ['-jar', './../jason/guardianPatrol.jar'], {env: env})
 
 		// We analyze the output.
 
