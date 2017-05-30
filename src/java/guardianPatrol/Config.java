@@ -1,6 +1,5 @@
 package guardianPatrol;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import helpers.Helpers;
@@ -18,8 +17,6 @@ public class Config {
 	 * as [1,1,... 1,1] */
 	private int probabilityResolution;
 	private int guardianIterations;
-	
-	private int numberOfStrategies;
 	
 	// Robber Configuration
 	private int numberPossibleAttacks;
@@ -97,7 +94,6 @@ public class Config {
 		return this.getGuardianIterations() * this.getNumberOfStrategies();
 	}
 
-	
 
 	@Override
 	public String toString() {

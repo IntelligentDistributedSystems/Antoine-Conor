@@ -17,13 +17,12 @@ class LogParser{
 			if ((objectString = line.replace('\n', '')) == '')
 				return 
 
-			this.simulation.progress = Math.floor(Math.random() * 100)
-
 			//this.simulation.logInfo(`Parsing : '${objectString}'`)
 
 			if (objectString.startsWith('[start]')){
 				objectString = objectString.slice(7)
 				this.simulation.results.patrols = JSON.parse(objectString).patrols
+				// TODO : totalNumberOfStrategies
 
 				return
 			}
@@ -31,6 +30,10 @@ class LogParser{
 			if (objectString.startsWith('[strategy]')){
 				objectString = objectString.slice(10)
 				this.simulation.results.strategies.push({probabilities: JSON.parse(JSON.parse(objectString).strategy), iterations:[]})
+
+				this.simulation.progress += 1/this.simulation.totalNumberOfStrategies*100
+
+				this.simulation.sendProgress()
 
 				return
 			}

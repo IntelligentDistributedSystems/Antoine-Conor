@@ -2,10 +2,8 @@
 
 package helpers;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import guardianPatrol.Config;
 import guardianPatrol.PatrolGraph;
 import guardianPatrol.SecurityEnvironment.EnvPercept;
 import jason.asSemantics.*;
@@ -43,11 +41,7 @@ public class printer extends DefaultInternalAction {
      * @param graph the generated PatrolGraph
      */
     public static void printStart(PatrolGraph graph){
-    	JSONArray patrolJson = graph.getPatrolsJSONArray();
-    	JSONObject main = new JSONObject();
-    	main.put("patrols", patrolJson);
-    	main.put("numberStrategies", Config.create().getNumberOfStrategies());
-    	System.out.println("[start]" + main.toJSONString());
+    	System.out.println("[start]" + graph.getPatrolsJSONString().toJSONString());
     }
     
     public static void printIteration(EnvPercept percept){

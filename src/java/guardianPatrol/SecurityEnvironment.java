@@ -41,7 +41,7 @@ public class SecurityEnvironment extends Environment {
         if(fileName != null){
 	        filePath = "./configs/" + fileName;
 	} else {
-        	filePath = "./configs/distanceTest.json";
+        	filePath = "./configs/inputPDF.json";
 	}
         
         JSONObject json = null;

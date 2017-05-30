@@ -15,6 +15,7 @@ class Simulation{
 		this.logParser = new LogParser(this)
 
 		this.progress = 0
+		this.totalNumberOfStrategies = 1
 		this.results = {patrols:[], strategies:[]}
 	}
 
@@ -44,15 +45,15 @@ class Simulation{
 
 		// We run the jar with the new environnement.
 
-		const ls = spawn('java', ['-jar', './../jason/guardianPatrol.jar'], {env: env})
+		const jason = spawn('java', ['-jar', './../guardianPatrol.jar'], {env: env})
 
 		// We analyze the output.
 
-		ls.stdout.on('data', data => this.logParser.handleOutput(''+data))
+		jason.stdout.on('data', data => this.logParser.handleOutput(''+data))
 
-		ls.stderr.on('data', data => this.logParser.handleError(''+data))
+		jason.stderr.on('data', data => this.logParser.handleError(''+data))
 
-		ls.on('close', code => {
+		jason.on('close', code => {
 
 			this.socket.removeAllListeners('cancel')
 
@@ -63,7 +64,8 @@ class Simulation{
 
 		})
 
-		this.socket.on('cancel', () => ls.kill('SIGINT'))
+		this.socket.on('cancel', () => jason.kill('SIGINT'))
+		this.socket.on('disconnect', () => jason.kill('SIGINT'))
 
 		return this
 	}
