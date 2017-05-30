@@ -92,7 +92,7 @@ export default class Robbers{
 		this.catchProbability.set(robberId, catchProbability)
 
 		this.settings.graph.cy.nodes().each(node => node.data('robberSettings').set(robberId, {
-			cost: 2,
+			cost: 1,
 			reward: 1
 		}))
 

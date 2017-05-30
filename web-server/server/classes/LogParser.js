@@ -22,7 +22,7 @@ class LogParser{
 			if (objectString.startsWith('[start]')){
 				objectString = objectString.slice(7)
 				this.simulation.results.patrols = JSON.parse(objectString).patrols
-				// TODO : totalNumberOfStrategies
+				this.simulation.totalNumberOfStrategies = JSON.parse(objectString).numberStrategies
 
 				return
 			}

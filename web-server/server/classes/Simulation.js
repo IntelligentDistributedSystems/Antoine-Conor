@@ -106,7 +106,8 @@ class Simulation{
 	}
 
 	sendProgress(){
-		this.socket.emit('loading', {progression: this.progression})
+
+		this.socket.emit('loading', {progress: this.progress})
 
 		return this
 	}

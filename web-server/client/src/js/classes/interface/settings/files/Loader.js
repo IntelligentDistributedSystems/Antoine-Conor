@@ -21,11 +21,11 @@ export default class Loader {
 			          "y": 20
 			        },
 			        "robbersInterest": 1,
-			        "guardiansCost": 2,
+			        "guardiansCost": 1,
 			        "guardiansReward": 1,
 			        "robberSettings": {
 			          "0": {
-			            "cost": 2,
+			            "cost": 1,
 			            "reward": 1
 			          }
 			        }
@@ -37,11 +37,11 @@ export default class Loader {
 			          "y": 20
 			        },
 			        "robbersInterest": 1,
-			        "guardiansCost": 2,
+			        "guardiansCost": 1,
 			        "guardiansReward": 1,
 			        "robberSettings": {
 			          "0": {
-			            "cost": 2,
+			            "cost": 1,
 			            "reward": 1
 			          }
 			        }

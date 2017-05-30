@@ -38,7 +38,7 @@ export default class Interface{
 
 		this.simulationRunning = true
 
-		this.socket.on('loading', data => this.results.loading(data.progression))
+		this.socket.on('loading', data => this.results.loading(data.progress))
 		
 		this.results.loading(0)
 

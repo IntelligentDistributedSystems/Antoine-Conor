@@ -30,6 +30,7 @@ export default class Results{
 	*	When the server is processing, show the progress.
 	*/
 	loading(percent = false){
+
 		$('#modal-results p').html(`
 
 			<div class="center">

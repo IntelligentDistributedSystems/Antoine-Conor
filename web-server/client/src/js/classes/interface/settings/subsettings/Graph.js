@@ -228,7 +228,7 @@ export default class Graph {
 	*	Base nodes can not been attacket nor defended.
 	*	Patrols have to start and end at the base.
 	*/
-	addNode(position = {x: 0, y: 0}, base = false, robbersInterest = 1, guardiansCost = 2, guardiansReward = 1){
+	addNode(position = {x: 0, y: 0}, base = false, robbersInterest = 1, guardiansCost = 1, guardiansReward = 1){
 		const newNodeId = this.cy.nodes().length
 
 		const newNode = this.cy.add({
