@@ -147,14 +147,12 @@ public class PatrolGraph extends SimpleWeightedGraph<PatrolVertex, DefaultWeight
 		return this.patrols.get(index);
 	}
 	
-	public JSONObject getPatrolsJSONString(){
-		JSONObject object = new JSONObject();
+	public JSONArray getPatrolsJSONArray(){
 		JSONArray array = new JSONArray();
 		for(PatrolPath p : patrols){
 			array.add(p.getPathByGuiIds());
 		}
-		object.put("patrols", array);
-		return object;
+		return array;
 	}
 	
 	/**
