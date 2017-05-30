@@ -15,8 +15,6 @@ import org.json.simple.JSONArray;
  */
 public class PatrolPath {
 	
-	private final static double DISTANCE_BASE = 700.0;
-	
 	PatrolGraph graph;
 	List<Integer> verticesIds;
 	
@@ -58,8 +56,9 @@ public class PatrolPath {
 			counter++;
 		}
 		
+		double distanceWeight = Config.create().getDistanceWeight();
 		// Catch probability formula
-		return (DISTANCE_BASE / ( length + DISTANCE_BASE )) * robberBase;
+		return (distanceWeight / ( length + distanceWeight )) * robberBase;
 	}
 	
 	
