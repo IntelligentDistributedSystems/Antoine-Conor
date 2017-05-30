@@ -5,10 +5,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.jgraph.graph.Edge;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.GraphWalk;
 import org.jgrapht.graph.SimpleGraph;
+import org.jgrapht.graph.SimpleWeightedGraph;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -23,7 +27,7 @@ import org.json.simple.JSONObject;
  *
  */
 
-public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
+public class PatrolGraph extends SimpleWeightedGraph<PatrolVertex, DefaultWeightedEdge> {
 	
 	
 	private static final long serialVersionUID = -7038166255538966671L;
@@ -53,7 +57,7 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 	 * @param jsonString JSON String containing all configuration
 	 */
 	public PatrolGraph(JSONObject json) {
-		super(DefaultEdge.class);
+		super(DefaultWeightedEdge.class);
 		config = Config.create();
 		attacks = new ArrayList<>();
 		patrols = new ArrayList<>();
@@ -79,8 +83,11 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 			HashMap<String, Integer> edgeMap = (HashMap<String, Integer>)(edge);
 			PatrolVertex source = this.getVertexByGuiId(((Number)(edgeMap.get("source"))).intValue());
 			PatrolVertex target = this.getVertexByGuiId(((Number)(edgeMap.get("target"))).intValue());
+			float length = ((Number)(edgeMap.get("length"))).floatValue();
+			System.out.println(length);
 			try {
-				this.addEdge(source, target);
+				DefaultWeightedEdge e = this.addEdge(source, target);
+				this.setEdgeWeight(e, length);
 			} catch (NullPointerException npe) {
 				System.out.println("JSON invalid - edge references non existing vertex");
 			}
@@ -91,7 +98,7 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 		 * We add each GraphPath representing a possible patrol by the list of attack point
 		 * ids defined by List<PatrolVertex> attacks
 		 */
-		for(GraphPath<PatrolVertex, DefaultEdge> graphPath : this.getAllPossiblePaths()){
+		for(GraphPath<PatrolVertex, DefaultWeightedEdge> graphPath : this.getAllPossiblePaths()){
 			patrols.add(new PatrolPath(this, graphPath));
 		}
 		
@@ -155,7 +162,7 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 	 * @return A set of all possible simple paths from the base
 	 * @see guardianPatrol.PatrolGraph#getAllPossiblePaths(PatrolVertex, List) 
 	 */
-	private Set<GraphPath<PatrolVertex, DefaultEdge>> getAllPossiblePaths(){
+	private Set<GraphPath<PatrolVertex, DefaultWeightedEdge>> getAllPossiblePaths(){
 		return this.getAllPossiblePaths(base, new ArrayList<PatrolVertex>());
 	}
 	
@@ -169,15 +176,15 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 	 * Vertexes already visited on the current path
 	 * @return A set of all possible simple paths from the source
 	 */
-	private Set<GraphPath<PatrolVertex, DefaultEdge>> getAllPossiblePaths(PatrolVertex source, List<PatrolVertex> visited){
+	private Set<GraphPath<PatrolVertex, DefaultWeightedEdge>> getAllPossiblePaths(PatrolVertex source, List<PatrolVertex> visited){
 		visited.add(source);
 		
 		/* Get all the vertices that are neighbors to the source node.
 		 * Note : using sets to not check duplication.
 		 */
-		Set<DefaultEdge> edges = this.edgesOf(source);
+		Set<DefaultWeightedEdge> edges = this.edgesOf(source);
 		Set<PatrolVertex> neighbors = new HashSet<PatrolVertex>();
-		for(DefaultEdge edge : edges){
+		for(DefaultWeightedEdge edge : edges){
 			PatrolVertex edgeSource = this.getEdgeSource(edge);
 			PatrolVertex edgeTarget = this.getEdgeTarget(edge);
 			neighbors.add(edgeSource);
@@ -190,9 +197,9 @@ public class PatrolGraph extends SimpleGraph<PatrolVertex, DefaultEdge> {
 		/* If they're are no neighbors return the current path, else return the paths of all neighbors
 		 * NOTE : possible to add partial paths to program by removing if(neighbors.isEmpty()) condition
 		 */
-		Set<GraphPath<PatrolVertex, DefaultEdge>> result = new HashSet<GraphPath<PatrolVertex,DefaultEdge>>();
+		Set<GraphPath<PatrolVertex, DefaultWeightedEdge>> result = new HashSet<GraphPath<PatrolVertex,DefaultWeightedEdge>>();
 		if(neighbors.isEmpty()){
-			GraphPath<PatrolVertex, DefaultEdge> path = new GraphWalk<PatrolVertex, DefaultEdge>(this, visited, 0);
+			GraphPath<PatrolVertex, DefaultWeightedEdge> path = new GraphWalk<PatrolVertex, DefaultWeightedEdge>(this, visited, 0);
 			result.add(path);
 		}
 		else {

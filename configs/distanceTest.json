@@ -1,0 +1,124 @@
+{
+  "general": {
+    "numberOfIterations": 20
+  },
+  "paths": {
+    "vertices": [
+      {
+        "id": 0,
+        "position": {
+          "x": 124.24723822180408,
+          "y": 22
+        },
+        "robbersInterest": 1,
+        "guardiansCost": 2,
+        "guardiansReward": 1,
+        "robberSettings": {
+          "0": {
+            "cost": 2,
+            "reward": 1
+          }
+        }
+      },
+      {
+        "id": 1,
+        "position": {
+          "x": 44.25276177819592,
+          "y": -10.5
+        },
+        "robbersInterest": 1,
+        "guardiansCost": 2,
+        "guardiansReward": 1,
+        "robberSettings": {
+          "0": {
+            "cost": 2,
+            "reward": 1
+          }
+        }
+      },
+      {
+        "id": 2,
+        "position": {
+          "x": 39,
+          "y": 62.0859375
+        },
+        "robbersInterest": 1,
+        "guardiansCost": 2,
+        "guardiansReward": 1,
+        "robberSettings": {
+          "0": {
+            "cost": 2,
+            "reward": 1
+          }
+        }
+      },
+      {
+        "id": 3,
+        "position": {
+          "x": -68,
+          "y": 49.0859375
+        },
+        "robbersInterest": 1,
+        "guardiansCost": 2,
+        "guardiansReward": 1,
+        "robberSettings": {
+          "0": {
+            "cost": 2,
+            "reward": 1
+          }
+        }
+      },
+      {
+        "id": 4,
+        "position": {
+          "x": -47,
+          "y": -19.4140625
+        },
+        "robbersInterest": 1,
+        "guardiansCost": 2,
+        "guardiansReward": 1,
+        "robberSettings": {
+          "0": {
+            "cost": 2,
+            "reward": 1
+          }
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": 0,
+        "target": 1,
+        "length": 86.34446283049644
+      },
+      {
+        "source": 4,
+        "target": 1,
+        "length": 91.68711492026608
+      },
+      {
+        "source": 0,
+        "target": 2,
+        "length": 94.20177285857693
+      },
+      {
+        "source": 2,
+        "target": 3,
+        "length": 107.78682665335315
+      },
+      {
+        "source": 3,
+        "target": 4,
+        "length": 71.64670264569054
+      }
+    ]
+  },
+  "robbers": {
+    "list": [
+      0
+    ],
+    "catchProbability": {
+      "0": 0.5
+    }
+  }
+}
