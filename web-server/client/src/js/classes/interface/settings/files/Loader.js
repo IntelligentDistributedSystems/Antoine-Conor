@@ -9,7 +9,8 @@ export default class Loader {
 		this.defaultSettings = 
 			{
 			  "general": {
-			    "numberOfIterations": 20
+			    "numberOfIterations": 20,
+			    "distanceWeight": 1
 			  },
 			  "paths": {
 			    "vertices": [
@@ -73,6 +74,7 @@ export default class Loader {
 		this.settings.init()
 
 		$('#numberOfIterations').val(settings.general.numberOfIterations)
+		$('#distanceWeight').val(settings.general.distanceWeight)
 
 		// Id maps (loaded ids => current ids)
 

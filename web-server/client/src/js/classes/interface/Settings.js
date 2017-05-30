@@ -60,7 +60,8 @@ export default class Settings {
 
 	getGeneralSettings(){
 		return {
-			numberOfIterations: parseInt($('#numberOfIterations').val())
+			numberOfIterations: parseInt($('#numberOfIterations').val()),
+			distanceWeight: parseInt($('#distanceWeight').val())
 		}
 	}
 }

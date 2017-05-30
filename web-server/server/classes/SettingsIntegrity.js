@@ -39,6 +39,9 @@ module.exports = {
 		if (settings.general.numberOfIterations < 1 || settings.general.numberOfIterations > 100)
 			return `Invalid number of iterations.`
 
+		if (! settings.general.distanceWeight > 0)
+			return `Invalid distance weight (must be > 0).`
+
 		// Vertcies integrity
 
 		for (let vertice of settings.paths.vertices){
