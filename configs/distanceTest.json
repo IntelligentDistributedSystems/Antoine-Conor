@@ -1,6 +1,7 @@
 {
   "general": {
-    "numberOfIterations": 20
+    "numberOfIterations": 20,
+	"distanceWeight":50.2
   },
   "paths": {
     "vertices": [

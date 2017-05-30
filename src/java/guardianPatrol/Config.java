@@ -12,6 +12,8 @@ import helpers.Helpers;
 public class Config {
 	// Guardian Configuration
 	private int numberPossiblePatrols;
+	
+	
 	/* After meeting with C. Badica, it has been decided to have probabilityResolution (K) equal
 	 * to the number of possible patrols. This way, we get a least one full mixed strategy 
 	 * as [1,1,... 1,1] */
@@ -22,6 +24,8 @@ public class Config {
 	private int numberPossibleAttacks;
 	
 	// General Configuration
+	private double distanceWeight;
+	
 	/**
 	 * Contructor for PatrolConfig class.
 	 * Private, must use method PatrolConfig.create() to get instance.
@@ -52,6 +56,7 @@ public class Config {
     private void loadJason(JSONObject json){
 		JSONObject general = (JSONObject) json.get("general");
 		this.guardianIterations = ((Number) general.get("numberOfIterations")).intValue();
+		this.distanceWeight = ((Number) general.get("distanceWeight")).doubleValue();
 	}
     
     
@@ -94,6 +99,10 @@ public class Config {
 		return this.getGuardianIterations() * this.getNumberOfStrategies();
 	}
 
+
+	public double getDistanceWeight() {
+		return distanceWeight;
+	}
 
 	@Override
 	public String toString() {
