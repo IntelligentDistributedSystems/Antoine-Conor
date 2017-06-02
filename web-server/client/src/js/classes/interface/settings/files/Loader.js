@@ -10,7 +10,7 @@ export default class Loader {
 			{
 			  "general": {
 			    "numberOfIterations": 20,
-			    "distanceWeight": 1
+			    "distanceWeight": 200
 			  },
 			  "paths": {
 			    "vertices": [

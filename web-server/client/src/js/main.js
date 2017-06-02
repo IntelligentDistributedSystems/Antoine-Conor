@@ -92,5 +92,9 @@ $(() => {
 	$('#launchButton').on('click', event => iface.startSimulation())
 	$('#importButton').on('click', event => iface.settings.loader.import())
 	$('#exportButton').on('click', event => iface.settings.saver.save())
-	$('.modal#modal-results').modal({complete: () => iface.stopSimulation()})
+	$('#export-gambit').on('click', event => iface.results.exportGambit())
+	$('.modal#modal-results').modal({complete: () => {
+		iface.stopSimulation()
+		$('#export-gambit').attr('disabled', 'true')
+	}})
 })

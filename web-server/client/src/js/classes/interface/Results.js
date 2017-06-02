@@ -7,6 +7,7 @@ export default class Results{
 
 	constructor(iface){
 		this.interface = iface
+		this.data = null
 		window.results = this
 	}
 
@@ -50,6 +51,12 @@ export default class Results{
 	*/
 	showResults(data){
 
+		this.data = data
+
+		data.patrols.forEach(patrol => {
+			patrol.label = patrol.reduce((sum, target) => `${sum}${target} ⇒ `, '').slice(0,-3)
+		})
+
 		console.info('Results received.')
 
 		// Building the list of patrols.
@@ -70,7 +77,7 @@ export default class Results{
 			patrolsTableHTML += `
 				<tr>
 					<td>${index}</td>
-					<td>${patrol.reduce((sum, target) => `${sum}${target} ⇒ `, '').slice(0,-3)}</td>
+					<td>${patrol.label}</td>
 				</tr>`
 		})
 
@@ -193,10 +200,93 @@ export default class Results{
 			}
 		})
 
+		$('#export-gambit').removeAttr('disabled')
+
 		new LiveSimulation(this, data, bestStreategy, '#liveSimulation').run()
 
 		return this
 
+	}
+
+	exportGambit(){
+
+		const distanceWeight = parseInt($('#distanceWeight').val())
+		const settings = this.interface.settings.getSettings()
+
+		const patrols = this.data.patrols
+		const robbers = this.interface.settings.robbers.getSettings().list
+		const vertices = settings.paths.vertices.filter(vertex => vertex.id != 0)
+
+		let patrolsListString = patrols.reduce((sum, patrol) => `${sum} "${patrol.label}"`,'')
+
+		let attacksListString = ''
+
+		const attacks = []
+
+		robbers.forEach(robber => {
+
+			vertices.forEach(vertex => {
+
+				attacksListString += `"Robber type ${robber} attacking ${vertex.id}" `
+
+				attacks.push({robber: robber, target: vertex})
+
+			})
+
+		})
+
+		let rewardsString = ''
+
+		let numberString = [...Array(patrols.length * robbers.length * vertices.length).keys()].reduce((sum,index) => `${sum}${index+1} `, '')
+
+		attacks.forEach(attack => {
+
+			patrols.forEach(patrol => {
+
+				let distance = 0
+
+				if (patrol.includes(attack.target.id))
+					for (let n = 0; patrol[n] !== attack.target.id; n++)
+						distance += settings.paths.edges.find(edge => (edge.source === patrol[n] && edge.target === patrol[n+1]) || (edge.source === patrol[n+1] && edge.target === patrol[n])).length
+				else 
+					distance = Infinity
+
+				console.log(patrol.label)
+				console.log(attack.target.id)
+				console.log(distance)
+
+				const catchProbability = settings.robbers.catchProbability[''+attack.robber] * distanceWeight/( distance + distanceWeight )
+
+				console.log(attack, catchProbability)
+
+				const guardianUtility = catchProbability * attack.target.guardiansReward - (1 - catchProbability) * attack.target.guardiansCost
+
+				const robberUtility = - catchProbability * attack.target.robberSettings[attack.robber].cost + (1 - catchProbability) * attack.target.robberSettings[attack.robber].reward
+
+				rewardsString += `{ "${patrol.label} vs ${attack.robber} - ${attack.target.id}" ${guardianUtility}, ${robberUtility} }\n`
+
+			})
+
+		})
+
+		const nfg = 
+`NFG 1 R "Patrolling game" { "Guardian" "Robber" }
+
+{ { ${patrolsListString}}
+{ ${attacksListString}}
+}
+""
+
+{
+${rewardsString}}
+${numberString}
+`
+
+		const date = new Date()
+
+		this.interface.settings.saver.download(
+			`${date.toLocaleDateString()}-${date.toLocaleTimeString().replace(':', '-')}.nfg`,
+		nfg)
 	}
 
 }

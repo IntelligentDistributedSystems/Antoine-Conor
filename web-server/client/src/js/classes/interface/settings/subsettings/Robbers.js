@@ -106,7 +106,7 @@ export default class Robbers{
 					<div class="card-action">
 						<div class="discretionContainer">
 							<span>Discretion</span>
-							<input type="number" step="0.05" class="discretion" min="0" max="1" value="${catchProbability}">
+							<input type="number" step="0.05" class="discretion" min="0" max="1" value="${(1-catchProbability)}">
 						</div>
 						<a class="waves-effect waves-light btn blue configure" style="width: 100%; margin-top: 10px;"><i class="material-icons right">mode_edit</i>Rewards</a>
 						<a class="waves-effect waves-light btn red delete" style="width: 100%; margin-top: 10px" ${(robberId === 0) ? 'disabled' : ''}><i class="material-icons right">delete</i>Delete</a>
