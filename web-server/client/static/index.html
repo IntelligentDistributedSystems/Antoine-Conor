@@ -36,12 +36,17 @@
 					<h2 class="header">Introduction</h2>
 
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-						proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+						Agent Oriented Programming is a paradigm that will allow you to solve problems in unique ways.
+						To use this fascinating technology, you have to use the right developpement tools. One of them is AgentSpeak. It can be used by installing an interpretor. But even if you're interested in AOP, you shouldn't have to download a bunch of files just to try it.
+					</p>
+
+					<p>
+						This web application provides a GUI to a complex simulation ran on our server.
+						By using it, you will be able to setup the environnement for the <i>Patolling Game</i> and get an analysis of the results without installing any software.
+					</p>
+
+					<p>
+						If you already know what the Patrolling Game is, you can directly <i>Run a simulation</i>. If you're not sure what this game or agents are about, go to the <i>About agents</i> page.
 					</p>
 
 					<div class="row">
@@ -106,7 +111,7 @@
 								</div>
 								<div class="input-field col s12">
 									<input type="number" min="0" value="1" id="distanceWeight" multiple required>
-									<label for="distanceWeight">Distance weight</label>
+									<label for="distanceWeight">Guardian speed</label>
 								</div>
 							</div>
 							<div id="parameters-2" class="parameters col s12">
@@ -137,12 +142,8 @@
 							<div class="modal-content">
 								<h4>Simulation results</h4>
 								<p>
-									Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-									tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-									quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-									consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-									cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-									proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+									If you can see this, something went wrong.
+									Missing loading bar.
 								</p>
 							</div>
 
@@ -157,7 +158,8 @@
 							<div class="modal-content">
 								<h4>Robber configuration</h4>
 								<p>
-									Table
+									If you can see this, something went wrong.
+									Missing results table.
 								</p>
 							</div>
 							<div class="modal-footer">
@@ -186,12 +188,33 @@
 				<div class="row container">
 
 					<p>
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-						proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+						The Patrolling game is a setup in which a guardian plays against a robber. Both of them want to have the biggest score. Their score can be increased through <i>rewards</i> and decreased through <i>costs</i>. The robber gets a reward if he mangages to steal stuff without getting caught. On the other hand, the guardian gets rewards if he catches the robber. If the later get caught, his score decreases. If the guardian let the stealing occur, he will lose points.
+					</p>
+
+					<p>
+						The setup is represented by a graph. The nodes of this graph represent the targets the robber can attack and the edges represent the ability for a guardian to walk from a target to another.
+					</p>
+
+					<p>
+						You can setup multiple kinds of robbers. Each of them will have a different cost and reward for each target. They will all share the same interrests (how much they will attack one of the target compared to the others). Also, each target has a different cost and reward for the guardian.
+					</p>
+
+					<p>
+						The guardian has different cost and rewards depending on the target the attack occurs on.
+					</p>
+
+					<p>
+						Both agents, the robber and the guardian, have to choose a strategy at the beginning of the game. The guardian's strategy is a mixed strategy (in Game Theory) made of different patrols (succession of targets linked by a path). The longer it takes him to get to a target, the smaller his odds of catching the robber there are.
+						The robber strategy is to attack a random target (based on his interest for it).
+					</p>
+
+					<p>
+						Once your setup is done, you can launch the simulation.
+						We will then analyse the results and tell you what is the strategy the guardian should follow to have the best score.
+					</p>
+
+					<p>
+						You can also export the results to Gambit. Then, you will be able to compute the Nash equilibrium. This equilibrium is the strategy both agents should follow if they were smart. You will know which patrols the guardian should follow (along with their probabilities) and which target should be attacked by which kind of robber.
 					</p>
 
 				</div>
