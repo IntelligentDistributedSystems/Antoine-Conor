@@ -102,6 +102,9 @@ module.exports = {
 				return `The target ${edge.target} does not exist.`
 		}
 
+		if (settings.paths.edges.length === 0)
+			return 'The path should have at least 1 edge.'
+
 		// Catch probability integrity
 
 		for (let robber of robbersList){
