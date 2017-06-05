@@ -66,6 +66,11 @@ public class PatrolVertex {
 	}
 
 
+	public int getRobbersInterest() {
+		return robbersInterest;
+	}
+
+
 	@Override
 	public String toString() {
 		return "PatrolVertex [id=" + guiId + ", robbersInterest=" + robbersInterest + ", guardiansCost=" + guardiansCost

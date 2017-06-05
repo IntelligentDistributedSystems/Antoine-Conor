@@ -14,21 +14,8 @@ public class RobberBeliefBase extends PatrolBeliefBase {
 	public RobberBeliefBase() {
 		Config config = Config.create();
 		this.addLiteral(NUMBER_POSSIBLE_ATTACKS, config.getNumberPossibleAttacks());
-		this.addLiteral(STRATEGY, getStrategy(config.getNumberPossibleAttacks()));
+		this.addLiteral(STRATEGY, config.getRobberStrategy());
 		this.addLiteral(NUMBER_ITERATIONS, config.getRobberIterations());
 		this.addLiteral(NUMBER_ROBBER_TYPES, Robber.getNumberOfRobbers());
-	}
-	
-	/**
-	 * Currently, only robber strategy is equal chance for each location
-	 * @param numberPossibleAttacks
-	 * @return a string containing the wanted strategy
-	 */
-	private String getStrategy(int numberPossibleAttacks){
-		String[] strat = new String[numberPossibleAttacks];
-		for(int i = 0; i < strat.length; i ++){
-			strat[i] = String.valueOf(1.0/(double)numberPossibleAttacks);
-		}
-		return "[" + String.join(",", strat) + "]";
 	}
 }

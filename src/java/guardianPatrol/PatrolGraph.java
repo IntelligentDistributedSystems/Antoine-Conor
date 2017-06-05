@@ -100,6 +100,12 @@ public class PatrolGraph extends SimpleWeightedGraph<PatrolVertex, DefaultWeight
 		
 		config.setNumberPossiblePatrols(patrols.size());
 		config.setNumberPossibleAttacks(attacks.size());
+		
+		List<Integer> robbersInterests = new ArrayList<>();
+		for(PatrolVertex v : this.attacks){
+			robbersInterests.add(v.getRobbersInterest());
+		}
+		config.setRobberStrategy(robbersInterests);
 	}
 
 	/**

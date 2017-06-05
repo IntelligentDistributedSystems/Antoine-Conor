@@ -21,7 +21,7 @@
 -- 1 >= pi >= 0 is probability of attack i
 -- sum pi = 1
 */
-// Dynamically loaded :  robber_strategy(Strat). (, mixed equally for now)
+// Dynamically loaded :  robber_strategy(Strat).
 
 /* Select robber type. */  
 select_type(T) :-

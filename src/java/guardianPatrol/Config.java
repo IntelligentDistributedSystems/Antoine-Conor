@@ -1,5 +1,7 @@
 package guardianPatrol;
 
+import java.util.List;
+
 import org.json.simple.JSONObject;
 
 import helpers.Helpers;
@@ -22,6 +24,7 @@ public class Config {
 	
 	// Robber Configuration
 	private int numberPossibleAttacks;
+	private String robberStrategy;
 	
 	// General Configuration
 	private double distanceWeight;
@@ -102,6 +105,28 @@ public class Config {
 
 	public double getDistanceWeight() {
 		return distanceWeight;
+	}
+	
+	/**
+	 * This method sets the robbers strategy (chance to attack each location)
+	 * based on it's interest in each location.
+	 * @param robbersInterests the list of robber interest per point
+	 */
+	public void setRobberStrategy(List<Integer> robbersInterests) {
+		double totalInterest = 0.0;
+		for(int n : robbersInterests){
+			totalInterest += n;
+		}
+		
+		String[] strat = new String[numberPossibleAttacks];
+		for(int i = 0; i < strat.length; i ++){
+			strat[i] = String.valueOf( (double)(robbersInterests.get(i)) / totalInterest);
+		}
+		this.robberStrategy = "[" + String.join(",", strat) + "]";
+	}
+
+	public String getRobberStrategy() {
+		return robberStrategy;
 	}
 
 	@Override
