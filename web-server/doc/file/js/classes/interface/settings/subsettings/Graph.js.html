@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../../../">
+  <title data-ice="title">js/classes/interface/settings/subsettings/Graph.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/Interface.js~Interface.html">Interface</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/Results.js~Results.html">Results</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/Settings.js~Settings.html">Settings</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface/results</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/results/LiveSimulation.js~LiveSimulation.html">LiveSimulation</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface/settings/files</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/files/Loader.js~Loader.html">Loader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/files/Saver.js~Saver.html">Saver</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface/settings/subsettings</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/subsettings/Graph.js~Graph.html">Graph</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/subsettings/Robbers.js~Robbers.html">Robbers</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">js/classes/interface/settings/subsettings/Graph.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+*	Class representing the graph of the simulation.
+*
+*	You can add targets, delete targets, and link
+*	them together.
+*
+*	For each target, you can set :
+*		- robbersInterest (the probability of robbers attacking this target)
+*		- guardiansCost (the cost when guardians fail to protect the target)
+*		- guardiansReward (the reward when guardians manage to prevent 
+*							an attack)
+*		- robberSettings (the cost, reward and probability for each robber)
+*			(Set through the Robbers class)
+*
+*	Nodes = Attacks = Targets
+*/
+
+export default class Graph {
+
+	/**
+	 * @param {Settings} settings - Settings object using this graph. 
+	 */
+	constructor(settings){
+
+		// Fields
+		/**
+		 * Settings object using this graph.
+		 * @type {Settings}
+		 */
+		this.settings = settings
+
+		/**
+		 * Graph style.
+		 * @type {Object}
+		 */
+		this.stylesheet = [{
+				selector: &apos;node&apos;,
+				style: {
+					height: 20,
+					width: 20,
+					&apos;background-color&apos;: &apos;mapData(robbersInterest, 0, 25, green, red)&apos;,
+					content: node =&gt; `N${node.data(&apos;id&apos;)} C${node.data(&apos;guardiansCost&apos;)}/R${node.data(&apos;guardiansReward&apos;)}`,
+					//&apos;text-valign&apos;: &apos;center&apos;,
+					&apos;text-halign&apos;: &apos;center&apos;
+				}
+			},
+			{
+				selector: &apos;edge&apos;,
+				style: {
+					&apos;curve-style&apos;: &apos;haystack&apos;,
+					&apos;haystack-radius&apos;: 0,
+					width: 5,
+					opacity: 0.5,
+					&apos;line-color&apos;: &apos;#a2efa2&apos;,
+					content: edge =&gt; Math.floor(this.length(edge))
+				}
+			},
+			{
+				selector: &apos;.base&apos;,
+				style: {
+					&apos;background-color&apos;: &apos;#61bffc&apos;,
+					label: &apos;Base&apos;
+				}
+			},
+			{
+				selector: &apos;:selected&apos;,
+				style: {
+					&apos;border-width&apos;: 4,
+					&apos;border-color&apos;: &apos;purple&apos;
+				}
+			}
+		]
+
+		/**
+		 * Cytoscape graph linked to this graph.
+		 * @type {cytoscape}
+		 */
+		this.cy = window.cy = cytoscape({
+			container: $(&apos;#graph&apos;),
+
+			boxSelectionEnabled: false,
+			autounselectify: false,
+
+			style: this.stylesheet
+		})
+
+		this.cy.minZoom(0.5)
+		this.cy.maxZoom(2)
+
+		window.graph = this
+
+		// Refreshing the length
+		/**
+		 * Interval that refresh the cytoscape graph.
+		 * @return {Interval}
+		 */
+		this.refreshInterval = setInterval(() =&gt; cy.edges().forEach(edge =&gt; edge.data(&apos;refresh&apos;, Math.random())), 250)
+
+		// DOM listeners
+
+		$(document).on(&apos;click&apos;, &apos;.qtip-content .link&apos;, event =&gt; {
+			console.info(&quot;Linking a target to another...&quot;)
+			/**
+			 * What the user is currently doing.
+			 * @type {String}
+			 */
+			this.currentAction = &apos;linking&apos;
+			$(&apos;.qtip&apos;).qtip(&apos;hide&apos;)
+		})
+
+		$(document).on(&apos;click&apos;, &apos;.qtip-content .delete&apos;, event =&gt; {
+			this.lastSelectedNode.remove()
+			this.reset()
+		})
+
+		$(document).on(&apos;click&apos;, &apos;.qtip-content .dismiss&apos;, event =&gt; {
+			this.reset()
+		})
+
+		$(document).on(&apos;click&apos;, &apos;.qtip-content .plusInterest&apos;, event =&gt; {
+			this.lastSelectedNode.data(&apos;robbersInterest&apos;, Math.min(this.lastSelectedNode.data(&apos;robbersInterest&apos;)+1, 25))
+		})
+
+		$(document).on(&apos;click&apos;, &apos;.qtip-content .minusInterest&apos;, event =&gt; {
+			this.lastSelectedNode.data(&apos;robbersInterest&apos;, Math.max(this.lastSelectedNode.data(&apos;robbersInterest&apos;)-1, 0))
+		})
+
+		$(document).on(&apos;click&apos;, &apos;.qtip-content .plusCost&apos;, event =&gt; {
+			this.lastSelectedNode.data(&apos;guardiansCost&apos;, Math.min(this.lastSelectedNode.data(&apos;guardiansCost&apos;)+1, 25))
+		})
+
+		$(document).on(&apos;click&apos;, &apos;.qtip-content .minusCost&apos;, event =&gt; {
+			this.lastSelectedNode.data(&apos;guardiansCost&apos;, Math.max(this.lastSelectedNode.data(&apos;guardiansCost&apos;)-1, 0))
+		})
+
+		$(document).on(&apos;click&apos;, &apos;.qtip-content .plusReward&apos;, event =&gt; {
+			this.lastSelectedNode.data(&apos;guardiansReward&apos;, Math.min(this.lastSelectedNode.data(&apos;guardiansReward&apos;)+1, 25))
+		})
+
+		$(document).on(&apos;click&apos;, &apos;.qtip-content .minusReward&apos;, event =&gt; {
+			this.lastSelectedNode.data(&apos;guardiansReward&apos;, Math.max(this.lastSelectedNode.data(&apos;guardiansReward&apos;)-1, 0))
+		})
+
+		// Cytoscape listeners
+
+		this.cy.on(&apos;tap&apos;, event =&gt; {
+			if (event.target === event.cy)
+				this.reset()
+			// When you tap on the background and that there are no visible tips, you add a new node at this position.
+			// If a tip is visible, you probably just want to dismiss it
+			if (event.target === event.cy &amp;&amp; !$(&apos;.qtip:visible&apos;).length){
+				return this.addNode(event.position)
+			}
+		})
+
+		this.cy.on(&apos;tap&apos;, &apos;node&apos;, event =&gt; {
+			if (this.currentAction === &apos;linking&apos;){
+				this.currentAction = null
+				const secondNode = event.target
+				// We check if that edge aleady exists or if the source and target are the same node.
+				if (!this.cy.elements(`edge[source = &quot;${this.lastSelectedNode.id()}&quot;][target = &quot;${secondNode.id()}&quot;]`).length &amp;&amp; 
+					!this.cy.elements(`edge[target = &quot;${this.lastSelectedNode.id()}&quot;][source = &quot;${secondNode.id()}&quot;]`).length &amp;&amp; 
+					secondNode != this.lastSelectedNode){
+					this.link(this.lastSelectedNode.id(), secondNode.id())
+				}
+			}
+
+			/**
+			 * The node that was clicked the last.
+			 * @type {Node}
+			 */
+			this.lastSelectedNode = event.target
+		})
+
+		this.cy.on(&apos;tap&apos;, &apos;edge&apos;, event =&gt; {
+			event.target.remove()
+		})
+
+		// fix a bug when tap doesn&apos;t work on page change.
+
+		$(document).on(&apos;click&apos;, event =&gt; this.cy.resize())
+
+		this.init()
+	}
+
+	/**
+	 * Initialize the graph by setting default values.
+	 *
+	 * @return {Graph} chaining
+	 */
+	init(){
+		/**
+		 * Number of edges created.
+		 * Deleting an edge doesn&apos;t decrease that counter.
+		 * 
+		 * @type {Number}
+		 */
+		this.nbrEdgesCreated = 0
+
+		/**
+		 * Number of created nodes.
+		 * Deleting a node doesn&apos;t decrease this counter.
+		 * 
+		 * @type {Number}
+		 */
+		this.nbrNodesCreated = 0
+
+		/**
+		 * The node that was clicked the last.
+		 * @type {Node}
+		 */
+		this.lastSelectedNode = null
+
+		/**
+		 * What the user is currently doing.
+		 * @type {String}
+		 */
+		this.currentAction = null
+
+		this.cy.elements().forEach(element =&gt; element.remove())
+
+		return this
+	}
+
+	/**
+	 * Sort targets with the CoSE layout (by Bilkent University).
+	 *
+	 * @return {Graph} chaining
+	 */
+	sort(){
+		this.cy.layout({
+			name: &apos;cose-bilkent&apos;,
+			animate: true
+		}).run()
+
+		return this
+	}
+
+	/**
+	 * Reset the current action, selected target and hide the tips.
+	 *
+	 * @return {Graph} chaining
+	 */
+	reset(){
+		this.lastSelectedNode = null
+		this.currentAction = null
+		$(&apos;.qtip&apos;).qtip(&apos;hide&apos;)
+
+		return this
+	}
+
+
+	/**
+	 * Link two targets together. You have to specify the ids.
+	 * 
+	 * @param  {string} source - source node id.
+	 * @param  {string} target - target node id.
+	 * @return {Graph} chaining
+	 */
+	link(source, target){
+		this.cy.add({
+			data: {
+				id: `e${this.nbrEdgesCreated++}`,
+				source: source,
+				target: target
+			},
+			group: &apos;edges&apos;,
+			selectable: true,
+			locked: false,
+			grabbable: true,
+			classes: &apos;&apos;
+		})
+		console.info(`Edge added linking ${source} to ${target}.`)
+
+		return this
+	}
+
+	/**
+	 * Add a node to the graph.
+	 *
+	 * Base nodes can not been attacket nor defended.
+	 * Patrols have to start at the base.
+	 * 
+	 * @param {Object} position - node coordinates.
+	 * @param {Boolean} base - do you want to add a base (you shouldn&apos;t, except the first one)
+	 * @param {Number} robbersInterest - How often will robbers attack this target compared to others.
+	 * @param {Number} guardiansCost - How much will it cost to the guardian to not catch the robber on this node.
+	 * @param {Number} guardiansReward - How much will a guardian earn from catching a robber on this node.
+	 * @return {string} the new node id.
+	 */
+	addNode(position = {x: 0, y: 0}, base = false, robbersInterest = 1, guardiansCost = 1, guardiansReward = 1){
+		const newNodeId = this.cy.nodes().length
+
+		const newNode = this.cy.add({
+			data: {
+				id: newNodeId,
+				robbersInterest: robbersInterest,
+				guardiansCost: guardiansCost,
+				guardiansReward: guardiansReward,
+				robberSettings : new Map()
+			},
+			position: position,
+			group: &apos;nodes&apos;,
+			selectable: true,
+			locked: false,
+			grabbable: true,
+			classes: base ? &apos;base&apos; : &apos;&apos;
+		}).qtip({
+			content: `
+			&lt;div&gt;
+				&lt;a class=&quot;waves-effect waves-light btn blue link&quot; style=&quot;width:160px&quot;&gt;&lt;i class=&quot;material-icons right&quot;&gt;timeline&lt;/i&gt;Link to...&lt;/a&gt;
+				&lt;a class=&quot;waves-effect waves-light btn red delete&quot; style=&quot;width:160px; margin-top: 10px&quot; ${base ? &apos;disabled&apos; : &apos;&apos;}&gt;&lt;i class=&quot;material-icons right&quot;&gt;delete&lt;/i&gt;Delete&lt;/a&gt;
+				
+				&lt;a class=&quot;waves-effect waves-light btn red lighten-2 minusInterest col&quot; ${base ? &apos;disabled&apos; : &apos;&apos;}&gt;&lt;i class=&quot;material-icons&quot;&gt;remove_circle&lt;/i&gt;&lt;/a&gt;
+				&lt;div class=&quot;label&quot;&gt;Robbers Interest&lt;/div&gt;
+				&lt;a class=&quot;waves-effect waves-light btn green lighten-2 plusInterest col&quot; ${base ? &apos;disabled&apos; : &apos;&apos;}&gt;&lt;i class=&quot;material-icons&quot;&gt;add_circle&lt;/i&gt;&lt;/a&gt;
+
+				&lt;a class=&quot;waves-effect waves-light btn red lighten-2 minusCost col&quot; ${base ? &apos;disabled&apos; : &apos;&apos;}&gt;&lt;i class=&quot;material-icons&quot;&gt;remove_circle&lt;/i&gt;&lt;/a&gt;
+				&lt;div class=&quot;label&quot;&gt;Guardians Cost&lt;/div&gt;
+				&lt;a class=&quot;waves-effect waves-light btn green lighten-2 plusCost col&quot; ${base ? &apos;disabled&apos; : &apos;&apos;}&gt;&lt;i class=&quot;material-icons&quot;&gt;add_circle&lt;/i&gt;&lt;/a&gt;
+
+				&lt;a class=&quot;waves-effect waves-light btn red lighten-2 minusReward col&quot; ${base ? &apos;disabled&apos; : &apos;&apos;}&gt;&lt;i class=&quot;material-icons&quot;&gt;remove_circle&lt;/i&gt;&lt;/a&gt;
+				&lt;div class=&quot;label&quot;&gt;Guardians Reward&lt;/div&gt;
+				&lt;a class=&quot;waves-effect waves-light btn green lighten-2 plusReward col&quot; ${base ? &apos;disabled&apos; : &apos;&apos;}&gt;&lt;i class=&quot;material-icons&quot;&gt;add_circle&lt;/i&gt;&lt;/a&gt;
+
+				&lt;a class=&quot;waves-effect waves-light btn green dismiss&quot; style=&quot;width:160px; margin-top: 10px&quot;&gt;&lt;i class=&quot;material-icons right&quot;&gt;cancel&lt;/i&gt;Dismiss&lt;/a&gt;
+			&lt;/div&gt;
+			`,
+			position: {
+				my: &apos;top center&apos;,
+				at: &apos;bottom center&apos;
+			},
+			style: {
+				classes: &apos;qtip-bootstrap&apos;,
+				width: 195
+			}
+		})
+
+		this.settings.robbers.list.forEach(robber =&gt; newNode.data(&apos;robberSettings&apos;).set(robber, {
+			cost: 2,
+			reward: 1
+		}))
+
+		return newNodeId
+	}
+
+	/**
+	 * Return the length of an edge.
+	 * 
+	 * @param  {Edge} edge - the edge to measure.
+	 * @return {Number} the length.
+	 */
+	length(edge){
+		return this.distance(edge.source(), edge.target())
+	}
+
+	/**
+	 *	Return the distance between dwo vertices.
+	 *
+	 * @param  {Node} node1 - the first node.
+	 * @param  {Node} node2 - the second node.
+	 * @return {Number} the distance.
+	 */
+	distance(node1, node2){
+		return ((node1.position().x - node2.position().x)**2 + (node1.position().y - node2.position().y)**2)**0.5
+	}
+
+	/**
+	 *	Concatenate settings into a JSON object.
+	 *	
+	 * @return {Object} concatenated settings. 
+	 */
+	getSettings(){
+		return {
+			vertices: Object.keys(cy.nodes())
+							 .filter(key =&gt; !isNaN(key))
+							 .map(key =&gt; ({
+							 	id: parseInt(cy.nodes()[key].id()),
+							 	position: cy.nodes()[key].position(),
+							 	robbersInterest: cy.nodes()[key].data(&apos;robbersInterest&apos;),
+							 	guardiansCost: cy.nodes()[key].data(&apos;guardiansCost&apos;),
+								guardiansReward: cy.nodes()[key].data(&apos;guardiansReward&apos;),
+								robberSettings: Array.from(cy.nodes()[key].data(&apos;robberSettings&apos;)).reduce((obj, [key, value]) =&gt; { obj[key] = value; return obj}, {})
+							 })),
+			edges: Object.keys(cy.edges())
+						 .filter(key =&gt; !isNaN(key))
+						 .map(key =&gt; ({
+						 	source: parseInt(cy.edges()[key].source().id()),
+						 	target: parseInt(cy.edges()[key].target().id()),
+						 	length: this.length(cy.edges()[key])
+						 }))
+		}
+	}
+}</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

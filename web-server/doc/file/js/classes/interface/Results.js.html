@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">js/classes/interface/Results.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/Interface.js~Interface.html">Interface</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/Results.js~Results.html">Results</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/Settings.js~Settings.html">Settings</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface/results</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/results/LiveSimulation.js~LiveSimulation.html">LiveSimulation</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface/settings/files</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/files/Loader.js~Loader.html">Loader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/files/Saver.js~Saver.html">Saver</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface/settings/subsettings</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/subsettings/Graph.js~Graph.html">Graph</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/subsettings/Robbers.js~Robbers.html">Robbers</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">js/classes/interface/Results.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import LiveSimulation from &apos;./results/LiveSimulation&apos;
+
+/**
+ * Deals with the results sent by the server.
+ */
+export default class Results{
+
+	/**
+	 * @param  {Interface} iface - Interface object using this results.
+	 */
+	constructor(iface){
+		/**
+		 * Interface object using this results.
+		 * @type {Interface}
+		 */
+		this.interface = iface
+
+		/**
+		 * The data computed by the server.
+		 * @type {Object}
+		 */
+		this.data = null
+		window.results = this
+	}
+
+	/**
+	 * When an error is received, prints it to screen.
+	 * 
+	 * @param  {string} err - the received error
+	 * @return {Results} chaining
+	 */
+	error(err){
+
+		console.error(`Error: ${err}`)
+
+		$(&apos;#modal-results p&apos;).html(`
+
+			&lt;div class=&quot;center&quot;&gt;
+				Error encountered while computing the results: &lt;br&gt;
+				${err}
+			&lt;/div&gt;
+		`).modal(&apos;open&apos;)
+
+		return this
+	}
+
+	/**
+	 * When the server is processing, show the progress.
+	 *
+	 * @param {Number | boolean} percent - The loading progression or false (== 0) if it just started.
+	 * @return {Results} chaining
+	 */
+	loading(percent = false){
+
+		$(&apos;#modal-results p&apos;).html(`
+
+			&lt;div class=&quot;center&quot;&gt;
+				Please wait while our server is computing the results.
+			&lt;/div&gt;
+
+			&lt;div class=&quot;progress&quot;&gt;
+				&lt;div class=&quot;${ percent ? `determinate&quot; style=&quot;width: ${percent}%&quot;` : &apos;indeterminate&quot;&apos;}&gt;&lt;/div&gt;
+			&lt;/div&gt;
+		`).modal(&apos;open&apos;)
+
+		return this
+	}
+
+	/**
+	 * When everything is okay, display paths, stats and show a simulation.
+	 *
+	 * @param {Object} data - The results object sent by the server.
+	 * @return {Results} chaining
+	 */
+	showResults(data){
+
+		this.data = data
+
+		data.patrols.forEach(patrol =&gt; {
+			patrol.label = patrol.reduce((sum, target) =&gt; `${sum}${target} &#x21D2; `, &apos;&apos;).slice(0,-3)
+		})
+
+		console.info(&apos;Results received.&apos;)
+
+		// Building the list of patrols.
+
+		let patrolsTableHTML = `
+			&lt;table class=&quot;striped centered&quot;&gt;
+				&lt;thead&gt;
+					&lt;tr&gt;
+						&lt;th&gt;Patrol ID&lt;/th&gt;
+						&lt;th&gt;path&lt;/th&gt;
+					&lt;/tr&gt;
+				&lt;/thead&gt;
+
+				&lt;tbody&gt;`
+
+		data.patrols.forEach((patrol, index) =&gt; {
+
+			patrolsTableHTML += `
+				&lt;tr&gt;
+					&lt;td&gt;${index}&lt;/td&gt;
+					&lt;td&gt;${patrol.label}&lt;/td&gt;
+				&lt;/tr&gt;`
+		})
+
+		patrolsTableHTML += `
+				&lt;/tbody&gt;
+			&lt;/table&gt;`
+
+		// We have to find the best strategy.
+
+		const statisticsTable = []
+
+		data.strategies.forEach(strategy =&gt; {
+
+			const averageGuardianUtility = strategy.iterations.reduce((sum, iteration) =&gt; sum+iteration.guardianUtility, 0) / strategy.iterations.length
+			const averageRobberUtility = strategy.iterations.reduce((sum, iteration) =&gt; sum+iteration.robberUtility, 0) / strategy.iterations.length
+
+			statisticsTable.push({
+				iterations: strategy.iterations,
+				probabilities: strategy.probabilities.reduce((sum, probability) =&gt; `${sum}${probability.toFixed(2)} | `, &apos;&apos;).slice(0, -3),
+				guardianUtility: averageGuardianUtility,
+				robberUtility: averageRobberUtility,
+				strategy: strategy
+			})
+
+		})
+
+		const sortedStatisticsTable = statisticsTable.sort((s1, s2) =&gt; s2.guardianUtility - s1.guardianUtility)
+
+		const bestStreategy = sortedStatisticsTable[0].strategy
+
+		// We feed the chart with average evolution for the best strategy.
+
+		let chartData = []
+		let sum = 0
+
+		sortedStatisticsTable[0].iterations.forEach(iteration =&gt; {
+
+			chartData.push({
+				x: chartData.length,
+				y: (sum+=iteration.guardianUtility)/(chartData.length+1)
+			})
+
+		})
+
+		// Building the list of statistics.
+
+		let statisticsTableHTML = `
+			&lt;table class=&quot;striped centered&quot;&gt;
+				&lt;thead&gt;
+					&lt;tr&gt;
+						&lt;th&gt;Probabilities&lt;/th&gt;
+						&lt;th&gt;Guardian utility&lt;/th&gt;
+						&lt;th&gt;Robber utility&lt;/th&gt;
+					&lt;/tr&gt;
+				&lt;/thead&gt;
+
+				&lt;tbody&gt;`
+
+		sortedStatisticsTable.forEach(strategy =&gt; {
+
+			statisticsTableHTML += `
+				&lt;tr&gt;
+					&lt;td&gt;${strategy.probabilities}&lt;/td&gt;
+					&lt;td&gt;${Number(strategy.guardianUtility).toFixed(4)}&lt;/td&gt;
+					&lt;td&gt;${Number(strategy.robberUtility).toFixed(4)}&lt;/td&gt;
+				&lt;/tr&gt;`
+		})
+
+		statisticsTableHTML += `
+				&lt;/tbody&gt;
+			&lt;/table&gt;`
+
+		$(&apos;#modal-results p&apos;).html(`
+
+			&lt;div class=&quot;row&quot;&gt;
+				&lt;div class=&quot;col s12&quot;&gt;
+					&lt;ul class=&quot;tabs&quot;&gt;
+						&lt;li class=&quot;tab col s3&quot;&gt;&lt;a class=&quot;active&quot; href=&quot;#chart&quot;&gt;Chart&lt;/a&gt;&lt;/li&gt;
+						&lt;li class=&quot;tab col s3&quot;&gt;&lt;a href=&quot;#visualization&quot;&gt;Visualization&lt;/a&gt;&lt;/li&gt;
+						&lt;li class=&quot;tab col s3&quot;&gt;&lt;a href=&quot;#patrols&quot;&gt;Patrols&lt;/a&gt;&lt;/li&gt;
+						&lt;li class=&quot;tab col s3&quot;&gt;&lt;a href=&quot;#statistics&quot;&gt;Statistics&lt;/a&gt;&lt;/li&gt;
+					&lt;/ul&gt;
+				&lt;/div&gt;
+				&lt;div id=&quot;chart&quot; class=&quot;col s12&quot;&gt;
+					&lt;canvas width=&quot;100%&quot; height=&quot;400&quot; id=&quot;line-chart&quot;&gt;&lt;/canvas&gt;
+				&lt;/div&gt;
+				&lt;div id=&quot;visualization&quot; class=&quot;col s12&quot;&gt;
+					&lt;div id=&quot;liveSimulationLog&quot;&gt;Iteration running...&lt;/div&gt;
+					&lt;div id=&quot;liveSimulation&quot; class=&quot;s12&quot;&gt;
+					&lt;/div&gt;
+				&lt;/div&gt;
+				&lt;div id=&quot;patrols&quot; class=&quot;col s12&quot;&gt;
+					${patrolsTableHTML}
+				&lt;/div&gt;
+				&lt;div id=&quot;statistics&quot; class=&quot;col s12&quot;&gt;
+					${statisticsTableHTML}
+				&lt;/div&gt;
+			&lt;/div&gt;
+
+		`).modal(&apos;open&apos;)
+
+		$(&apos;#modal-results p ul.tabs&apos;).tabs()
+
+		const scatterChart = new Chart(&quot;line-chart&quot;, {
+			type: &apos;line&apos;,
+			data: {
+				datasets: [{
+					label: &apos;Best strategy utility over time.&apos;,
+					data: chartData
+				}]
+			},
+			options: {
+				maintainAspectRatio: false,
+				scales: {
+					xAxes: [{
+						type: &apos;linear&apos;,
+						position: &apos;bottom&apos;
+					}]
+				}
+			}
+		})
+
+		$(&apos;#export-gambit&apos;).removeAttr(&apos;disabled&apos;)
+
+		new LiveSimulation(this, data, bestStreategy, &apos;#liveSimulation&apos;).run()
+
+		return this
+
+	}
+
+	/**
+	 * Download a Gambit version of the server-computed paths.
+	 * /!\ Asynchronous as it relies on Saver::download!
+	 * 
+	 * @return {Results} chaining
+	 */
+	exportGambit(){
+
+		const distanceWeight = parseInt($(&apos;#distanceWeight&apos;).val())
+		const settings = this.interface.settings.getSettings()
+
+		const patrols = this.data.patrols
+		const robbers = this.interface.settings.robbers.getSettings().list
+		const vertices = settings.paths.vertices.filter(vertex =&gt; vertex.id != 0)
+
+		let patrolsListString = patrols.reduce((sum, patrol) =&gt; `${sum} &quot;${patrol.label}&quot;`,&apos;&apos;)
+
+		let attacksListString = &apos;&apos;
+
+		const attacks = []
+
+		robbers.forEach(robber =&gt; {
+
+			vertices.forEach(vertex =&gt; {
+
+				attacksListString += `&quot;Robber type ${robber} attacking ${vertex.id}&quot; `
+
+				attacks.push({robber: robber, target: vertex})
+
+			})
+
+		})
+
+		let rewardsString = &apos;&apos;
+
+		let numberString = [...Array(patrols.length * robbers.length * vertices.length).keys()].reduce((sum,index) =&gt; `${sum}${index+1} `, &apos;&apos;)
+
+		attacks.forEach(attack =&gt; {
+
+			patrols.forEach(patrol =&gt; {
+
+				let distance = 0
+
+				if (patrol.includes(attack.target.id))
+					for (let n = 0; patrol[n] !== attack.target.id; n++)
+						distance += settings.paths.edges.find(edge =&gt; (edge.source === patrol[n] &amp;&amp; edge.target === patrol[n+1]) || (edge.source === patrol[n+1] &amp;&amp; edge.target === patrol[n])).length
+				else 
+					distance = Infinity
+
+				console.log(patrol.label)
+				console.log(attack.target.id)
+				console.log(distance)
+
+				const catchProbability = settings.robbers.catchProbability[&apos;&apos;+attack.robber] * distanceWeight/( distance + distanceWeight )
+
+				console.log(attack, catchProbability)
+
+				const guardianUtility = catchProbability * attack.target.guardiansReward - (1 - catchProbability) * attack.target.guardiansCost
+
+				const robberUtility = - catchProbability * attack.target.robberSettings[attack.robber].cost + (1 - catchProbability) * attack.target.robberSettings[attack.robber].reward
+
+				rewardsString += `{ &quot;${patrol.label} vs ${attack.robber} - ${attack.target.id}&quot; ${guardianUtility}, ${robberUtility} }\n`
+
+			})
+
+		})
+
+		const nfg = 
+`NFG 1 R &quot;Patrolling game&quot; { &quot;Guardian&quot; &quot;Robber&quot; }
+
+{ { ${patrolsListString}}
+{ ${attacksListString}}
+}
+&quot;&quot;
+
+{
+${rewardsString}}
+${numberString}
+`
+
+		const date = new Date()
+
+		this.interface.settings.saver.download(
+			`${date.toLocaleDateString()}-${date.toLocaleTimeString().replace(&apos;:&apos;, &apos;-&apos;)}.nfg`,
+		nfg)
+
+		return this
+	}
+
+}</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

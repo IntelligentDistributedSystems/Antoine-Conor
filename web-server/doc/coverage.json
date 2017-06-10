@@ -1,0 +1,47 @@
+{
+  "coverage": "100%",
+  "expectCount": 94,
+  "actualCount": 94,
+  "files": {
+    "js/classes/interface/settings/subsettings/Graph.js": {
+      "expectCount": 18,
+      "actualCount": 18,
+      "undocumentLines": []
+    },
+    "js/classes/Interface.js": {
+      "expectCount": 8,
+      "actualCount": 8,
+      "undocumentLines": []
+    },
+    "js/classes/interface/results/LiveSimulation.js": {
+      "expectCount": 26,
+      "actualCount": 26,
+      "undocumentLines": []
+    },
+    "js/classes/interface/settings/files/Loader.js": {
+      "expectCount": 8,
+      "actualCount": 8,
+      "undocumentLines": []
+    },
+    "js/classes/interface/Results.js": {
+      "expectCount": 8,
+      "actualCount": 8,
+      "undocumentLines": []
+    },
+    "js/classes/interface/settings/subsettings/Robbers.js": {
+      "expectCount": 11,
+      "actualCount": 11,
+      "undocumentLines": []
+    },
+    "js/classes/interface/settings/files/Saver.js": {
+      "expectCount": 5,
+      "actualCount": 5,
+      "undocumentLines": []
+    },
+    "js/classes/interface/Settings.js": {
+      "expectCount": 10,
+      "actualCount": 10,
+      "undocumentLines": []
+    }
+  }
+}

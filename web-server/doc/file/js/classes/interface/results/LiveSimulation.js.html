@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../../">
+  <title data-ice="title">js/classes/interface/results/LiveSimulation.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/Interface.js~Interface.html">Interface</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/Results.js~Results.html">Results</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/Settings.js~Settings.html">Settings</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface/results</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/results/LiveSimulation.js~LiveSimulation.html">LiveSimulation</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface/settings/files</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/files/Loader.js~Loader.html">Loader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/files/Saver.js~Saver.html">Saver</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface/settings/subsettings</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/subsettings/Graph.js~Graph.html">Graph</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/subsettings/Robbers.js~Robbers.html">Robbers</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">js/classes/interface/results/LiveSimulation.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * Class enabling us to play a live simulation of the best strategy 
+ * sent by the server.
+ */
+
+export default class LiveSimulation{
+
+	/**
+	 * @param  {Results} results - Results object that instanciated this simulation.
+	 * @param  {Object} computedData - Data computed by the server.
+	 * @param  {Object} bestStrategy - Strategy previously built.
+	 * @param  {string} selector - jQuery selector for where to put the simulation.
+	 */
+	constructor(results, computedData, bestStreategy, selector){
+
+		/**
+		 * Results object that instanciated this simulation.
+		 * @type {Results}
+		 */
+		this.results = results
+
+		/**
+		 * Original cytoscape graph.
+		 * @type {cytoscape}
+		 */
+		this.originalCy = this.results.interface.settings.graph.cy
+		window.liveSimulation = this
+
+		/**
+		 * Data computed by the server.
+		 * @type {Object}
+		 */
+		this.computedData = computedData
+
+		/**
+		 * Strategy previously built.
+		 * @type {Object}
+		 */
+		this.bestStreategy = bestStreategy
+
+		/**
+		 * jQuery selector for where to put the simulation.
+		 * @type {string}
+		 */
+		this.selector = selector
+
+		/**
+		 * LiveSimulation graph stylesheet. 
+		 * @type {Array&lt;Object&gt;}
+		 */
+		this.stylesheet = [{
+				selector: &apos;node&apos;,
+				style: {
+					height: 20,
+					width: 20
+				}
+			},
+			{
+				selector: &apos;edge&apos;,
+				style: {
+					&apos;curve-style&apos;: &apos;haystack&apos;,
+					&apos;haystack-radius&apos;: 0,
+					width: 5,
+					opacity: 0.5,
+					&apos;line-color&apos;: &apos;grey&apos;
+				}
+			},
+			{
+				selector: &apos;.base&apos;,
+				style: {
+					&apos;background-color&apos;: &apos;#61bffc&apos;
+				}
+			},
+			{
+				selector: &apos;.secured&apos;,
+				style: {
+					&apos;background-color&apos;: &apos;#81c784&apos;
+				}
+			},
+			{
+				selector: &apos;.robbed&apos;,
+				style: {
+					&apos;background-color&apos;: &apos;#e57373&apos;
+				}
+			},
+			{
+				selector: &apos;.caught&apos;,
+				style: {
+					&apos;background-color&apos;: &apos;#E57373&apos;
+				}
+			},
+			{
+				selector: &apos;.guardian&apos;,
+				style: {
+					height: 40,
+					width: 40,
+					&apos;background-image&apos;: &apos;/img/guardian-40.png&apos;,
+					&apos;background-opacity&apos;: 0
+				}
+			},
+			{
+				selector: &apos;.robber&apos;,
+				style: {
+					height: 40,
+					width: 40,
+					&apos;background-image&apos;: &apos;/img/robber-40.png&apos;,
+					&apos;background-opacity&apos;: 0
+				}
+			}
+		]
+
+		/**
+		 * LiveSImulation cytoscape graph.
+		 * @type {cytoscape}
+		 */
+		this.cy = cytoscape({
+			container: $(this.selector),
+
+			boxSelectionEnabled: false,
+			autounselectify: false,
+
+			style: this.stylesheet
+		})
+
+		this.cy.minZoom(0.5)
+		this.cy.maxZoom(2)
+
+		// Import nodes and vertices from cy object.
+
+		this.originalCy.nodes().forEach(node =&gt; {
+			this.cy.add({
+				data: {id: node.id()},
+				position: node.position(),
+				group: &apos;nodes&apos;,
+				classes: `node${(node.id() === &apos;0&apos;) ? &apos; base&apos; : &apos;&apos;}`,
+				selectable: false,
+				locked: true,
+				grabbable: false
+			})
+		})
+
+		/**
+		 * Base du gardien.
+		 * 
+		 * @type {Node}
+		 */
+		this.base = this.cy.nodes(&apos;[id = &quot;0&quot;]&apos;)
+
+		this.originalCy.edges().forEach(edge =&gt; {
+			this.cy.add({
+				data: {
+					id: edge.id(),
+					source: edge.source().id(),
+					target: edge.target().id()
+				},
+				group: &apos;edges&apos;,
+				selectable: false,
+				locked: true,
+				grabbable: false
+			})
+		})
+
+		// Add robber and guardian.
+
+		this.cy.add({
+			data: {id: &apos;robber&apos;},
+			position: {
+				x: Math.cos(new Date()/1000) * 20,
+				y: Math.sin(new Date()/1000) * 20
+			},
+			classes: &apos;robber&apos;,
+			selectable: false,
+			locked: false,
+			grabbable: false
+		})
+
+		this.cy.add({
+			data: {id: &apos;guardian&apos;},
+			position: Object.assign({}, this.cy.nodes(&apos;[id = &quot;0&quot;]&apos;).position()),
+			classes: &apos;guardian&apos;,
+			selectable: false,
+			locked: false,
+			grabbable: false
+		})
+
+		/**
+		 * Node representing the robber.
+		 * 
+		 * @type {Node}
+		 */
+		this.robber = this.cy.nodes(&apos;#robber&apos;)
+
+		/**
+		 * Node representing the guardian.
+		 * 
+		 * @type {Node}
+		 */
+		this.guardian = this.cy.nodes(&apos;#guardian&apos;)
+	}
+
+	/**
+	 * Launch a new iterration.
+	 * 
+	 * @return {LiveSimulation} chaining
+	 */
+	newIteration(){
+		/**
+		 * The robber&apos;s current target.
+		 * @type {Node}
+		 */
+		this.robberTarget = this.randomTarget()
+		
+		/**
+		 * Startup tmestamp (for the robber movement).
+		 * @type {Date}
+		 */
+		this.iterationStart = new Date()
+		
+		/**
+		 * How many ms before the robber hit the target?
+		 * @type {Number}
+		 */
+		this.countdown = Math.random()*2500*this.cy.filter(&apos;.node&apos;).length + 2500
+		
+		/**
+		 * The path the guardian will follow.
+		 * @type {Array&lt;Node&gt;}
+		 */
+		this.guardianPath = this.randomPath()
+
+		/**
+		 * The last node the guardian visited.
+		 * @type {Node}
+		 */
+		this.guardianLastVisit = this.base
+		this.guardian.position(Object.assign({}, this.base.position()))
+
+		/**
+		 * The node the guardian is going to.
+		 * @type {Node}
+		 */
+		this.guardianTarget = this.nextGuardianTarget(true)
+
+		return this
+	}
+
+	/**
+	 * Render the next step.
+	 * 
+	 * @return {void} undefined
+	 */
+	nextStep(){
+		// fix a bug when graph is not showing on page change.
+		this.cy.resize()
+		this.cy.fit(this.cy.filter(&apos;.node&apos;))
+
+		// If the user dismiss the results, we stop the simulation.
+		if ($(this.selector).length === 0)
+			return console.info(&apos;Live simulation stopped.&apos;)
+
+		const delta = (this.iterationStart.valueOf() + this.countdown - new Date().valueOf())/50
+
+		if (delta &lt;= 0)
+			return this.robberHitTarget()
+
+		this.robber.position({
+			x: Math.cos(new Date()/1000) * delta + this.robberTarget.position().x,
+			y: Math.sin(new Date()/1000) * delta + this.robberTarget.position().y
+		})
+		this.robber.data(&apos;refresh&apos;, Math.random())
+
+		const guardianPosition = this.guardian.position()
+		const targetPosition = this.guardianTarget.position()
+
+		guardianPosition.x = guardianPosition.x * 0.95 + targetPosition.x * 0.05
+		guardianPosition.y = guardianPosition.y * 0.95 + targetPosition.y * 0.05
+		this.guardian.data(&apos;refresh&apos;, Math.random())
+
+		if ((guardianPosition.x - targetPosition.x)**2 + (guardianPosition.y - targetPosition.y)**2 &lt; 5){
+			this.guardianTarget.addClass(&apos;secured&apos;)
+			this.guardianLastVisit = this.guardianTarget
+			const newGuardianTarget = this.nextGuardianTarget()
+			if (newGuardianTarget !== null)
+				this.guardianTarget = newGuardianTarget
+			//else 
+			//	return this.everyTargetIsSecured()
+		}
+
+		setTimeout(() =&gt; this.nextStep(), 50)
+	}
+
+	/**
+	 * Handle what happen when the robber hit his targer.
+	 * /!\ Is asynchronous because of LiveSimulation::iterationEnd use.
+	 * 
+	 * @return {LiveSimulation} chaining
+	 */
+
+	robberHitTarget(){
+		if (!this.robberTarget.hasClass(&apos;secured&apos;)){
+			this.robberTarget.addClass(&apos;robbed&apos;)
+			$(&apos;#liveSimulationLog&apos;).text(&apos;Robbed!&apos;)
+		} else {
+			this.robberTarget.removeClass(&apos;secured&apos;).addClass(&apos;caught&apos;)
+			$(&apos;#liveSimulationLog&apos;).text(&apos;Caught!&apos;)
+		}
+		return this.iterationEnd()
+
+	}
+
+	/**
+	 * @return {Array&lt;Node&gt;}
+	 */
+	randomPath(){
+
+		let fairDiceRoll = Math.random()
+
+		let pathNumber = -1
+
+		while(fairDiceRoll &gt; 0){
+			pathNumber++
+			fairDiceRoll-=this.bestStreategy.probabilities[pathNumber]
+		}
+
+		return this.computedData.patrols[pathNumber].slice(1).map(nodeId =&gt; 
+			this.cy.nodes(`[id = &quot;${nodeId}&quot;]`)[0]
+		)
+	}
+
+	/**
+	 * Call for another iteration when the running one finishes.
+	 * 
+	 * @return {LiveSimulation} chaining
+	 */
+	iterationEnd(){
+		setTimeout(() =&gt; {
+			this.cy.nodes().forEach(node =&gt; node.removeClass(&apos;secured&apos;).removeClass(&apos;robbed&apos;).removeClass(&apos;caught&apos;))
+			this.run()
+			$(&apos;#liveSimulationLog&apos;).text(&apos;Iteration running...&apos;)
+		}, 1000)
+
+		return this
+	}
+
+	/**
+	 * Give the next target the Guardian should go for.
+	 * 
+	 * @param  {Boolean} init - Is this the first target?
+	 * @return {Node} next target for the guardian.
+	 */
+	nextGuardianTarget(init){
+		if (init)
+			return this.guardianPath[0]
+		
+		const index = this.guardianPath.indexOf(this.guardianTarget)
+		if (index+1 === this.guardianPath.length)
+			return null
+		
+		return this.guardianPath[index+1]
+	}
+
+	/**
+	 * Get a random target according to the distribution (see RobbersInterest).
+	 *
+	 * @return {Node} a random target
+	 */
+	randomTarget(){
+		let distribution = []
+		this.originalCy.nodes(&apos;[id != &quot;0&quot;]&apos;).forEach(node =&gt; {
+			for (let i=0;i&lt;node.data(&apos;robbersInterest&apos;);i++)
+				distribution.push(node.id())
+		})
+
+		let randomId = distribution[Math.floor(Math.random()*distribution.length)]
+
+		return this.cy.nodes(`#${randomId}`)[0]
+	}
+
+	/**
+	 * Start the simulation.
+	 *
+	 * @return {LiveSimulation} chaining
+	 */
+	run(){
+		this.newIteration()
+		this.nextStep()
+
+		return this
+	}
+
+}</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

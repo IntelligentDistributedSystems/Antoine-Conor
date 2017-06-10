@@ -1,15 +1,53 @@
+/**
+ * Class enabling us to play a live simulation of the best strategy 
+ * sent by the server.
+ */
+
 export default class LiveSimulation{
 
+	/**
+	 * @param  {Results} results - Results object that instanciated this simulation.
+	 * @param  {Object} computedData - Data computed by the server.
+	 * @param  {Object} bestStrategy - Strategy previously built.
+	 * @param  {string} selector - jQuery selector for where to put the simulation.
+	 */
 	constructor(results, computedData, bestStreategy, selector){
 
+		/**
+		 * Results object that instanciated this simulation.
+		 * @type {Results}
+		 */
 		this.results = results
+
+		/**
+		 * Original cytoscape graph.
+		 * @type {cytoscape}
+		 */
 		this.originalCy = this.results.interface.settings.graph.cy
 		window.liveSimulation = this
 
+		/**
+		 * Data computed by the server.
+		 * @type {Object}
+		 */
 		this.computedData = computedData
+
+		/**
+		 * Strategy previously built.
+		 * @type {Object}
+		 */
 		this.bestStreategy = bestStreategy
+
+		/**
+		 * jQuery selector for where to put the simulation.
+		 * @type {string}
+		 */
 		this.selector = selector
 
+		/**
+		 * LiveSimulation graph stylesheet. 
+		 * @type {Array<Object>}
+		 */
 		this.stylesheet = [{
 				selector: 'node',
 				style: {
@@ -71,6 +109,10 @@ export default class LiveSimulation{
 			}
 		]
 
+		/**
+		 * LiveSImulation cytoscape graph.
+		 * @type {cytoscape}
+		 */
 		this.cy = cytoscape({
 			container: $(this.selector),
 
@@ -97,6 +139,11 @@ export default class LiveSimulation{
 			})
 		})
 
+		/**
+		 * Base du gardien.
+		 * 
+		 * @type {Node}
+		 */
 		this.base = this.cy.nodes('[id = "0"]')
 
 		this.originalCy.edges().forEach(edge => {
@@ -136,22 +183,72 @@ export default class LiveSimulation{
 			grabbable: false
 		})
 
+		/**
+		 * Node representing the robber.
+		 * 
+		 * @type {Node}
+		 */
 		this.robber = this.cy.nodes('#robber')
+
+		/**
+		 * Node representing the guardian.
+		 * 
+		 * @type {Node}
+		 */
 		this.guardian = this.cy.nodes('#guardian')
 	}
 
+	/**
+	 * Launch a new iterration.
+	 * 
+	 * @return {LiveSimulation} chaining
+	 */
 	newIteration(){
+		/**
+		 * The robber's current target.
+		 * @type {Node}
+		 */
 		this.robberTarget = this.randomTarget()
+		
+		/**
+		 * Startup tmestamp (for the robber movement).
+		 * @type {Date}
+		 */
 		this.iterationStart = new Date()
+		
+		/**
+		 * How many ms before the robber hit the target?
+		 * @type {Number}
+		 */
 		this.countdown = Math.random()*2500*this.cy.filter('.node').length + 2500
+		
+		/**
+		 * The path the guardian will follow.
+		 * @type {Array<Node>}
+		 */
 		this.guardianPath = this.randomPath()
+
+		/**
+		 * The last node the guardian visited.
+		 * @type {Node}
+		 */
 		this.guardianLastVisit = this.base
 		this.guardian.position(Object.assign({}, this.base.position()))
+
+		/**
+		 * The node the guardian is going to.
+		 * @type {Node}
+		 */
 		this.guardianTarget = this.nextGuardianTarget(true)
 
 		return this
 	}
 
+	/**
+	 * Render the next step.
+	 * 
+	 * @return {void} undefined
+	 */
 	nextStep(){
 		// fix a bug when graph is not showing on page change.
 		this.cy.resize()
@@ -192,6 +289,13 @@ export default class LiveSimulation{
 		setTimeout(() => this.nextStep(), 50)
 	}
 
+	/**
+	 * Handle what happen when the robber hit his targer.
+	 * /!\ Is asynchronous because of LiveSimulation::iterationEnd use.
+	 * 
+	 * @return {LiveSimulation} chaining
+	 */
+
 	robberHitTarget(){
 		if (!this.robberTarget.hasClass('secured')){
 			this.robberTarget.addClass('robbed')
@@ -204,6 +308,9 @@ export default class LiveSimulation{
 
 	}
 
+	/**
+	 * @return {Array<Node>}
+	 */
 	randomPath(){
 
 		let fairDiceRoll = Math.random()
@@ -220,6 +327,11 @@ export default class LiveSimulation{
 		)
 	}
 
+	/**
+	 * Call for another iteration when the running one finishes.
+	 * 
+	 * @return {LiveSimulation} chaining
+	 */
 	iterationEnd(){
 		setTimeout(() => {
 			this.cy.nodes().forEach(node => node.removeClass('secured').removeClass('robbed').removeClass('caught'))
@@ -230,6 +342,12 @@ export default class LiveSimulation{
 		return this
 	}
 
+	/**
+	 * Give the next target the Guardian should go for.
+	 * 
+	 * @param  {Boolean} init - Is this the first target?
+	 * @return {Node} next target for the guardian.
+	 */
 	nextGuardianTarget(init){
 		if (init)
 			return this.guardianPath[0]
@@ -241,9 +359,11 @@ export default class LiveSimulation{
 		return this.guardianPath[index+1]
 	}
 
-	/*
-	*	Target get according to the distribution (see RobbersInterest)
-	*/
+	/**
+	 * Get a random target according to the distribution (see RobbersInterest).
+	 *
+	 * @return {Node} a random target
+	 */
 	randomTarget(){
 		let distribution = []
 		this.originalCy.nodes('[id != "0"]').forEach(node => {
@@ -256,6 +376,11 @@ export default class LiveSimulation{
 		return this.cy.nodes(`#${randomId}`)[0]
 	}
 
+	/**
+	 * Start the simulation.
+	 *
+	 * @return {LiveSimulation} chaining
+	 */
 	run(){
 		this.newIteration()
 		this.nextStep()

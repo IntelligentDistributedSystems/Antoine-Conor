@@ -1,9 +1,18 @@
+/**
+ * Sub-setting for robbers manipulation.
+ */
 export default class Robbers{
 
+	/**
+	* @param {Settings} settings - Settings object using this robbers. 
+	*/
 	constructor(settings){
 
 		// Fields
-
+		/**
+		 * Settings object using this robbers.
+		 * @type {Settings}
+		 */
 		this.settings = settings
 
 		// DOM listeners
@@ -61,28 +70,50 @@ export default class Robbers{
 
 	}
 
-	/*
-	*	Initialize the robbers by setting default values.
-	*/
+	/**
+	 * Initialize the robbers by setting default values.
+	 *
+	 * @return {Robbers} chaining
+	 */
 	init(){
 
 		if (typeof this.list !== 'undefined')
 			[...this.list].forEach(robberId => this.removeRobber(robberId))
 
+		/**
+		 * Number of robbers created until now.
+		 * Deleting a robber doesn't decrease that counter.
+		 * 
+		 * @type {Number}
+		 */
 		this.numberOfRobbersCreated = 0
 
+		/**
+		 * Set of all robbers.
+		 * @todo We should probably change the name of this variable.
+		 * 
+		 * @type {Set<Object>}
+		 */
 		this.list = new Set()
 
+		/**
+		 * Probability of beeing caught for each robber.
+		 *
+		 * @type {Map<Number, Number>}
+		 */
 		this.catchProbability = new Map()
 
 		return this
 	}
 
-	/*
-	*	Add a robber to the settings.
-	*	His card can be seen in the "Robbers" tab.
-	*	His settings are set to default in every target.
-	*/
+	/**
+	 * Add a robber to the settings.
+	 * His card can be seen in the "Robbers" tab.
+	 * His settings are set to default in every target.
+	 *
+	 * @param {Number} catchProbability - the catch probability of the new robber.
+	 * @return {Number} the new robber id.
+	 */
 	newRobber(catchProbability = 0.5){
 
 		const robberId = this.numberOfRobbersCreated++
@@ -118,11 +149,14 @@ export default class Robbers{
 		return robberId
 	}
 
-	/*
-	*	Remove a robber from the settings.
-	*	His card gets removed and references to his settings are
-	*	removed from each target.
-	*/
+	/**
+	 * Remove a robber from the settings.
+	 * His card gets removed and references to his settings are
+	 * removed from each target.
+	 *
+	 * @param {Number} robberId - the robber to remove.
+	 * @return {Robbers} chaining
+	 */
 	removeRobber(robberId){
 
 		console.info(`Removing robber ${robberId}...`)
@@ -136,10 +170,13 @@ export default class Robbers{
 		return this
 	}
 
-	/*
-	*	Display a modal enabling the user to set the
-	*	robber properties for every target.
-	*/
+	/**
+	 * Display a modal enabling the user to set the
+	 * robber properties for every target.
+	 * 
+	 * @param {Number} robberId - the robber to configure.
+	 * @return {Robbers} chaining
+	 */
 	configureRobber(robberId){
 
 		console.info(`Configuring robber ${robberId+1}.`)
@@ -181,9 +218,11 @@ export default class Robbers{
 		return this
 	}
 
-	/*
-	*	Return the list of every robber.
-	*/
+	/**
+ 	 * Return the list of every robber.
+	 *
+	 * @return {Object} Robbers settings.
+	 */
 	getSettings(){
 		return {
 			list: [...this.list],

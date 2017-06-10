@@ -1,4 +1,4 @@
-/*
+/**
 *	Class representing the graph of the simulation.
 *
 *	You can add targets, delete targets, and link
@@ -17,12 +17,22 @@
 
 export default class Graph {
 
+	/**
+	 * @param {Settings} settings - Settings object using this graph. 
+	 */
 	constructor(settings){
 
 		// Fields
-
+		/**
+		 * Settings object using this graph.
+		 * @type {Settings}
+		 */
 		this.settings = settings
 
+		/**
+		 * Graph style.
+		 * @type {Object}
+		 */
 		this.stylesheet = [{
 				selector: 'node',
 				style: {
@@ -61,6 +71,10 @@ export default class Graph {
 			}
 		]
 
+		/**
+		 * Cytoscape graph linked to this graph.
+		 * @type {cytoscape}
+		 */
 		this.cy = window.cy = cytoscape({
 			container: $('#graph'),
 
@@ -76,13 +90,20 @@ export default class Graph {
 		window.graph = this
 
 		// Refreshing the length
-
+		/**
+		 * Interval that refresh the cytoscape graph.
+		 * @return {Interval}
+		 */
 		this.refreshInterval = setInterval(() => cy.edges().forEach(edge => edge.data('refresh', Math.random())), 250)
 
 		// DOM listeners
 
 		$(document).on('click', '.qtip-content .link', event => {
 			console.info("Linking a target to another...")
+			/**
+			 * What the user is currently doing.
+			 * @type {String}
+			 */
 			this.currentAction = 'linking'
 			$('.qtip').qtip('hide')
 		})
@@ -144,6 +165,10 @@ export default class Graph {
 				}
 			}
 
+			/**
+			 * The node that was clicked the last.
+			 * @type {Node}
+			 */
 			this.lastSelectedNode = event.target
 		})
 
@@ -158,14 +183,38 @@ export default class Graph {
 		this.init()
 	}
 
-	/*
-	*	Initialize the graph by setting default values.
-	*/
+	/**
+	 * Initialize the graph by setting default values.
+	 *
+	 * @return {Graph} chaining
+	 */
 	init(){
+		/**
+		 * Number of edges created.
+		 * Deleting an edge doesn't decrease that counter.
+		 * 
+		 * @type {Number}
+		 */
 		this.nbrEdgesCreated = 0
+
+		/**
+		 * Number of created nodes.
+		 * Deleting a node doesn't decrease this counter.
+		 * 
+		 * @type {Number}
+		 */
 		this.nbrNodesCreated = 0
 
+		/**
+		 * The node that was clicked the last.
+		 * @type {Node}
+		 */
 		this.lastSelectedNode = null
+
+		/**
+		 * What the user is currently doing.
+		 * @type {String}
+		 */
 		this.currentAction = null
 
 		this.cy.elements().forEach(element => element.remove())
@@ -173,9 +222,11 @@ export default class Graph {
 		return this
 	}
 
-	/*
-	*	Sort targets with the CoSE layout (by Bilkent University).
-	*/
+	/**
+	 * Sort targets with the CoSE layout (by Bilkent University).
+	 *
+	 * @return {Graph} chaining
+	 */
 	sort(){
 		this.cy.layout({
 			name: 'cose-bilkent',
@@ -185,9 +236,11 @@ export default class Graph {
 		return this
 	}
 
-	/*
-	*	Reset the current action, selected target and hide the tips.
-	*/
+	/**
+	 * Reset the current action, selected target and hide the tips.
+	 *
+	 * @return {Graph} chaining
+	 */
 	reset(){
 		this.lastSelectedNode = null
 		this.currentAction = null
@@ -196,10 +249,14 @@ export default class Graph {
 		return this
 	}
 
-	/*
-	*	Link two targets together. You have to specify the ids.
-	*/
 
+	/**
+	 * Link two targets together. You have to specify the ids.
+	 * 
+	 * @param  {string} source - source node id.
+	 * @param  {string} target - target node id.
+	 * @return {Graph} chaining
+	 */
 	link(source, target){
 		this.cy.add({
 			data: {
@@ -218,16 +275,19 @@ export default class Graph {
 		return this
 	}
 
-	/*
-	*	Add a node to the graph.
-	*	
-	*	Arguments :
-	*		- position should be an object with fields x and y.
-	*		- base is a boolean defining if the node is the base.
-	*
-	*	Base nodes can not been attacket nor defended.
-	*	Patrols have to start and end at the base.
-	*/
+	/**
+	 * Add a node to the graph.
+	 *
+	 * Base nodes can not been attacket nor defended.
+	 * Patrols have to start at the base.
+	 * 
+	 * @param {Object} position - node coordinates.
+	 * @param {Boolean} base - do you want to add a base (you shouldn't, except the first one)
+	 * @param {Number} robbersInterest - How often will robbers attack this target compared to others.
+	 * @param {Number} guardiansCost - How much will it cost to the guardian to not catch the robber on this node.
+	 * @param {Number} guardiansReward - How much will a guardian earn from catching a robber on this node.
+	 * @return {string} the new node id.
+	 */
 	addNode(position = {x: 0, y: 0}, base = false, robbersInterest = 1, guardiansCost = 1, guardiansReward = 1){
 		const newNodeId = this.cy.nodes().length
 
@@ -284,23 +344,32 @@ export default class Graph {
 		return newNodeId
 	}
 
-	/*
-	*	Return the length of an edge.
-	*/
+	/**
+	 * Return the length of an edge.
+	 * 
+	 * @param  {Edge} edge - the edge to measure.
+	 * @return {Number} the length.
+	 */
 	length(edge){
 		return this.distance(edge.source(), edge.target())
 	}
 
-	/*
-	*	Return the distance between dwo vertices.
-	*/
+	/**
+	 *	Return the distance between dwo vertices.
+	 *
+	 * @param  {Node} node1 - the first node.
+	 * @param  {Node} node2 - the second node.
+	 * @return {Number} the distance.
+	 */
 	distance(node1, node2){
 		return ((node1.position().x - node2.position().x)**2 + (node1.position().y - node2.position().y)**2)**0.5
 	}
 
-	/*
-	*	Concatenate settings into a JSON object.
-	*/
+	/**
+	 *	Concatenate settings into a JSON object.
+	 *	
+	 * @return {Object} concatenated settings. 
+	 */
 	getSettings(){
 		return {
 			vertices: Object.keys(cy.nodes())

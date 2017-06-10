@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../../../">
+  <title data-ice="title">js/classes/interface/settings/files/Loader.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/Interface.js~Interface.html">Interface</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/Results.js~Results.html">Results</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/Settings.js~Settings.html">Settings</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface/results</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/results/LiveSimulation.js~LiveSimulation.html">LiveSimulation</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface/settings/files</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/files/Loader.js~Loader.html">Loader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/files/Saver.js~Saver.html">Saver</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface/settings/subsettings</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/subsettings/Graph.js~Graph.html">Graph</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/subsettings/Robbers.js~Robbers.html">Robbers</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">js/classes/interface/settings/files/Loader.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * Loader enables us to load settings from an object or from a file.
+ */
+export default class Loader {
+
+	/**
+	 * @param {Settings} settings - Settings object using this loader. 
+	 */
+	constructor(settings){
+
+		/**
+		 * Settings object using this loader. 
+		 * @type {Settings}
+		 */
+		this.settings = settings
+
+		/**
+		 * Default settings.
+		 * @type {Object}
+		 */
+		this.defaultSettings = 
+			{
+			  &quot;general&quot;: {
+			    &quot;numberOfIterations&quot;: 20,
+			    &quot;distanceWeight&quot;: 200
+			  },
+			  &quot;paths&quot;: {
+			    &quot;vertices&quot;: [
+			      {
+			        &quot;id&quot;: 0,
+			        &quot;position&quot;: {
+			          &quot;x&quot;: 93.74723822180408,
+			          &quot;y&quot;: 20
+			        },
+			        &quot;robbersInterest&quot;: 1,
+			        &quot;guardiansCost&quot;: 1,
+			        &quot;guardiansReward&quot;: 1,
+			        &quot;robberSettings&quot;: {
+			          &quot;0&quot;: {
+			            &quot;cost&quot;: 1,
+			            &quot;reward&quot;: 1
+			          }
+			        }
+			      },
+			      {
+			        &quot;id&quot;: 1,
+			        &quot;position&quot;: {
+			          &quot;x&quot;: 20.252761778195918,
+			          &quot;y&quot;: 20
+			        },
+			        &quot;robbersInterest&quot;: 1,
+			        &quot;guardiansCost&quot;: 1,
+			        &quot;guardiansReward&quot;: 1,
+			        &quot;robberSettings&quot;: {
+			          &quot;0&quot;: {
+			            &quot;cost&quot;: 1,
+			            &quot;reward&quot;: 1
+			          }
+			        }
+			      }
+			    ],
+			    &quot;edges&quot;: [
+			      {
+			        &quot;source&quot;: 0,
+			        &quot;target&quot;: 1,
+			        &quot;length&quot;: 73.49447644360816
+			      }
+			    ]
+			  },
+			  &quot;robbers&quot;: {
+			    &quot;list&quot;: [
+			      0
+			    ],
+			    &quot;catchProbability&quot;: {
+			      &quot;0&quot;: 0.5
+			    }
+			  }
+			}
+	}
+
+	/**
+	 * Load the settings after checking if they are corrupted or not.
+	 *
+	 * @param {Object} settings - JSON representation of the settings.
+	 * @return {Loader} chaining
+	 */
+	load(settings){
+		let corruptionMessage = this.checkCorruption(settings)
+		if (corruptionMessage)
+			console.error(corruptionMessage)
+
+		this.settings.init()
+
+		$(&apos;#numberOfIterations&apos;).val(settings.general.numberOfIterations)
+		$(&apos;#distanceWeight&apos;).val(settings.general.distanceWeight)
+
+		// Id maps (loaded ids =&gt; current ids)
+
+		const verticesIdMap = new Map()
+		const robbersIdMap = new Map()
+
+		settings.robbers.list.forEach(robberId =&gt; {
+			robbersIdMap.set(robberId, this.settings.robbers.newRobber(1 - settings.robbers.catchProbability[`${robberId}`]))
+		})
+
+		settings.paths.vertices.forEach(vertex =&gt; {
+
+			verticesIdMap.set(vertex.id, this.settings.graph.addNode(vertex.position, vertex.id === 0, vertex.robbersInterest, vertex.guardiansCost, vertex.guardiansReward))
+
+			const newNodeId = verticesIdMap.get(vertex.id)
+
+			settings.robbers.list.forEach(robberId =&gt; {
+				const newRobberId = robbersIdMap.get(robberId)
+
+				this.settings.graph.cy.nodes(`[id = &quot;${newNodeId}&quot;]`).data(&apos;robberSettings&apos;).set(newRobberId, vertex.robberSettings[robberId])
+			})
+
+		})
+
+		settings.paths.edges.forEach(edge =&gt; {
+			this.settings.graph.link(
+				verticesIdMap.get(edge.source), 
+				verticesIdMap.get(edge.target))
+		})
+
+		this.settings.graph.cy.fit()
+
+		console.log(&apos;Settings loaded&apos;)
+
+		return this
+	}
+
+	/**
+	 * Load the settings object from a JSON file on client&apos;s computer.
+	 * /!\ May be asynchronous depending on browsers implementation.
+	 * 
+	 * @return {Loader} chaining
+	 */
+	import(){
+		const input = document.createElement(&apos;input&apos;)
+		input.setAttribute(&apos;type&apos;, &apos;file&apos;)
+
+		input.style.display = &apos;none&apos;
+
+		input.addEventListener(&apos;change&apos;, event =&gt; {
+
+			const file = input.files[0]
+
+			const reader = new FileReader()
+			reader.onload = event =&gt; {
+				try {
+					this.load(JSON.parse(atob(event.target.result.split(&apos;,&apos;).pop())))
+				} catch (e) {
+					console.error(&apos;The given config file was not a valid JSON file.&apos;)
+				}
+			}
+
+			reader.readAsDataURL(file)
+
+			document.body.removeChild(input)
+
+		})
+
+		document.body.appendChild(input)
+
+		input.click()
+
+		return this
+	}
+
+	/**
+	 * Initialize the graph by setting default values.
+	 * 
+	 * @return {Loader} chaining
+	 */
+	loadDefault(){
+		return this.load(this.defaultSettings)
+	}
+
+	/**
+	 * Check the corruption of given settings as JSON object.
+	 * 
+	 * @param  {Object} settings - settings to check if they are corrupted. 
+	 * @return {string | false} string (== true) describing the error 
+	 * 	if corrupted, false else.
+	 */
+	checkCorruption(settings){
+
+		// Fields presence
+
+		if (typeof settings === &apos;undefined&apos;)
+			return `No settings submitted.`
+
+		if (typeof settings.general === &apos;undefined&apos;)
+			return `No general settings submitted.`
+
+		if (typeof settings.paths === &apos;undefined&apos;)
+			return `No paths settings submitted.`
+
+		if (typeof settings.paths.vertices === &apos;undefined&apos;)
+			return `No vertices settings submitted.`
+
+		if (typeof settings.paths.edges === &apos;undefined&apos;)
+			return `No edges settings submitted.`
+
+		if (typeof settings.robbers === &apos;undefined&apos;)
+			return `No robbers settings submitted.`
+
+		if (typeof settings.robbers.list === &apos;undefined&apos;)
+			return `No robbers list submitted.`
+
+		if (typeof settings.robbers.catchProbability === &apos;undefined&apos;)
+			return `No catch probability settings submitted.`
+
+		// settings integrity
+
+		const robbersList = settings.robbers.list
+
+		if (robbersList.length === 0)
+			return `Robbers list should contain at least 1 robber.`
+
+		const verticesSet = new Set()
+
+		if (settings.general.numberOfIterations &lt; 1 || settings.general.numberOfIterations &gt; 100)
+			return `Invalid number of iterations.`
+
+		if (! settings.general.distanceWeight &gt; 0)
+			return `Invalid distance weight (must be &gt; 0).`
+
+		// Vertcies integrity
+
+		for (let vertice of settings.paths.vertices){
+			if (verticesSet.has(vertice.id))
+				return `Same id (${vertice.id}) shared by two differents target.`
+
+			verticesSet.add(vertice.id)
+
+			if (! (vertice.robbersInterest &gt;= 0))
+				return `Invalid robbers interest for target ${vertice.id}.`
+
+			if (! (vertice.guardiansCost &gt;= 0))
+				return `Invalid guardians cost for target ${vertice.id}.`
+
+			if (! (vertice.guardiansReward &gt;= 0))
+				return `Invalid guardians reward for target ${vertice.id}.`
+
+			if (typeof vertice.robberSettings === &apos;undefined&apos;)
+				return `No robber settings submitted for target ${vertice.id}.`
+
+			if (typeof vertice.position !== &apos;object&apos;)
+				return `No position settings submitted for target ${vertice.id}.`
+
+			if (typeof vertice.position.x !== &apos;number&apos;)
+				return `Invalid x position submitted for target ${vertice.id}.`
+
+			if (typeof vertice.position.y !== &apos;number&apos;)
+				return `Invalid y position submitted for target ${vertice.id}.`
+
+			for (let robber of robbersList){
+
+				if (typeof vertice.robberSettings[robber] === &apos;undefined&apos;)
+					return `No settings submitted for rober ${robber} and target ${vertice.id}.`
+
+				if (! (vertice.robberSettings[robber].cost &gt;= 0))
+					return `Invalid robber cost for rober ${robber} and target ${vertice.id}.`
+
+				if (! (vertice.robberSettings[robber].reward &gt;= 0))
+					return `Invalid robber reward for rober ${robber} and target ${vertice.id}.`
+			}
+		}
+
+		if (! verticesSet.has(0))
+			return `No base vertex submitted.`
+
+		// Edges integrity
+
+		for (let edge of settings.paths.edges){
+			if (typeof edge.source === &apos;undefined&apos;)
+				return `No source submitted for a given edge.`
+			if (typeof edge.target === &apos;undefined&apos;)
+				return `No target submitted for a given edge.`
+			if (edge.length &lt; 0)
+				return `Invalid length submitted for a given edge.`
+			if (! (verticesSet.has(edge.source)))
+				return `The source ${edge.source} does not exist.`
+			if (! (verticesSet.has(edge.target)))
+				return `The target ${edge.target} does not exist.`
+		}
+
+		if (settings.paths.edges.length === 0)
+			return &apos;The path should have at least 1 edge.&apos;
+
+		// Catch probability integrity
+
+		for (let robber of robbersList){
+			if (! (settings.robbers.catchProbability[robber] &gt;= 0 
+				&amp;&amp; settings.robbers.catchProbability[robber] &lt;= 1))
+				return `Invalid catch probability for robber ${robber}.`
+		}
+
+		return false
+	}
+}</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

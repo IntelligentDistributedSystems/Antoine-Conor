@@ -12,10 +12,10 @@ import Interface from './classes/Interface'
 
 let graphInitialized = false
 
-/*
-*	Function called whenever the hash is updated to do the correct
-*	action.
-*/
+/**
+ *	Function called whenever the hash is updated to do the correct
+ *	action.
+ */
 
 const updateHash = hash => {
 
@@ -51,9 +51,9 @@ const updateHash = hash => {
 	}, 25)
 }
 
-/*
-*	Setup non-specific DOM listeners and initialize modules.
-*/
+/**
+ *	Setup non-specific DOM listeners and initialize modules.
+ */
 const setupDOM = () => {
 
 	$('[data-dest]').click(event => {
@@ -78,11 +78,11 @@ const setupDOM = () => {
 	ConsoleLogHTML.connect($('#console'))
 }
 
-/*
-*	Whenever the DOM content is reaady to be manipulated,
-*	setupe the specific DOM and create an Interface with the server.
-*	Then, we link the UI elements to the settings they manipulate.
-*/
+/**
+ *	Whenever the DOM content is reaady to be manipulated,
+ *	setupe the specific DOM and create an Interface with the server.
+ *	Then, we link the UI elements to the settings they manipulate.
+ */
 $(() => {
 	setupDOM()
 	

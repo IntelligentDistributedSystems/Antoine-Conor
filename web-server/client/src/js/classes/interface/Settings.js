@@ -3,25 +3,49 @@ import Robbers from './settings/subsettings/Robbers.js'
 import Saver from './settings/files/Saver'
 import Loader from './settings/files/Loader'
 
-/*
-*	Settings of the simulation.
-*
-*	Initialize settings with default values.
-*/
+/**
+ * Settings of the simulation.
+ *
+ * Initialize settings with default values.
+ */
 
 export default class Settings {
 
+	/**
+	 * @param  {Interface} iface - Interface object using this settings.
+	 */
 	constructor(iface){
-
-		this.interface = iface
-
+		
 		// Fields
 
+		/**
+		 * Interface object using this settings.
+		 * @type {Interface}
+		 */
+		this.interface = iface
+
+		/**
+		 * The graph configuration.
+		 * @type {Graph}
+		 */
 		this.graph = new Graph(this)
 		
+		/**
+		 * The robbers configuration.
+		 * @type {Robbers}
+		 */
 		this.robbers = new Robbers(this)
 
+		/**
+		 * A class enabling us to save the configuration (or any text file) on the client's computer.
+		 * @type {Saver}
+		 */
 		this.saver = new Saver(this)
+
+		/**
+		 * A class enabling us to load a configuration from the client's computer.
+		 * @type {Loader}
+		 */
 		this.loader = new Loader(this)
 
 		// Default values
@@ -31,6 +55,11 @@ export default class Settings {
 
 	}
 
+	/**
+	 * (Re)-Initialize every sub-settings. 
+	 * 
+	 * @return {Settings} chaining
+	 */
 	init(){
 		this.graph.init()
 		this.robbers.init()
@@ -39,11 +68,13 @@ export default class Settings {
 		return this
 	}
 
-	/*
-	*	Return settings as as JSON object.
-	*
-	*	Those settings can be send to the backend.
-	*/
+	/**
+	 * Return settings as as JSON object.
+	 *
+	 * Those settings can be sent to the backend.
+	 *
+	 * @return {Object} JSON-ed concatenated settings.
+	 */
 
 	getSettings(){
 		return {
@@ -53,10 +84,12 @@ export default class Settings {
 		}
 	}
 
-	/*
-	*	Concatenate the general settings in one 
-	*	JSON object.
-	*/
+	/**
+	 *	Concatenate the general settings in one 
+	 *	JSON object.
+	 *
+	 * @return {Object} concatenated settings.
+	 */
 
 	getGeneralSettings(){
 		return {

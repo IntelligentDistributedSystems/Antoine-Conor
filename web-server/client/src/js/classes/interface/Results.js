@@ -1,19 +1,34 @@
 import LiveSimulation from './results/LiveSimulation'
 
-/*
-*	Deals with the results sent by the server.
-*/
+/**
+ * Deals with the results sent by the server.
+ */
 export default class Results{
 
+	/**
+	 * @param  {Interface} iface - Interface object using this results.
+	 */
 	constructor(iface){
+		/**
+		 * Interface object using this results.
+		 * @type {Interface}
+		 */
 		this.interface = iface
+
+		/**
+		 * The data computed by the server.
+		 * @type {Object}
+		 */
 		this.data = null
 		window.results = this
 	}
 
-	/*
-	*	When an error is received, print it to screen.
-	*/
+	/**
+	 * When an error is received, prints it to screen.
+	 * 
+	 * @param  {string} err - the received error
+	 * @return {Results} chaining
+	 */
 	error(err){
 
 		console.error(`Error: ${err}`)
@@ -25,11 +40,16 @@ export default class Results{
 				${err}
 			</div>
 		`).modal('open')
+
+		return this
 	}
 
-	/*
-	*	When the server is processing, show the progress.
-	*/
+	/**
+	 * When the server is processing, show the progress.
+	 *
+	 * @param {Number | boolean} percent - The loading progression or false (== 0) if it just started.
+	 * @return {Results} chaining
+	 */
 	loading(percent = false){
 
 		$('#modal-results p').html(`
@@ -46,9 +66,12 @@ export default class Results{
 		return this
 	}
 
-	/*
-	*	When everything is okay, display paths, stats and show a simulation.
-	*/
+	/**
+	 * When everything is okay, display paths, stats and show a simulation.
+	 *
+	 * @param {Object} data - The results object sent by the server.
+	 * @return {Results} chaining
+	 */
 	showResults(data){
 
 		this.data = data
@@ -208,6 +231,12 @@ export default class Results{
 
 	}
 
+	/**
+	 * Download a Gambit version of the server-computed paths.
+	 * /!\ Asynchronous as it relies on Saver::download!
+	 * 
+	 * @return {Results} chaining
+	 */
 	exportGambit(){
 
 		const distanceWeight = parseInt($('#distanceWeight').val())
@@ -287,6 +316,8 @@ ${numberString}
 		this.interface.settings.saver.download(
 			`${date.toLocaleDateString()}-${date.toLocaleTimeString().replace(':', '-')}.nfg`,
 		nfg)
+
+		return this
 	}
 
 }

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../../../">
+  <title data-ice="title">js/classes/interface/settings/subsettings/Robbers.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/Interface.js~Interface.html">Interface</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/Results.js~Results.html">Results</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/Settings.js~Settings.html">Settings</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface/results</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/results/LiveSimulation.js~LiveSimulation.html">LiveSimulation</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface/settings/files</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/files/Loader.js~Loader.html">Loader</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/files/Saver.js~Saver.html">Saver</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">classes/interface/settings/subsettings</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/subsettings/Graph.js~Graph.html">Graph</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/classes/interface/settings/subsettings/Robbers.js~Robbers.html">Robbers</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">js/classes/interface/settings/subsettings/Robbers.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * Sub-setting for robbers manipulation.
+ */
+export default class Robbers{
+
+	/**
+	* @param {Settings} settings - Settings object using this robbers. 
+	*/
+	constructor(settings){
+
+		// Fields
+		/**
+		 * Settings object using this robbers.
+		 * @type {Settings}
+		 */
+		this.settings = settings
+
+		// DOM listeners
+
+		$(document).on(&apos;click&apos;, &apos;#robbers .delete&apos;, event =&gt; {
+
+			this.removeRobber($(event.currentTarget).parent().parent().parent().data(&apos;robberid&apos;))
+
+		})
+
+		$(document).on(&apos;click&apos;, &apos;#robbers .configure&apos;, event =&gt; {
+
+			this.configureRobber($(event.currentTarget).parent().parent().parent().data(&apos;robberid&apos;))
+
+		})
+
+		$(document).on(&apos;change&apos;, &apos;#robbers input.discretion&apos;, event =&gt; {
+
+			const newValue = 1-parseFloat($(event.currentTarget).val())
+
+			if (newValue &lt; 0 || newValue &gt; 1){
+				return $(event.currentTarget).css({
+					color: &apos;red&apos;
+				})
+			}
+
+			$(event.currentTarget).css({
+				color: &quot;#fff&quot;
+			})
+
+			this.catchProbability.set(
+				$(event.currentTarget).parent().parent().parent().parent().data(&apos;robberid&apos;),
+				newValue
+			)
+
+		})
+
+		$(document).on(&apos;change&apos;, &apos;#modal-robber-config input&apos;, event =&gt; {
+
+			const row = $(event.currentTarget).parent().parent()
+
+			const nodeId = row.data(&apos;nodeid&apos;)
+			const robberId = row.data(&apos;robberid&apos;)
+
+			const setting = $(event.currentTarget).data(&apos;setting&apos;)
+			const newValue = parseFloat($(event.currentTarget).val())
+
+			console.info(`${setting} changed for target ${nodeId}, new value is ${newValue}.`)
+
+			this.settings.graph.cy.nodes(`[id = &quot;${nodeId}&quot;]`).data(&apos;robberSettings&apos;).get(robberId)[setting] = newValue
+
+		})
+
+		this.init()
+
+	}
+
+	/**
+	 * Initialize the robbers by setting default values.
+	 *
+	 * @return {Robbers} chaining
+	 */
+	init(){
+
+		if (typeof this.list !== &apos;undefined&apos;)
+			[...this.list].forEach(robberId =&gt; this.removeRobber(robberId))
+
+		/**
+		 * Number of robbers created until now.
+		 * Deleting a robber doesn&apos;t decrease that counter.
+		 * 
+		 * @type {Number}
+		 */
+		this.numberOfRobbersCreated = 0
+
+		/**
+		 * Set of all robbers.
+		 * @todo We should probably change the name of this variable.
+		 * 
+		 * @type {Set&lt;Object&gt;}
+		 */
+		this.list = new Set()
+
+		/**
+		 * Probability of beeing caught for each robber.
+		 *
+		 * @type {Map&lt;Number, Number&gt;}
+		 */
+		this.catchProbability = new Map()
+
+		return this
+	}
+
+	/**
+	 * Add a robber to the settings.
+	 * His card can be seen in the &quot;Robbers&quot; tab.
+	 * His settings are set to default in every target.
+	 *
+	 * @param {Number} catchProbability - the catch probability of the new robber.
+	 * @return {Number} the new robber id.
+	 */
+	newRobber(catchProbability = 0.5){
+
+		const robberId = this.numberOfRobbersCreated++
+
+		this.list.add(robberId)
+
+		this.catchProbability.set(robberId, catchProbability)
+
+		this.settings.graph.cy.nodes().each(node =&gt; node.data(&apos;robberSettings&apos;).set(robberId, {
+			cost: 1,
+			reward: 1
+		}))
+
+		$(&apos;#robbers&apos;).append(`
+			&lt;div class=&quot;col s4&quot; data-robberid=&quot;${robberId}&quot;&gt;
+			    &lt;div class=&quot;card blue-grey darken-1&quot;&gt;
+					&lt;div class=&quot;card-content white-text&quot;&gt;
+						&lt;span class=&quot;card-title&quot;&gt;Robber ${robberId+1}&lt;/span&gt;
+						&lt;!--&lt;p&gt;Some bad guy.&lt;/p&gt;--&gt;
+					&lt;/div&gt;
+					&lt;div class=&quot;card-action&quot;&gt;
+						&lt;div class=&quot;discretionContainer&quot;&gt;
+							&lt;span&gt;Discretion&lt;/span&gt;
+							&lt;input type=&quot;number&quot; step=&quot;0.05&quot; class=&quot;discretion&quot; min=&quot;0&quot; max=&quot;1&quot; value=&quot;${(1-catchProbability)}&quot;&gt;
+						&lt;/div&gt;
+						&lt;a class=&quot;waves-effect waves-light btn blue configure&quot; style=&quot;width: 100%; margin-top: 10px;&quot;&gt;&lt;i class=&quot;material-icons right&quot;&gt;mode_edit&lt;/i&gt;Rewards&lt;/a&gt;
+						&lt;a class=&quot;waves-effect waves-light btn red delete&quot; style=&quot;width: 100%; margin-top: 10px&quot; ${(robberId === 0) ? &apos;disabled&apos; : &apos;&apos;}&gt;&lt;i class=&quot;material-icons right&quot;&gt;delete&lt;/i&gt;Delete&lt;/a&gt;
+					&lt;/div&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+		`)
+
+		return robberId
+	}
+
+	/**
+	 * Remove a robber from the settings.
+	 * His card gets removed and references to his settings are
+	 * removed from each target.
+	 *
+	 * @param {Number} robberId - the robber to remove.
+	 * @return {Robbers} chaining
+	 */
+	removeRobber(robberId){
+
+		console.info(`Removing robber ${robberId}...`)
+
+		this.list.delete(robberId)
+
+		this.settings.graph.cy.nodes().each(node =&gt; node.data(&apos;robberSettings&apos;).delete(robberId))
+
+		$(&apos;#robbers&apos;).find(`[data-robberid=${robberId}]`).remove()
+
+		return this
+	}
+
+	/**
+	 * Display a modal enabling the user to set the
+	 * robber properties for every target.
+	 * 
+	 * @param {Number} robberId - the robber to configure.
+	 * @return {Robbers} chaining
+	 */
+	configureRobber(robberId){
+
+		console.info(`Configuring robber ${robberId+1}.`)
+
+		let table = `
+			&lt;table class=&quot;striped centered&quot;&gt;
+				&lt;thead&gt;
+					&lt;tr&gt;
+						&lt;th&gt;Target ID&lt;/th&gt;
+						&lt;th&gt;Cost&lt;/th&gt;
+						&lt;th&gt;Reward&lt;/th&gt;
+					&lt;/tr&gt;
+				&lt;/thead&gt;
+
+				&lt;tbody&gt;`
+
+		this.settings.graph.cy.nodes(&apos;[id != &quot;0&quot;]&apos;).forEach(node =&gt; {
+
+			let settings = node.data(&apos;robberSettings&apos;).get(robberId)
+
+			table += `
+				&lt;tr data-nodeid=&quot;${node.id()}&quot; data-robberid=&quot;${robberId}&quot;&gt;
+					&lt;td&gt;${node.id()}&lt;/td&gt;
+					&lt;td&gt;&lt;input data-setting=&quot;cost&quot; type=&quot;number&quot; value=&quot;${settings.cost}&quot; min=&quot;0&quot;&gt;&lt;/td&gt;
+					&lt;td&gt;&lt;input data-setting=&quot;reward&quot; type=&quot;number&quot; value=&quot;${settings.reward}&quot; min=&quot;0&quot;&gt;&lt;/td&gt;
+				&lt;/tr&gt;`
+		})
+
+		table += `
+				&lt;/tbody&gt;
+			&lt;/table&gt;`
+
+		$(&apos;#modal-robber-config h4&apos;).text(`Robber ${robberId+1} configuration`)
+
+		$(&apos;#modal-robber-config p&apos;).html(table)
+
+		$(&apos;#modal-robber-config&apos;).modal(&apos;open&apos;)
+
+		return this
+	}
+
+	/**
+ 	 * Return the list of every robber.
+	 *
+	 * @return {Object} Robbers settings.
+	 */
+	getSettings(){
+		return {
+			list: [...this.list],
+			catchProbability: Array.from(this.catchProbability).reduce((obj, [key, value]) =&gt; { obj[key] = value; return obj}, {})
+		}
+	}
+
+
+}</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

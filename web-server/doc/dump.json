@@ -1,0 +1,3215 @@
+[
+  {
+    "__docId__": 0,
+    "kind": "file",
+    "name": "js/classes/Interface.js",
+    "content": "import Settings from './interface/Settings'\nimport Results from './interface/Results'\n\n/**\n *\tInterface between the client side and the back-end.\n *\n *\tThe interface has settings and a socket enabling it \n *\tto send and receive data from the server running the\n *\tJava MAS simulation.\n */\n\nexport default class Interface{  \n\t\n\t/**\n\t * Constructor setting fields and listeners.\n\t */\n\tconstructor(){\n\n\t\t// Fields\n\n\t\t/**\n\t\t * Socket to communicate with the backend.\n\t\t * @type {Socket}\n\t\t */\n\t\tthis.socket = io.connect(`http://${window.location.hostname}:8083`)\n\t\t/**\n\t\t * Settings of the whole environnement.\n\t\t * @type {Settings}\n\t\t */\n\t\tthis.settings = new Settings(this)\n\t\t/**\n\t\t * Results handler for calculations from the back-end.\n\t\t * @type {Results}\n\t\t */\n\t\tthis.results = new Results(this)\n\t\t/**\n\t\t * Flag signalant si une simulation est en cours ou non.\n\t\t * @type {Boolean}\n\t\t */\n\t\tthis.simulationRunning = false\n\n\t\t// Socket listeners\n\n\t\tthis.socket.on('connect', () => {\n\t\t\n\t\t\tconsole.info('Connection to the remote server established.')\n\n\t\t})\n\t}\n\n\t/**\n\t *\tStart the simulation by sending the settings to the back-end\n\t *\talong the message 'startSimulation'.\n\t *\n\t *  @return {Interface} chaining\n\t */\n\n\tstartSimulation(){\n\n\t\tthis.simulationRunning = true\n\n\t\tthis.socket.on('loading', data => this.results.loading(data.progress))\n\t\t\n\t\tthis.results.loading(0)\n\n\t\tthis.socket.emit('startSimulation', this.settings.getSettings(), results => {\n\n\t\t\tconsole.log(results)\n\n\t\t\tif (!this.simulationRunning)\n\t\t\t\treturn\n\n\t\t\tif (results.error)\n\t\t\t\treturn this.results.error(results.error)\n\n\t\t\tthis.results.showResults(results.data)\n\n\t\t})\n\n\t\treturn this\n\t\n\t}\n\n\t/**\n\t *\tStop the client-side simulation by removing the loading screen and\n\t *\tblocking results callback.\n\t *\n\t *  @return {Interface} chaining\n\t */\n\n\tstopSimulation(){\n\t\tthis.simulationRunning = false\n\n\t\tthis.socket.removeListener('loading')\n\n\t\tthis.socket.emit('cancel')\n\n\t\treturn this\n\t}\n}",
+    "static": true,
+    "longname": "js/classes/Interface.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 1,
+    "kind": "class",
+    "name": "Interface",
+    "memberof": "js/classes/Interface.js",
+    "static": true,
+    "longname": "js/classes/Interface.js~Interface",
+    "access": null,
+    "export": true,
+    "importPath": "web-server/js/classes/Interface.js",
+    "importStyle": "Interface",
+    "description": "Interface between the client side and the back-end.\n\nThe interface has settings and a socket enabling it \nto send and receive data from the server running the\nJava MAS simulation.",
+    "lineNumber": 12,
+    "interface": false
+  },
+  {
+    "__docId__": 2,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "js/classes/Interface.js~Interface",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/Interface.js~Interface#constructor",
+    "access": null,
+    "description": "Constructor setting fields and listeners.",
+    "lineNumber": 17,
+    "params": []
+  },
+  {
+    "__docId__": 3,
+    "kind": "member",
+    "name": "socket",
+    "memberof": "js/classes/Interface.js~Interface",
+    "static": false,
+    "longname": "js/classes/Interface.js~Interface#socket",
+    "access": null,
+    "description": "Socket to communicate with the backend.",
+    "lineNumber": 25,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Socket"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 4,
+    "kind": "member",
+    "name": "settings",
+    "memberof": "js/classes/Interface.js~Interface",
+    "static": false,
+    "longname": "js/classes/Interface.js~Interface#settings",
+    "access": null,
+    "description": "Settings of the whole environnement.",
+    "lineNumber": 30,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Settings"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 5,
+    "kind": "member",
+    "name": "results",
+    "memberof": "js/classes/Interface.js~Interface",
+    "static": false,
+    "longname": "js/classes/Interface.js~Interface#results",
+    "access": null,
+    "description": "Results handler for calculations from the back-end.",
+    "lineNumber": 35,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Results"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 6,
+    "kind": "member",
+    "name": "simulationRunning",
+    "memberof": "js/classes/Interface.js~Interface",
+    "static": false,
+    "longname": "js/classes/Interface.js~Interface#simulationRunning",
+    "access": null,
+    "description": "Flag signalant si une simulation est en cours ou non.",
+    "lineNumber": 40,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 7,
+    "kind": "method",
+    "name": "startSimulation",
+    "memberof": "js/classes/Interface.js~Interface",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/Interface.js~Interface#startSimulation",
+    "access": null,
+    "description": "Start the simulation by sending the settings to the back-end\nalong the message 'startSimulation'.",
+    "lineNumber": 58,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Interface"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 8,
+    "kind": "member",
+    "name": "simulationRunning",
+    "memberof": "js/classes/Interface.js~Interface",
+    "static": false,
+    "longname": "js/classes/Interface.js~Interface#simulationRunning",
+    "access": null,
+    "description": null,
+    "lineNumber": 60,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 9,
+    "kind": "method",
+    "name": "stopSimulation",
+    "memberof": "js/classes/Interface.js~Interface",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/Interface.js~Interface#stopSimulation",
+    "access": null,
+    "description": "Stop the client-side simulation by removing the loading screen and\nblocking results callback.",
+    "lineNumber": 91,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Interface"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 10,
+    "kind": "member",
+    "name": "simulationRunning",
+    "memberof": "js/classes/Interface.js~Interface",
+    "static": false,
+    "longname": "js/classes/Interface.js~Interface#simulationRunning",
+    "access": null,
+    "description": null,
+    "lineNumber": 92,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 11,
+    "kind": "file",
+    "name": "js/classes/interface/Results.js",
+    "content": "import LiveSimulation from './results/LiveSimulation'\n\n/**\n * Deals with the results sent by the server.\n */\nexport default class Results{\n\n\t/**\n\t * @param  {Interface} iface - Interface object using this results.\n\t */\n\tconstructor(iface){\n\t\t/**\n\t\t * Interface object using this results.\n\t\t * @type {Interface}\n\t\t */\n\t\tthis.interface = iface\n\n\t\t/**\n\t\t * The data computed by the server.\n\t\t * @type {Object}\n\t\t */\n\t\tthis.data = null\n\t\twindow.results = this\n\t}\n\n\t/**\n\t * When an error is received, prints it to screen.\n\t * \n\t * @param  {string} err - the received error\n\t * @return {Results} chaining\n\t */\n\terror(err){\n\n\t\tconsole.error(`Error: ${err}`)\n\n\t\t$('#modal-results p').html(`\n\n\t\t\t<div class=\"center\">\n\t\t\t\tError encountered while computing the results: <br>\n\t\t\t\t${err}\n\t\t\t</div>\n\t\t`).modal('open')\n\n\t\treturn this\n\t}\n\n\t/**\n\t * When the server is processing, show the progress.\n\t *\n\t * @param {Number | boolean} percent - The loading progression or false (== 0) if it just started.\n\t * @return {Results} chaining\n\t */\n\tloading(percent = false){\n\n\t\t$('#modal-results p').html(`\n\n\t\t\t<div class=\"center\">\n\t\t\t\tPlease wait while our server is computing the results.\n\t\t\t</div>\n\n\t\t\t<div class=\"progress\">\n\t\t\t\t<div class=\"${ percent ? `determinate\" style=\"width: ${percent}%\"` : 'indeterminate\"'}></div>\n\t\t\t</div>\n\t\t`).modal('open')\n\n\t\treturn this\n\t}\n\n\t/**\n\t * When everything is okay, display paths, stats and show a simulation.\n\t *\n\t * @param {Object} data - The results object sent by the server.\n\t * @return {Results} chaining\n\t */\n\tshowResults(data){\n\n\t\tthis.data = data\n\n\t\tdata.patrols.forEach(patrol => {\n\t\t\tpatrol.label = patrol.reduce((sum, target) => `${sum}${target} ⇒ `, '').slice(0,-3)\n\t\t})\n\n\t\tconsole.info('Results received.')\n\n\t\t// Building the list of patrols.\n\n\t\tlet patrolsTableHTML = `\n\t\t\t<table class=\"striped centered\">\n\t\t\t\t<thead>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<th>Patrol ID</th>\n\t\t\t\t\t\t<th>path</th>\n\t\t\t\t\t</tr>\n\t\t\t\t</thead>\n\n\t\t\t\t<tbody>`\n\n\t\tdata.patrols.forEach((patrol, index) => {\n\n\t\t\tpatrolsTableHTML += `\n\t\t\t\t<tr>\n\t\t\t\t\t<td>${index}</td>\n\t\t\t\t\t<td>${patrol.label}</td>\n\t\t\t\t</tr>`\n\t\t})\n\n\t\tpatrolsTableHTML += `\n\t\t\t\t</tbody>\n\t\t\t</table>`\n\n\t\t// We have to find the best strategy.\n\n\t\tconst statisticsTable = []\n\n\t\tdata.strategies.forEach(strategy => {\n\n\t\t\tconst averageGuardianUtility = strategy.iterations.reduce((sum, iteration) => sum+iteration.guardianUtility, 0) / strategy.iterations.length\n\t\t\tconst averageRobberUtility = strategy.iterations.reduce((sum, iteration) => sum+iteration.robberUtility, 0) / strategy.iterations.length\n\n\t\t\tstatisticsTable.push({\n\t\t\t\titerations: strategy.iterations,\n\t\t\t\tprobabilities: strategy.probabilities.reduce((sum, probability) => `${sum}${probability.toFixed(2)} | `, '').slice(0, -3),\n\t\t\t\tguardianUtility: averageGuardianUtility,\n\t\t\t\trobberUtility: averageRobberUtility,\n\t\t\t\tstrategy: strategy\n\t\t\t})\n\n\t\t})\n\n\t\tconst sortedStatisticsTable = statisticsTable.sort((s1, s2) => s2.guardianUtility - s1.guardianUtility)\n\n\t\tconst bestStreategy = sortedStatisticsTable[0].strategy\n\n\t\t// We feed the chart with average evolution for the best strategy.\n\n\t\tlet chartData = []\n\t\tlet sum = 0\n\n\t\tsortedStatisticsTable[0].iterations.forEach(iteration => {\n\n\t\t\tchartData.push({\n\t\t\t\tx: chartData.length,\n\t\t\t\ty: (sum+=iteration.guardianUtility)/(chartData.length+1)\n\t\t\t})\n\n\t\t})\n\n\t\t// Building the list of statistics.\n\n\t\tlet statisticsTableHTML = `\n\t\t\t<table class=\"striped centered\">\n\t\t\t\t<thead>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<th>Probabilities</th>\n\t\t\t\t\t\t<th>Guardian utility</th>\n\t\t\t\t\t\t<th>Robber utility</th>\n\t\t\t\t\t</tr>\n\t\t\t\t</thead>\n\n\t\t\t\t<tbody>`\n\n\t\tsortedStatisticsTable.forEach(strategy => {\n\n\t\t\tstatisticsTableHTML += `\n\t\t\t\t<tr>\n\t\t\t\t\t<td>${strategy.probabilities}</td>\n\t\t\t\t\t<td>${Number(strategy.guardianUtility).toFixed(4)}</td>\n\t\t\t\t\t<td>${Number(strategy.robberUtility).toFixed(4)}</td>\n\t\t\t\t</tr>`\n\t\t})\n\n\t\tstatisticsTableHTML += `\n\t\t\t\t</tbody>\n\t\t\t</table>`\n\n\t\t$('#modal-results p').html(`\n\n\t\t\t<div class=\"row\">\n\t\t\t\t<div class=\"col s12\">\n\t\t\t\t\t<ul class=\"tabs\">\n\t\t\t\t\t\t<li class=\"tab col s3\"><a class=\"active\" href=\"#chart\">Chart</a></li>\n\t\t\t\t\t\t<li class=\"tab col s3\"><a href=\"#visualization\">Visualization</a></li>\n\t\t\t\t\t\t<li class=\"tab col s3\"><a href=\"#patrols\">Patrols</a></li>\n\t\t\t\t\t\t<li class=\"tab col s3\"><a href=\"#statistics\">Statistics</a></li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t\t<div id=\"chart\" class=\"col s12\">\n\t\t\t\t\t<canvas width=\"100%\" height=\"400\" id=\"line-chart\"></canvas>\n\t\t\t\t</div>\n\t\t\t\t<div id=\"visualization\" class=\"col s12\">\n\t\t\t\t\t<div id=\"liveSimulationLog\">Iteration running...</div>\n\t\t\t\t\t<div id=\"liveSimulation\" class=\"s12\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div id=\"patrols\" class=\"col s12\">\n\t\t\t\t\t${patrolsTableHTML}\n\t\t\t\t</div>\n\t\t\t\t<div id=\"statistics\" class=\"col s12\">\n\t\t\t\t\t${statisticsTableHTML}\n\t\t\t\t</div>\n\t\t\t</div>\n\n\t\t`).modal('open')\n\n\t\t$('#modal-results p ul.tabs').tabs()\n\n\t\tconst scatterChart = new Chart(\"line-chart\", {\n\t\t\ttype: 'line',\n\t\t\tdata: {\n\t\t\t\tdatasets: [{\n\t\t\t\t\tlabel: 'Best strategy utility over time.',\n\t\t\t\t\tdata: chartData\n\t\t\t\t}]\n\t\t\t},\n\t\t\toptions: {\n\t\t\t\tmaintainAspectRatio: false,\n\t\t\t\tscales: {\n\t\t\t\t\txAxes: [{\n\t\t\t\t\t\ttype: 'linear',\n\t\t\t\t\t\tposition: 'bottom'\n\t\t\t\t\t}]\n\t\t\t\t}\n\t\t\t}\n\t\t})\n\n\t\t$('#export-gambit').removeAttr('disabled')\n\n\t\tnew LiveSimulation(this, data, bestStreategy, '#liveSimulation').run()\n\n\t\treturn this\n\n\t}\n\n\t/**\n\t * Download a Gambit version of the server-computed paths.\n\t * /!\\ Asynchronous as it relies on Saver::download!\n\t * \n\t * @return {Results} chaining\n\t */\n\texportGambit(){\n\n\t\tconst distanceWeight = parseInt($('#distanceWeight').val())\n\t\tconst settings = this.interface.settings.getSettings()\n\n\t\tconst patrols = this.data.patrols\n\t\tconst robbers = this.interface.settings.robbers.getSettings().list\n\t\tconst vertices = settings.paths.vertices.filter(vertex => vertex.id != 0)\n\n\t\tlet patrolsListString = patrols.reduce((sum, patrol) => `${sum} \"${patrol.label}\"`,'')\n\n\t\tlet attacksListString = ''\n\n\t\tconst attacks = []\n\n\t\trobbers.forEach(robber => {\n\n\t\t\tvertices.forEach(vertex => {\n\n\t\t\t\tattacksListString += `\"Robber type ${robber} attacking ${vertex.id}\" `\n\n\t\t\t\tattacks.push({robber: robber, target: vertex})\n\n\t\t\t})\n\n\t\t})\n\n\t\tlet rewardsString = ''\n\n\t\tlet numberString = [...Array(patrols.length * robbers.length * vertices.length).keys()].reduce((sum,index) => `${sum}${index+1} `, '')\n\n\t\tattacks.forEach(attack => {\n\n\t\t\tpatrols.forEach(patrol => {\n\n\t\t\t\tlet distance = 0\n\n\t\t\t\tif (patrol.includes(attack.target.id))\n\t\t\t\t\tfor (let n = 0; patrol[n] !== attack.target.id; n++)\n\t\t\t\t\t\tdistance += settings.paths.edges.find(edge => (edge.source === patrol[n] && edge.target === patrol[n+1]) || (edge.source === patrol[n+1] && edge.target === patrol[n])).length\n\t\t\t\telse \n\t\t\t\t\tdistance = Infinity\n\n\t\t\t\tconsole.log(patrol.label)\n\t\t\t\tconsole.log(attack.target.id)\n\t\t\t\tconsole.log(distance)\n\n\t\t\t\tconst catchProbability = settings.robbers.catchProbability[''+attack.robber] * distanceWeight/( distance + distanceWeight )\n\n\t\t\t\tconsole.log(attack, catchProbability)\n\n\t\t\t\tconst guardianUtility = catchProbability * attack.target.guardiansReward - (1 - catchProbability) * attack.target.guardiansCost\n\n\t\t\t\tconst robberUtility = - catchProbability * attack.target.robberSettings[attack.robber].cost + (1 - catchProbability) * attack.target.robberSettings[attack.robber].reward\n\n\t\t\t\trewardsString += `{ \"${patrol.label} vs ${attack.robber} - ${attack.target.id}\" ${guardianUtility}, ${robberUtility} }\\n`\n\n\t\t\t})\n\n\t\t})\n\n\t\tconst nfg = \n`NFG 1 R \"Patrolling game\" { \"Guardian\" \"Robber\" }\n\n{ { ${patrolsListString}}\n{ ${attacksListString}}\n}\n\"\"\n\n{\n${rewardsString}}\n${numberString}\n`\n\n\t\tconst date = new Date()\n\n\t\tthis.interface.settings.saver.download(\n\t\t\t`${date.toLocaleDateString()}-${date.toLocaleTimeString().replace(':', '-')}.nfg`,\n\t\tnfg)\n\n\t\treturn this\n\t}\n\n}",
+    "static": true,
+    "longname": "js/classes/interface/Results.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 12,
+    "kind": "class",
+    "name": "Results",
+    "memberof": "js/classes/interface/Results.js",
+    "static": true,
+    "longname": "js/classes/interface/Results.js~Results",
+    "access": null,
+    "export": true,
+    "importPath": "web-server/js/classes/interface/Results.js",
+    "importStyle": "Results",
+    "description": "Deals with the results sent by the server.",
+    "lineNumber": 6,
+    "interface": false
+  },
+  {
+    "__docId__": 13,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "js/classes/interface/Results.js~Results",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/Results.js~Results#constructor",
+    "access": null,
+    "description": "",
+    "lineNumber": 11,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Interface"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "iface",
+        "description": "Interface object using this results."
+      }
+    ]
+  },
+  {
+    "__docId__": 14,
+    "kind": "member",
+    "name": "interface",
+    "memberof": "js/classes/interface/Results.js~Results",
+    "static": false,
+    "longname": "js/classes/interface/Results.js~Results#interface",
+    "access": null,
+    "description": "Interface object using this results.",
+    "lineNumber": 16,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Interface"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 15,
+    "kind": "member",
+    "name": "data",
+    "memberof": "js/classes/interface/Results.js~Results",
+    "static": false,
+    "longname": "js/classes/interface/Results.js~Results#data",
+    "access": null,
+    "description": "The data computed by the server.",
+    "lineNumber": 22,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 16,
+    "kind": "method",
+    "name": "error",
+    "memberof": "js/classes/interface/Results.js~Results",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/Results.js~Results#error",
+    "access": null,
+    "description": "When an error is received, prints it to screen.",
+    "lineNumber": 32,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "err",
+        "description": "the received error"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Results"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 17,
+    "kind": "method",
+    "name": "loading",
+    "memberof": "js/classes/interface/Results.js~Results",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/Results.js~Results#loading",
+    "access": null,
+    "description": "When the server is processing, show the progress.",
+    "lineNumber": 53,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Number ",
+          " boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "percent",
+        "description": "The loading progression or false (== 0) if it just started."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Results"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 18,
+    "kind": "method",
+    "name": "showResults",
+    "memberof": "js/classes/interface/Results.js~Results",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/Results.js~Results#showResults",
+    "access": null,
+    "description": "When everything is okay, display paths, stats and show a simulation.",
+    "lineNumber": 75,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "data",
+        "description": "The results object sent by the server."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Results"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 19,
+    "kind": "member",
+    "name": "data",
+    "memberof": "js/classes/interface/Results.js~Results",
+    "static": false,
+    "longname": "js/classes/interface/Results.js~Results#data",
+    "access": null,
+    "description": null,
+    "lineNumber": 77,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 20,
+    "kind": "method",
+    "name": "exportGambit",
+    "memberof": "js/classes/interface/Results.js~Results",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/Results.js~Results#exportGambit",
+    "access": null,
+    "description": "Download a Gambit version of the server-computed paths.\n/!\\ Asynchronous as it relies on Saver::download!",
+    "lineNumber": 240,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Results"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 21,
+    "kind": "file",
+    "name": "js/classes/interface/Settings.js",
+    "content": "import Graph from './settings/subsettings/Graph.js'\nimport Robbers from './settings/subsettings/Robbers.js'\nimport Saver from './settings/files/Saver'\nimport Loader from './settings/files/Loader'\n\n/**\n * Settings of the simulation.\n *\n * Initialize settings with default values.\n */\n\nexport default class Settings {\n\n\t/**\n\t * @param  {Interface} iface - Interface object using this settings.\n\t */\n\tconstructor(iface){\n\t\t\n\t\t// Fields\n\n\t\t/**\n\t\t * Interface object using this settings.\n\t\t * @type {Interface}\n\t\t */\n\t\tthis.interface = iface\n\n\t\t/**\n\t\t * The graph configuration.\n\t\t * @type {Graph}\n\t\t */\n\t\tthis.graph = new Graph(this)\n\t\t\n\t\t/**\n\t\t * The robbers configuration.\n\t\t * @type {Robbers}\n\t\t */\n\t\tthis.robbers = new Robbers(this)\n\n\t\t/**\n\t\t * A class enabling us to save the configuration (or any text file) on the client's computer.\n\t\t * @type {Saver}\n\t\t */\n\t\tthis.saver = new Saver(this)\n\n\t\t/**\n\t\t * A class enabling us to load a configuration from the client's computer.\n\t\t * @type {Loader}\n\t\t */\n\t\tthis.loader = new Loader(this)\n\n\t\t// Default values\n\n\t\tthis.init()\n\t\tthis.loader.loadDefault()\n\n\t}\n\n\t/**\n\t * (Re)-Initialize every sub-settings. \n\t * \n\t * @return {Settings} chaining\n\t */\n\tinit(){\n\t\tthis.graph.init()\n\t\tthis.robbers.init()\n\t\t$('#numberOfIterations').val(20)\n\n\t\treturn this\n\t}\n\n\t/**\n\t * Return settings as as JSON object.\n\t *\n\t * Those settings can be sent to the backend.\n\t *\n\t * @return {Object} JSON-ed concatenated settings.\n\t */\n\n\tgetSettings(){\n\t\treturn {\n\t\t\tgeneral: this.getGeneralSettings(),\n\t\t\tpaths: this.graph.getSettings(),\n\t\t\trobbers: this.robbers.getSettings()\n\t\t}\n\t}\n\n\t/**\n\t *\tConcatenate the general settings in one \n\t *\tJSON object.\n\t *\n\t * @return {Object} concatenated settings.\n\t */\n\n\tgetGeneralSettings(){\n\t\treturn {\n\t\t\tnumberOfIterations: parseInt($('#numberOfIterations').val()),\n\t\t\tdistanceWeight: parseInt($('#distanceWeight').val())\n\t\t}\n\t}\n}",
+    "static": true,
+    "longname": "js/classes/interface/Settings.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 22,
+    "kind": "class",
+    "name": "Settings",
+    "memberof": "js/classes/interface/Settings.js",
+    "static": true,
+    "longname": "js/classes/interface/Settings.js~Settings",
+    "access": null,
+    "export": true,
+    "importPath": "web-server/js/classes/interface/Settings.js",
+    "importStyle": "Settings",
+    "description": "Settings of the simulation.\n\nInitialize settings with default values.",
+    "lineNumber": 12,
+    "interface": false
+  },
+  {
+    "__docId__": 23,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "js/classes/interface/Settings.js~Settings",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/Settings.js~Settings#constructor",
+    "access": null,
+    "description": "",
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Interface"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "iface",
+        "description": "Interface object using this settings."
+      }
+    ]
+  },
+  {
+    "__docId__": 24,
+    "kind": "member",
+    "name": "interface",
+    "memberof": "js/classes/interface/Settings.js~Settings",
+    "static": false,
+    "longname": "js/classes/interface/Settings.js~Settings#interface",
+    "access": null,
+    "description": "Interface object using this settings.",
+    "lineNumber": 25,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Interface"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 25,
+    "kind": "member",
+    "name": "graph",
+    "memberof": "js/classes/interface/Settings.js~Settings",
+    "static": false,
+    "longname": "js/classes/interface/Settings.js~Settings#graph",
+    "access": null,
+    "description": "The graph configuration.",
+    "lineNumber": 31,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Graph"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 26,
+    "kind": "member",
+    "name": "robbers",
+    "memberof": "js/classes/interface/Settings.js~Settings",
+    "static": false,
+    "longname": "js/classes/interface/Settings.js~Settings#robbers",
+    "access": null,
+    "description": "The robbers configuration.",
+    "lineNumber": 37,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Robbers"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 27,
+    "kind": "member",
+    "name": "saver",
+    "memberof": "js/classes/interface/Settings.js~Settings",
+    "static": false,
+    "longname": "js/classes/interface/Settings.js~Settings#saver",
+    "access": null,
+    "description": "A class enabling us to save the configuration (or any text file) on the client's computer.",
+    "lineNumber": 43,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Saver"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 28,
+    "kind": "member",
+    "name": "loader",
+    "memberof": "js/classes/interface/Settings.js~Settings",
+    "static": false,
+    "longname": "js/classes/interface/Settings.js~Settings#loader",
+    "access": null,
+    "description": "A class enabling us to load a configuration from the client's computer.",
+    "lineNumber": 49,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Loader"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 29,
+    "kind": "method",
+    "name": "init",
+    "memberof": "js/classes/interface/Settings.js~Settings",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/Settings.js~Settings#init",
+    "access": null,
+    "description": "(Re)-Initialize every sub-settings. ",
+    "lineNumber": 63,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Settings"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 30,
+    "kind": "method",
+    "name": "getSettings",
+    "memberof": "js/classes/interface/Settings.js~Settings",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/Settings.js~Settings#getSettings",
+    "access": null,
+    "description": "Return settings as as JSON object.\n\nThose settings can be sent to the backend.",
+    "lineNumber": 79,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "JSON-ed concatenated settings."
+    }
+  },
+  {
+    "__docId__": 31,
+    "kind": "method",
+    "name": "getGeneralSettings",
+    "memberof": "js/classes/interface/Settings.js~Settings",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/Settings.js~Settings#getGeneralSettings",
+    "access": null,
+    "description": "Concatenate the general settings in one \nJSON object.",
+    "lineNumber": 94,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "concatenated settings."
+    }
+  },
+  {
+    "__docId__": 32,
+    "kind": "file",
+    "name": "js/classes/interface/results/LiveSimulation.js",
+    "content": "/**\n * Class enabling us to play a live simulation of the best strategy \n * sent by the server.\n */\n\nexport default class LiveSimulation{\n\n\t/**\n\t * @param  {Results} results - Results object that instanciated this simulation.\n\t * @param  {Object} computedData - Data computed by the server.\n\t * @param  {Object} bestStrategy - Strategy previously built.\n\t * @param  {string} selector - jQuery selector for where to put the simulation.\n\t */\n\tconstructor(results, computedData, bestStreategy, selector){\n\n\t\t/**\n\t\t * Results object that instanciated this simulation.\n\t\t * @type {Results}\n\t\t */\n\t\tthis.results = results\n\n\t\t/**\n\t\t * Original cytoscape graph.\n\t\t * @type {cytoscape}\n\t\t */\n\t\tthis.originalCy = this.results.interface.settings.graph.cy\n\t\twindow.liveSimulation = this\n\n\t\t/**\n\t\t * Data computed by the server.\n\t\t * @type {Object}\n\t\t */\n\t\tthis.computedData = computedData\n\n\t\t/**\n\t\t * Strategy previously built.\n\t\t * @type {Object}\n\t\t */\n\t\tthis.bestStreategy = bestStreategy\n\n\t\t/**\n\t\t * jQuery selector for where to put the simulation.\n\t\t * @type {string}\n\t\t */\n\t\tthis.selector = selector\n\n\t\t/**\n\t\t * LiveSimulation graph stylesheet. \n\t\t * @type {Array<Object>}\n\t\t */\n\t\tthis.stylesheet = [{\n\t\t\t\tselector: 'node',\n\t\t\t\tstyle: {\n\t\t\t\t\theight: 20,\n\t\t\t\t\twidth: 20\n\t\t\t\t}\n\t\t\t},\n\t\t\t{\n\t\t\t\tselector: 'edge',\n\t\t\t\tstyle: {\n\t\t\t\t\t'curve-style': 'haystack',\n\t\t\t\t\t'haystack-radius': 0,\n\t\t\t\t\twidth: 5,\n\t\t\t\t\topacity: 0.5,\n\t\t\t\t\t'line-color': 'grey'\n\t\t\t\t}\n\t\t\t},\n\t\t\t{\n\t\t\t\tselector: '.base',\n\t\t\t\tstyle: {\n\t\t\t\t\t'background-color': '#61bffc'\n\t\t\t\t}\n\t\t\t},\n\t\t\t{\n\t\t\t\tselector: '.secured',\n\t\t\t\tstyle: {\n\t\t\t\t\t'background-color': '#81c784'\n\t\t\t\t}\n\t\t\t},\n\t\t\t{\n\t\t\t\tselector: '.robbed',\n\t\t\t\tstyle: {\n\t\t\t\t\t'background-color': '#e57373'\n\t\t\t\t}\n\t\t\t},\n\t\t\t{\n\t\t\t\tselector: '.caught',\n\t\t\t\tstyle: {\n\t\t\t\t\t'background-color': '#E57373'\n\t\t\t\t}\n\t\t\t},\n\t\t\t{\n\t\t\t\tselector: '.guardian',\n\t\t\t\tstyle: {\n\t\t\t\t\theight: 40,\n\t\t\t\t\twidth: 40,\n\t\t\t\t\t'background-image': '/img/guardian-40.png',\n\t\t\t\t\t'background-opacity': 0\n\t\t\t\t}\n\t\t\t},\n\t\t\t{\n\t\t\t\tselector: '.robber',\n\t\t\t\tstyle: {\n\t\t\t\t\theight: 40,\n\t\t\t\t\twidth: 40,\n\t\t\t\t\t'background-image': '/img/robber-40.png',\n\t\t\t\t\t'background-opacity': 0\n\t\t\t\t}\n\t\t\t}\n\t\t]\n\n\t\t/**\n\t\t * LiveSImulation cytoscape graph.\n\t\t * @type {cytoscape}\n\t\t */\n\t\tthis.cy = cytoscape({\n\t\t\tcontainer: $(this.selector),\n\n\t\t\tboxSelectionEnabled: false,\n\t\t\tautounselectify: false,\n\n\t\t\tstyle: this.stylesheet\n\t\t})\n\n\t\tthis.cy.minZoom(0.5)\n\t\tthis.cy.maxZoom(2)\n\n\t\t// Import nodes and vertices from cy object.\n\n\t\tthis.originalCy.nodes().forEach(node => {\n\t\t\tthis.cy.add({\n\t\t\t\tdata: {id: node.id()},\n\t\t\t\tposition: node.position(),\n\t\t\t\tgroup: 'nodes',\n\t\t\t\tclasses: `node${(node.id() === '0') ? ' base' : ''}`,\n\t\t\t\tselectable: false,\n\t\t\t\tlocked: true,\n\t\t\t\tgrabbable: false\n\t\t\t})\n\t\t})\n\n\t\t/**\n\t\t * Base du gardien.\n\t\t * \n\t\t * @type {Node}\n\t\t */\n\t\tthis.base = this.cy.nodes('[id = \"0\"]')\n\n\t\tthis.originalCy.edges().forEach(edge => {\n\t\t\tthis.cy.add({\n\t\t\t\tdata: {\n\t\t\t\t\tid: edge.id(),\n\t\t\t\t\tsource: edge.source().id(),\n\t\t\t\t\ttarget: edge.target().id()\n\t\t\t\t},\n\t\t\t\tgroup: 'edges',\n\t\t\t\tselectable: false,\n\t\t\t\tlocked: true,\n\t\t\t\tgrabbable: false\n\t\t\t})\n\t\t})\n\n\t\t// Add robber and guardian.\n\n\t\tthis.cy.add({\n\t\t\tdata: {id: 'robber'},\n\t\t\tposition: {\n\t\t\t\tx: Math.cos(new Date()/1000) * 20,\n\t\t\t\ty: Math.sin(new Date()/1000) * 20\n\t\t\t},\n\t\t\tclasses: 'robber',\n\t\t\tselectable: false,\n\t\t\tlocked: false,\n\t\t\tgrabbable: false\n\t\t})\n\n\t\tthis.cy.add({\n\t\t\tdata: {id: 'guardian'},\n\t\t\tposition: Object.assign({}, this.cy.nodes('[id = \"0\"]').position()),\n\t\t\tclasses: 'guardian',\n\t\t\tselectable: false,\n\t\t\tlocked: false,\n\t\t\tgrabbable: false\n\t\t})\n\n\t\t/**\n\t\t * Node representing the robber.\n\t\t * \n\t\t * @type {Node}\n\t\t */\n\t\tthis.robber = this.cy.nodes('#robber')\n\n\t\t/**\n\t\t * Node representing the guardian.\n\t\t * \n\t\t * @type {Node}\n\t\t */\n\t\tthis.guardian = this.cy.nodes('#guardian')\n\t}\n\n\t/**\n\t * Launch a new iterration.\n\t * \n\t * @return {LiveSimulation} chaining\n\t */\n\tnewIteration(){\n\t\t/**\n\t\t * The robber's current target.\n\t\t * @type {Node}\n\t\t */\n\t\tthis.robberTarget = this.randomTarget()\n\t\t\n\t\t/**\n\t\t * Startup tmestamp (for the robber movement).\n\t\t * @type {Date}\n\t\t */\n\t\tthis.iterationStart = new Date()\n\t\t\n\t\t/**\n\t\t * How many ms before the robber hit the target?\n\t\t * @type {Number}\n\t\t */\n\t\tthis.countdown = Math.random()*2500*this.cy.filter('.node').length + 2500\n\t\t\n\t\t/**\n\t\t * The path the guardian will follow.\n\t\t * @type {Array<Node>}\n\t\t */\n\t\tthis.guardianPath = this.randomPath()\n\n\t\t/**\n\t\t * The last node the guardian visited.\n\t\t * @type {Node}\n\t\t */\n\t\tthis.guardianLastVisit = this.base\n\t\tthis.guardian.position(Object.assign({}, this.base.position()))\n\n\t\t/**\n\t\t * The node the guardian is going to.\n\t\t * @type {Node}\n\t\t */\n\t\tthis.guardianTarget = this.nextGuardianTarget(true)\n\n\t\treturn this\n\t}\n\n\t/**\n\t * Render the next step.\n\t * \n\t * @return {void} undefined\n\t */\n\tnextStep(){\n\t\t// fix a bug when graph is not showing on page change.\n\t\tthis.cy.resize()\n\t\tthis.cy.fit(this.cy.filter('.node'))\n\n\t\t// If the user dismiss the results, we stop the simulation.\n\t\tif ($(this.selector).length === 0)\n\t\t\treturn console.info('Live simulation stopped.')\n\n\t\tconst delta = (this.iterationStart.valueOf() + this.countdown - new Date().valueOf())/50\n\n\t\tif (delta <= 0)\n\t\t\treturn this.robberHitTarget()\n\n\t\tthis.robber.position({\n\t\t\tx: Math.cos(new Date()/1000) * delta + this.robberTarget.position().x,\n\t\t\ty: Math.sin(new Date()/1000) * delta + this.robberTarget.position().y\n\t\t})\n\t\tthis.robber.data('refresh', Math.random())\n\n\t\tconst guardianPosition = this.guardian.position()\n\t\tconst targetPosition = this.guardianTarget.position()\n\n\t\tguardianPosition.x = guardianPosition.x * 0.95 + targetPosition.x * 0.05\n\t\tguardianPosition.y = guardianPosition.y * 0.95 + targetPosition.y * 0.05\n\t\tthis.guardian.data('refresh', Math.random())\n\n\t\tif ((guardianPosition.x - targetPosition.x)**2 + (guardianPosition.y - targetPosition.y)**2 < 5){\n\t\t\tthis.guardianTarget.addClass('secured')\n\t\t\tthis.guardianLastVisit = this.guardianTarget\n\t\t\tconst newGuardianTarget = this.nextGuardianTarget()\n\t\t\tif (newGuardianTarget !== null)\n\t\t\t\tthis.guardianTarget = newGuardianTarget\n\t\t\t//else \n\t\t\t//\treturn this.everyTargetIsSecured()\n\t\t}\n\n\t\tsetTimeout(() => this.nextStep(), 50)\n\t}\n\n\t/**\n\t * Handle what happen when the robber hit his targer.\n\t * /!\\ Is asynchronous because of LiveSimulation::iterationEnd use.\n\t * \n\t * @return {LiveSimulation} chaining\n\t */\n\n\trobberHitTarget(){\n\t\tif (!this.robberTarget.hasClass('secured')){\n\t\t\tthis.robberTarget.addClass('robbed')\n\t\t\t$('#liveSimulationLog').text('Robbed!')\n\t\t} else {\n\t\t\tthis.robberTarget.removeClass('secured').addClass('caught')\n\t\t\t$('#liveSimulationLog').text('Caught!')\n\t\t}\n\t\treturn this.iterationEnd()\n\n\t}\n\n\t/**\n\t * @return {Array<Node>}\n\t */\n\trandomPath(){\n\n\t\tlet fairDiceRoll = Math.random()\n\n\t\tlet pathNumber = -1\n\n\t\twhile(fairDiceRoll > 0){\n\t\t\tpathNumber++\n\t\t\tfairDiceRoll-=this.bestStreategy.probabilities[pathNumber]\n\t\t}\n\n\t\treturn this.computedData.patrols[pathNumber].slice(1).map(nodeId => \n\t\t\tthis.cy.nodes(`[id = \"${nodeId}\"]`)[0]\n\t\t)\n\t}\n\n\t/**\n\t * Call for another iteration when the running one finishes.\n\t * \n\t * @return {LiveSimulation} chaining\n\t */\n\titerationEnd(){\n\t\tsetTimeout(() => {\n\t\t\tthis.cy.nodes().forEach(node => node.removeClass('secured').removeClass('robbed').removeClass('caught'))\n\t\t\tthis.run()\n\t\t\t$('#liveSimulationLog').text('Iteration running...')\n\t\t}, 1000)\n\n\t\treturn this\n\t}\n\n\t/**\n\t * Give the next target the Guardian should go for.\n\t * \n\t * @param  {Boolean} init - Is this the first target?\n\t * @return {Node} next target for the guardian.\n\t */\n\tnextGuardianTarget(init){\n\t\tif (init)\n\t\t\treturn this.guardianPath[0]\n\t\t\n\t\tconst index = this.guardianPath.indexOf(this.guardianTarget)\n\t\tif (index+1 === this.guardianPath.length)\n\t\t\treturn null\n\t\t\n\t\treturn this.guardianPath[index+1]\n\t}\n\n\t/**\n\t * Get a random target according to the distribution (see RobbersInterest).\n\t *\n\t * @return {Node} a random target\n\t */\n\trandomTarget(){\n\t\tlet distribution = []\n\t\tthis.originalCy.nodes('[id != \"0\"]').forEach(node => {\n\t\t\tfor (let i=0;i<node.data('robbersInterest');i++)\n\t\t\t\tdistribution.push(node.id())\n\t\t})\n\n\t\tlet randomId = distribution[Math.floor(Math.random()*distribution.length)]\n\n\t\treturn this.cy.nodes(`#${randomId}`)[0]\n\t}\n\n\t/**\n\t * Start the simulation.\n\t *\n\t * @return {LiveSimulation} chaining\n\t */\n\trun(){\n\t\tthis.newIteration()\n\t\tthis.nextStep()\n\n\t\treturn this\n\t}\n\n}",
+    "static": true,
+    "longname": "js/classes/interface/results/LiveSimulation.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 33,
+    "kind": "class",
+    "name": "LiveSimulation",
+    "memberof": "js/classes/interface/results/LiveSimulation.js",
+    "static": true,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "access": null,
+    "export": true,
+    "importPath": "web-server/js/classes/interface/results/LiveSimulation.js",
+    "importStyle": "LiveSimulation",
+    "description": "Class enabling us to play a live simulation of the best strategy \nsent by the server.",
+    "lineNumber": 6,
+    "interface": false
+  },
+  {
+    "__docId__": 34,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#constructor",
+    "access": null,
+    "description": "",
+    "lineNumber": 14,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Results"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "results",
+        "description": "Results object that instanciated this simulation."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "computedData",
+        "description": "Data computed by the server."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "bestStrategy",
+        "description": "Strategy previously built."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "selector",
+        "description": "jQuery selector for where to put the simulation."
+      }
+    ]
+  },
+  {
+    "__docId__": 35,
+    "kind": "member",
+    "name": "results",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#results",
+    "access": null,
+    "description": "Results object that instanciated this simulation.",
+    "lineNumber": 20,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Results"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 36,
+    "kind": "member",
+    "name": "originalCy",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#originalCy",
+    "access": null,
+    "description": "Original cytoscape graph.",
+    "lineNumber": 26,
+    "type": {
+      "nullable": null,
+      "types": [
+        "cytoscape"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 37,
+    "kind": "member",
+    "name": "computedData",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#computedData",
+    "access": null,
+    "description": "Data computed by the server.",
+    "lineNumber": 33,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 38,
+    "kind": "member",
+    "name": "bestStreategy",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#bestStreategy",
+    "access": null,
+    "description": "Strategy previously built.",
+    "lineNumber": 39,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 39,
+    "kind": "member",
+    "name": "selector",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#selector",
+    "access": null,
+    "description": "jQuery selector for where to put the simulation.",
+    "lineNumber": 45,
+    "type": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 40,
+    "kind": "member",
+    "name": "stylesheet",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#stylesheet",
+    "access": null,
+    "description": "LiveSimulation graph stylesheet. ",
+    "lineNumber": 51,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Array<Object>"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 41,
+    "kind": "member",
+    "name": "cy",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#cy",
+    "access": null,
+    "description": "LiveSImulation cytoscape graph.",
+    "lineNumber": 116,
+    "type": {
+      "nullable": null,
+      "types": [
+        "cytoscape"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 42,
+    "kind": "member",
+    "name": "base",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#base",
+    "access": null,
+    "description": "Base du gardien.",
+    "lineNumber": 147,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Node"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 43,
+    "kind": "member",
+    "name": "robber",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#robber",
+    "access": null,
+    "description": "Node representing the robber.",
+    "lineNumber": 191,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Node"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 44,
+    "kind": "member",
+    "name": "guardian",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#guardian",
+    "access": null,
+    "description": "Node representing the guardian.",
+    "lineNumber": 198,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Node"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 45,
+    "kind": "method",
+    "name": "newIteration",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#newIteration",
+    "access": null,
+    "description": "Launch a new iterration.",
+    "lineNumber": 206,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "LiveSimulation"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 46,
+    "kind": "member",
+    "name": "robberTarget",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#robberTarget",
+    "access": null,
+    "description": "The robber's current target.",
+    "lineNumber": 211,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Node"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 47,
+    "kind": "member",
+    "name": "iterationStart",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#iterationStart",
+    "access": null,
+    "description": "Startup tmestamp (for the robber movement).",
+    "lineNumber": 217,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Date"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 48,
+    "kind": "member",
+    "name": "countdown",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#countdown",
+    "access": null,
+    "description": "How many ms before the robber hit the target?",
+    "lineNumber": 223,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 49,
+    "kind": "member",
+    "name": "guardianPath",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#guardianPath",
+    "access": null,
+    "description": "The path the guardian will follow.",
+    "lineNumber": 229,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Array<Node>"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 50,
+    "kind": "member",
+    "name": "guardianLastVisit",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#guardianLastVisit",
+    "access": null,
+    "description": "The last node the guardian visited.",
+    "lineNumber": 235,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Node"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 51,
+    "kind": "member",
+    "name": "guardianTarget",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#guardianTarget",
+    "access": null,
+    "description": "The node the guardian is going to.",
+    "lineNumber": 242,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Node"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 52,
+    "kind": "method",
+    "name": "nextStep",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#nextStep",
+    "access": null,
+    "description": "Render the next step.",
+    "lineNumber": 252,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "void"
+      ],
+      "spread": false,
+      "description": "undefined"
+    }
+  },
+  {
+    "__docId__": 53,
+    "kind": "member",
+    "name": "guardianLastVisit",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#guardianLastVisit",
+    "access": null,
+    "description": null,
+    "lineNumber": 281,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 54,
+    "kind": "member",
+    "name": "guardianTarget",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#guardianTarget",
+    "access": null,
+    "description": null,
+    "lineNumber": 284,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 55,
+    "kind": "method",
+    "name": "robberHitTarget",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#robberHitTarget",
+    "access": null,
+    "description": "Handle what happen when the robber hit his targer.\n/!\\ Is asynchronous because of LiveSimulation::iterationEnd use.",
+    "lineNumber": 299,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "LiveSimulation"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 56,
+    "kind": "method",
+    "name": "randomPath",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#randomPath",
+    "access": null,
+    "description": "",
+    "lineNumber": 314,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Array<Node>"
+      ],
+      "spread": false,
+      "description": ""
+    }
+  },
+  {
+    "__docId__": 57,
+    "kind": "method",
+    "name": "iterationEnd",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#iterationEnd",
+    "access": null,
+    "description": "Call for another iteration when the running one finishes.",
+    "lineNumber": 335,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "LiveSimulation"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 58,
+    "kind": "method",
+    "name": "nextGuardianTarget",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#nextGuardianTarget",
+    "access": null,
+    "description": "Give the next target the Guardian should go for.",
+    "lineNumber": 351,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "init",
+        "description": "Is this the first target?"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Node"
+      ],
+      "spread": false,
+      "description": "next target for the guardian."
+    }
+  },
+  {
+    "__docId__": 59,
+    "kind": "method",
+    "name": "randomTarget",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#randomTarget",
+    "access": null,
+    "description": "Get a random target according to the distribution (see RobbersInterest).",
+    "lineNumber": 367,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Node"
+      ],
+      "spread": false,
+      "description": "a random target"
+    }
+  },
+  {
+    "__docId__": 60,
+    "kind": "method",
+    "name": "run",
+    "memberof": "js/classes/interface/results/LiveSimulation.js~LiveSimulation",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/results/LiveSimulation.js~LiveSimulation#run",
+    "access": null,
+    "description": "Start the simulation.",
+    "lineNumber": 384,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "LiveSimulation"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 61,
+    "kind": "file",
+    "name": "js/classes/interface/settings/files/Loader.js",
+    "content": "/**\n * Loader enables us to load settings from an object or from a file.\n */\nexport default class Loader {\n\n\t/**\n\t * @param {Settings} settings - Settings object using this loader. \n\t */\n\tconstructor(settings){\n\n\t\t/**\n\t\t * Settings object using this loader. \n\t\t * @type {Settings}\n\t\t */\n\t\tthis.settings = settings\n\n\t\t/**\n\t\t * Default settings.\n\t\t * @type {Object}\n\t\t */\n\t\tthis.defaultSettings = \n\t\t\t{\n\t\t\t  \"general\": {\n\t\t\t    \"numberOfIterations\": 20,\n\t\t\t    \"distanceWeight\": 200\n\t\t\t  },\n\t\t\t  \"paths\": {\n\t\t\t    \"vertices\": [\n\t\t\t      {\n\t\t\t        \"id\": 0,\n\t\t\t        \"position\": {\n\t\t\t          \"x\": 93.74723822180408,\n\t\t\t          \"y\": 20\n\t\t\t        },\n\t\t\t        \"robbersInterest\": 1,\n\t\t\t        \"guardiansCost\": 1,\n\t\t\t        \"guardiansReward\": 1,\n\t\t\t        \"robberSettings\": {\n\t\t\t          \"0\": {\n\t\t\t            \"cost\": 1,\n\t\t\t            \"reward\": 1\n\t\t\t          }\n\t\t\t        }\n\t\t\t      },\n\t\t\t      {\n\t\t\t        \"id\": 1,\n\t\t\t        \"position\": {\n\t\t\t          \"x\": 20.252761778195918,\n\t\t\t          \"y\": 20\n\t\t\t        },\n\t\t\t        \"robbersInterest\": 1,\n\t\t\t        \"guardiansCost\": 1,\n\t\t\t        \"guardiansReward\": 1,\n\t\t\t        \"robberSettings\": {\n\t\t\t          \"0\": {\n\t\t\t            \"cost\": 1,\n\t\t\t            \"reward\": 1\n\t\t\t          }\n\t\t\t        }\n\t\t\t      }\n\t\t\t    ],\n\t\t\t    \"edges\": [\n\t\t\t      {\n\t\t\t        \"source\": 0,\n\t\t\t        \"target\": 1,\n\t\t\t        \"length\": 73.49447644360816\n\t\t\t      }\n\t\t\t    ]\n\t\t\t  },\n\t\t\t  \"robbers\": {\n\t\t\t    \"list\": [\n\t\t\t      0\n\t\t\t    ],\n\t\t\t    \"catchProbability\": {\n\t\t\t      \"0\": 0.5\n\t\t\t    }\n\t\t\t  }\n\t\t\t}\n\t}\n\n\t/**\n\t * Load the settings after checking if they are corrupted or not.\n\t *\n\t * @param {Object} settings - JSON representation of the settings.\n\t * @return {Loader} chaining\n\t */\n\tload(settings){\n\t\tlet corruptionMessage = this.checkCorruption(settings)\n\t\tif (corruptionMessage)\n\t\t\tconsole.error(corruptionMessage)\n\n\t\tthis.settings.init()\n\n\t\t$('#numberOfIterations').val(settings.general.numberOfIterations)\n\t\t$('#distanceWeight').val(settings.general.distanceWeight)\n\n\t\t// Id maps (loaded ids => current ids)\n\n\t\tconst verticesIdMap = new Map()\n\t\tconst robbersIdMap = new Map()\n\n\t\tsettings.robbers.list.forEach(robberId => {\n\t\t\trobbersIdMap.set(robberId, this.settings.robbers.newRobber(1 - settings.robbers.catchProbability[`${robberId}`]))\n\t\t})\n\n\t\tsettings.paths.vertices.forEach(vertex => {\n\n\t\t\tverticesIdMap.set(vertex.id, this.settings.graph.addNode(vertex.position, vertex.id === 0, vertex.robbersInterest, vertex.guardiansCost, vertex.guardiansReward))\n\n\t\t\tconst newNodeId = verticesIdMap.get(vertex.id)\n\n\t\t\tsettings.robbers.list.forEach(robberId => {\n\t\t\t\tconst newRobberId = robbersIdMap.get(robberId)\n\n\t\t\t\tthis.settings.graph.cy.nodes(`[id = \"${newNodeId}\"]`).data('robberSettings').set(newRobberId, vertex.robberSettings[robberId])\n\t\t\t})\n\n\t\t})\n\n\t\tsettings.paths.edges.forEach(edge => {\n\t\t\tthis.settings.graph.link(\n\t\t\t\tverticesIdMap.get(edge.source), \n\t\t\t\tverticesIdMap.get(edge.target))\n\t\t})\n\n\t\tthis.settings.graph.cy.fit()\n\n\t\tconsole.log('Settings loaded')\n\n\t\treturn this\n\t}\n\n\t/**\n\t * Load the settings object from a JSON file on client's computer.\n\t * /!\\ May be asynchronous depending on browsers implementation.\n\t * \n\t * @return {Loader} chaining\n\t */\n\timport(){\n\t\tconst input = document.createElement('input')\n\t\tinput.setAttribute('type', 'file')\n\n\t\tinput.style.display = 'none'\n\n\t\tinput.addEventListener('change', event => {\n\n\t\t\tconst file = input.files[0]\n\n\t\t\tconst reader = new FileReader()\n\t\t\treader.onload = event => {\n\t\t\t\ttry {\n\t\t\t\t\tthis.load(JSON.parse(atob(event.target.result.split(',').pop())))\n\t\t\t\t} catch (e) {\n\t\t\t\t\tconsole.error('The given config file was not a valid JSON file.')\n\t\t\t\t}\n\t\t\t}\n\n\t\t\treader.readAsDataURL(file)\n\n\t\t\tdocument.body.removeChild(input)\n\n\t\t})\n\n\t\tdocument.body.appendChild(input)\n\n\t\tinput.click()\n\n\t\treturn this\n\t}\n\n\t/**\n\t * Initialize the graph by setting default values.\n\t * \n\t * @return {Loader} chaining\n\t */\n\tloadDefault(){\n\t\treturn this.load(this.defaultSettings)\n\t}\n\n\t/**\n\t * Check the corruption of given settings as JSON object.\n\t * \n\t * @param  {Object} settings - settings to check if they are corrupted. \n\t * @return {string | false} string (== true) describing the error \n\t * \tif corrupted, false else.\n\t */\n\tcheckCorruption(settings){\n\n\t\t// Fields presence\n\n\t\tif (typeof settings === 'undefined')\n\t\t\treturn `No settings submitted.`\n\n\t\tif (typeof settings.general === 'undefined')\n\t\t\treturn `No general settings submitted.`\n\n\t\tif (typeof settings.paths === 'undefined')\n\t\t\treturn `No paths settings submitted.`\n\n\t\tif (typeof settings.paths.vertices === 'undefined')\n\t\t\treturn `No vertices settings submitted.`\n\n\t\tif (typeof settings.paths.edges === 'undefined')\n\t\t\treturn `No edges settings submitted.`\n\n\t\tif (typeof settings.robbers === 'undefined')\n\t\t\treturn `No robbers settings submitted.`\n\n\t\tif (typeof settings.robbers.list === 'undefined')\n\t\t\treturn `No robbers list submitted.`\n\n\t\tif (typeof settings.robbers.catchProbability === 'undefined')\n\t\t\treturn `No catch probability settings submitted.`\n\n\t\t// settings integrity\n\n\t\tconst robbersList = settings.robbers.list\n\n\t\tif (robbersList.length === 0)\n\t\t\treturn `Robbers list should contain at least 1 robber.`\n\n\t\tconst verticesSet = new Set()\n\n\t\tif (settings.general.numberOfIterations < 1 || settings.general.numberOfIterations > 100)\n\t\t\treturn `Invalid number of iterations.`\n\n\t\tif (! settings.general.distanceWeight > 0)\n\t\t\treturn `Invalid distance weight (must be > 0).`\n\n\t\t// Vertcies integrity\n\n\t\tfor (let vertice of settings.paths.vertices){\n\t\t\tif (verticesSet.has(vertice.id))\n\t\t\t\treturn `Same id (${vertice.id}) shared by two differents target.`\n\n\t\t\tverticesSet.add(vertice.id)\n\n\t\t\tif (! (vertice.robbersInterest >= 0))\n\t\t\t\treturn `Invalid robbers interest for target ${vertice.id}.`\n\n\t\t\tif (! (vertice.guardiansCost >= 0))\n\t\t\t\treturn `Invalid guardians cost for target ${vertice.id}.`\n\n\t\t\tif (! (vertice.guardiansReward >= 0))\n\t\t\t\treturn `Invalid guardians reward for target ${vertice.id}.`\n\n\t\t\tif (typeof vertice.robberSettings === 'undefined')\n\t\t\t\treturn `No robber settings submitted for target ${vertice.id}.`\n\n\t\t\tif (typeof vertice.position !== 'object')\n\t\t\t\treturn `No position settings submitted for target ${vertice.id}.`\n\n\t\t\tif (typeof vertice.position.x !== 'number')\n\t\t\t\treturn `Invalid x position submitted for target ${vertice.id}.`\n\n\t\t\tif (typeof vertice.position.y !== 'number')\n\t\t\t\treturn `Invalid y position submitted for target ${vertice.id}.`\n\n\t\t\tfor (let robber of robbersList){\n\n\t\t\t\tif (typeof vertice.robberSettings[robber] === 'undefined')\n\t\t\t\t\treturn `No settings submitted for rober ${robber} and target ${vertice.id}.`\n\n\t\t\t\tif (! (vertice.robberSettings[robber].cost >= 0))\n\t\t\t\t\treturn `Invalid robber cost for rober ${robber} and target ${vertice.id}.`\n\n\t\t\t\tif (! (vertice.robberSettings[robber].reward >= 0))\n\t\t\t\t\treturn `Invalid robber reward for rober ${robber} and target ${vertice.id}.`\n\t\t\t}\n\t\t}\n\n\t\tif (! verticesSet.has(0))\n\t\t\treturn `No base vertex submitted.`\n\n\t\t// Edges integrity\n\n\t\tfor (let edge of settings.paths.edges){\n\t\t\tif (typeof edge.source === 'undefined')\n\t\t\t\treturn `No source submitted for a given edge.`\n\t\t\tif (typeof edge.target === 'undefined')\n\t\t\t\treturn `No target submitted for a given edge.`\n\t\t\tif (edge.length < 0)\n\t\t\t\treturn `Invalid length submitted for a given edge.`\n\t\t\tif (! (verticesSet.has(edge.source)))\n\t\t\t\treturn `The source ${edge.source} does not exist.`\n\t\t\tif (! (verticesSet.has(edge.target)))\n\t\t\t\treturn `The target ${edge.target} does not exist.`\n\t\t}\n\n\t\tif (settings.paths.edges.length === 0)\n\t\t\treturn 'The path should have at least 1 edge.'\n\n\t\t// Catch probability integrity\n\n\t\tfor (let robber of robbersList){\n\t\t\tif (! (settings.robbers.catchProbability[robber] >= 0 \n\t\t\t\t&& settings.robbers.catchProbability[robber] <= 1))\n\t\t\t\treturn `Invalid catch probability for robber ${robber}.`\n\t\t}\n\n\t\treturn false\n\t}\n}",
+    "static": true,
+    "longname": "js/classes/interface/settings/files/Loader.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 62,
+    "kind": "class",
+    "name": "Loader",
+    "memberof": "js/classes/interface/settings/files/Loader.js",
+    "static": true,
+    "longname": "js/classes/interface/settings/files/Loader.js~Loader",
+    "access": null,
+    "export": true,
+    "importPath": "web-server/js/classes/interface/settings/files/Loader.js",
+    "importStyle": "Loader",
+    "description": "Loader enables us to load settings from an object or from a file.",
+    "lineNumber": 4,
+    "interface": false
+  },
+  {
+    "__docId__": 63,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "js/classes/interface/settings/files/Loader.js~Loader",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/files/Loader.js~Loader#constructor",
+    "access": null,
+    "description": "",
+    "lineNumber": 9,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Settings"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "settings",
+        "description": "Settings object using this loader."
+      }
+    ]
+  },
+  {
+    "__docId__": 64,
+    "kind": "member",
+    "name": "settings",
+    "memberof": "js/classes/interface/settings/files/Loader.js~Loader",
+    "static": false,
+    "longname": "js/classes/interface/settings/files/Loader.js~Loader#settings",
+    "access": null,
+    "description": "Settings object using this loader. ",
+    "lineNumber": 15,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Settings"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 65,
+    "kind": "member",
+    "name": "defaultSettings",
+    "memberof": "js/classes/interface/settings/files/Loader.js~Loader",
+    "static": false,
+    "longname": "js/classes/interface/settings/files/Loader.js~Loader#defaultSettings",
+    "access": null,
+    "description": "Default settings.",
+    "lineNumber": 21,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 66,
+    "kind": "method",
+    "name": "load",
+    "memberof": "js/classes/interface/settings/files/Loader.js~Loader",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/files/Loader.js~Loader#load",
+    "access": null,
+    "description": "Load the settings after checking if they are corrupted or not.",
+    "lineNumber": 87,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "settings",
+        "description": "JSON representation of the settings."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Loader"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 67,
+    "kind": "method",
+    "name": "import",
+    "memberof": "js/classes/interface/settings/files/Loader.js~Loader",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/files/Loader.js~Loader#import",
+    "access": null,
+    "description": "Load the settings object from a JSON file on client's computer.\n/!\\ May be asynchronous depending on browsers implementation.",
+    "lineNumber": 139,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Loader"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 68,
+    "kind": "method",
+    "name": "loadDefault",
+    "memberof": "js/classes/interface/settings/files/Loader.js~Loader",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/files/Loader.js~Loader#loadDefault",
+    "access": null,
+    "description": "Initialize the graph by setting default values.",
+    "lineNumber": 176,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Loader"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 69,
+    "kind": "method",
+    "name": "checkCorruption",
+    "memberof": "js/classes/interface/settings/files/Loader.js~Loader",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/files/Loader.js~Loader#checkCorruption",
+    "access": null,
+    "description": "Check the corruption of given settings as JSON object.",
+    "lineNumber": 187,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "settings",
+        "description": "settings to check if they are corrupted."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "string ",
+        " false"
+      ],
+      "spread": false,
+      "description": "string (== true) describing the error \n\tif corrupted, false else."
+    }
+  },
+  {
+    "__docId__": 70,
+    "kind": "file",
+    "name": "js/classes/interface/settings/files/Saver.js",
+    "content": "/**\n * Class enabling you to download the current settings or whatever text you want\n * on the client computer without server-side.\n */\nexport default class Saver {\n\n\t/**\n\t* @param {Settings} settings - Settings object using this saver. \n\t*/\n\tconstructor(settings){\n\t\t/**\n\t\t * Settings object using this loader.\n\t\t * @type {Settings}\n\t\t */\n\t\tthis.settings = settings\n\t}\n\n\t/**\n\t * Download the current settings.\n\t * \n\t * @return {Saver} chaining\n\t */\n\tsave(){\n\n\t\tconst date = new Date()\n\n\t\treturn this.download(\n\t\t\t`${date.toLocaleDateString()}-${date.toLocaleTimeString().replace(':', '-')}.json`,\n\t\t\tJSON.stringify(this.settings.getSettings()))\n\t}\n\n\t/**\n\t * Download a file with given name and content.\n\t * /!\\ May be asynchronous depending on browsers implementation.\n\t * \n\t * @param  {string} filename - The file name.\n\t * @param  {string} text - The file content.\n\t * @return {Saver} chaining\n\t */\n\tdownload(filename, text) {\n\t\tconst link = document.createElement('a')\n\t\tlink.setAttribute('href', `data:text/json;charset=utf-8,${encodeURIComponent(text)}`)\n\t\tlink.setAttribute('download', filename)\n\n\t\tlink.style.display = 'none'\n\t\tdocument.body.appendChild(link)\n\n\t\tlink.click()\n\n\t\tdocument.body.removeChild(link)\n\n\t\treturn this\n\t}\n}",
+    "static": true,
+    "longname": "js/classes/interface/settings/files/Saver.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 71,
+    "kind": "class",
+    "name": "Saver",
+    "memberof": "js/classes/interface/settings/files/Saver.js",
+    "static": true,
+    "longname": "js/classes/interface/settings/files/Saver.js~Saver",
+    "access": null,
+    "export": true,
+    "importPath": "web-server/js/classes/interface/settings/files/Saver.js",
+    "importStyle": "Saver",
+    "description": "Class enabling you to download the current settings or whatever text you want\non the client computer without server-side.",
+    "lineNumber": 5,
+    "interface": false
+  },
+  {
+    "__docId__": 72,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "js/classes/interface/settings/files/Saver.js~Saver",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/files/Saver.js~Saver#constructor",
+    "access": null,
+    "description": "",
+    "lineNumber": 10,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Settings"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "settings",
+        "description": "Settings object using this saver."
+      }
+    ]
+  },
+  {
+    "__docId__": 73,
+    "kind": "member",
+    "name": "settings",
+    "memberof": "js/classes/interface/settings/files/Saver.js~Saver",
+    "static": false,
+    "longname": "js/classes/interface/settings/files/Saver.js~Saver#settings",
+    "access": null,
+    "description": "Settings object using this loader.",
+    "lineNumber": 15,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Settings"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 74,
+    "kind": "method",
+    "name": "save",
+    "memberof": "js/classes/interface/settings/files/Saver.js~Saver",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/files/Saver.js~Saver#save",
+    "access": null,
+    "description": "Download the current settings.",
+    "lineNumber": 23,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Saver"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 75,
+    "kind": "method",
+    "name": "download",
+    "memberof": "js/classes/interface/settings/files/Saver.js~Saver",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/files/Saver.js~Saver#download",
+    "access": null,
+    "description": "Download a file with given name and content.\n/!\\ May be asynchronous depending on browsers implementation.",
+    "lineNumber": 40,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "filename",
+        "description": "The file name."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "text",
+        "description": "The file content."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Saver"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 76,
+    "kind": "file",
+    "name": "js/classes/interface/settings/subsettings/Graph.js",
+    "content": "/**\n*\tClass representing the graph of the simulation.\n*\n*\tYou can add targets, delete targets, and link\n*\tthem together.\n*\n*\tFor each target, you can set :\n*\t\t- robbersInterest (the probability of robbers attacking this target)\n*\t\t- guardiansCost (the cost when guardians fail to protect the target)\n*\t\t- guardiansReward (the reward when guardians manage to prevent \n*\t\t\t\t\t\t\tan attack)\n*\t\t- robberSettings (the cost, reward and probability for each robber)\n*\t\t\t(Set through the Robbers class)\n*\n*\tNodes = Attacks = Targets\n*/\n\nexport default class Graph {\n\n\t/**\n\t * @param {Settings} settings - Settings object using this graph. \n\t */\n\tconstructor(settings){\n\n\t\t// Fields\n\t\t/**\n\t\t * Settings object using this graph.\n\t\t * @type {Settings}\n\t\t */\n\t\tthis.settings = settings\n\n\t\t/**\n\t\t * Graph style.\n\t\t * @type {Object}\n\t\t */\n\t\tthis.stylesheet = [{\n\t\t\t\tselector: 'node',\n\t\t\t\tstyle: {\n\t\t\t\t\theight: 20,\n\t\t\t\t\twidth: 20,\n\t\t\t\t\t'background-color': 'mapData(robbersInterest, 0, 25, green, red)',\n\t\t\t\t\tcontent: node => `N${node.data('id')} C${node.data('guardiansCost')}/R${node.data('guardiansReward')}`,\n\t\t\t\t\t//'text-valign': 'center',\n\t\t\t\t\t'text-halign': 'center'\n\t\t\t\t}\n\t\t\t},\n\t\t\t{\n\t\t\t\tselector: 'edge',\n\t\t\t\tstyle: {\n\t\t\t\t\t'curve-style': 'haystack',\n\t\t\t\t\t'haystack-radius': 0,\n\t\t\t\t\twidth: 5,\n\t\t\t\t\topacity: 0.5,\n\t\t\t\t\t'line-color': '#a2efa2',\n\t\t\t\t\tcontent: edge => Math.floor(this.length(edge))\n\t\t\t\t}\n\t\t\t},\n\t\t\t{\n\t\t\t\tselector: '.base',\n\t\t\t\tstyle: {\n\t\t\t\t\t'background-color': '#61bffc',\n\t\t\t\t\tlabel: 'Base'\n\t\t\t\t}\n\t\t\t},\n\t\t\t{\n\t\t\t\tselector: ':selected',\n\t\t\t\tstyle: {\n\t\t\t\t\t'border-width': 4,\n\t\t\t\t\t'border-color': 'purple'\n\t\t\t\t}\n\t\t\t}\n\t\t]\n\n\t\t/**\n\t\t * Cytoscape graph linked to this graph.\n\t\t * @type {cytoscape}\n\t\t */\n\t\tthis.cy = window.cy = cytoscape({\n\t\t\tcontainer: $('#graph'),\n\n\t\t\tboxSelectionEnabled: false,\n\t\t\tautounselectify: false,\n\n\t\t\tstyle: this.stylesheet\n\t\t})\n\n\t\tthis.cy.minZoom(0.5)\n\t\tthis.cy.maxZoom(2)\n\n\t\twindow.graph = this\n\n\t\t// Refreshing the length\n\t\t/**\n\t\t * Interval that refresh the cytoscape graph.\n\t\t * @return {Interval}\n\t\t */\n\t\tthis.refreshInterval = setInterval(() => cy.edges().forEach(edge => edge.data('refresh', Math.random())), 250)\n\n\t\t// DOM listeners\n\n\t\t$(document).on('click', '.qtip-content .link', event => {\n\t\t\tconsole.info(\"Linking a target to another...\")\n\t\t\t/**\n\t\t\t * What the user is currently doing.\n\t\t\t * @type {String}\n\t\t\t */\n\t\t\tthis.currentAction = 'linking'\n\t\t\t$('.qtip').qtip('hide')\n\t\t})\n\n\t\t$(document).on('click', '.qtip-content .delete', event => {\n\t\t\tthis.lastSelectedNode.remove()\n\t\t\tthis.reset()\n\t\t})\n\n\t\t$(document).on('click', '.qtip-content .dismiss', event => {\n\t\t\tthis.reset()\n\t\t})\n\n\t\t$(document).on('click', '.qtip-content .plusInterest', event => {\n\t\t\tthis.lastSelectedNode.data('robbersInterest', Math.min(this.lastSelectedNode.data('robbersInterest')+1, 25))\n\t\t})\n\n\t\t$(document).on('click', '.qtip-content .minusInterest', event => {\n\t\t\tthis.lastSelectedNode.data('robbersInterest', Math.max(this.lastSelectedNode.data('robbersInterest')-1, 0))\n\t\t})\n\n\t\t$(document).on('click', '.qtip-content .plusCost', event => {\n\t\t\tthis.lastSelectedNode.data('guardiansCost', Math.min(this.lastSelectedNode.data('guardiansCost')+1, 25))\n\t\t})\n\n\t\t$(document).on('click', '.qtip-content .minusCost', event => {\n\t\t\tthis.lastSelectedNode.data('guardiansCost', Math.max(this.lastSelectedNode.data('guardiansCost')-1, 0))\n\t\t})\n\n\t\t$(document).on('click', '.qtip-content .plusReward', event => {\n\t\t\tthis.lastSelectedNode.data('guardiansReward', Math.min(this.lastSelectedNode.data('guardiansReward')+1, 25))\n\t\t})\n\n\t\t$(document).on('click', '.qtip-content .minusReward', event => {\n\t\t\tthis.lastSelectedNode.data('guardiansReward', Math.max(this.lastSelectedNode.data('guardiansReward')-1, 0))\n\t\t})\n\n\t\t// Cytoscape listeners\n\n\t\tthis.cy.on('tap', event => {\n\t\t\tif (event.target === event.cy)\n\t\t\t\tthis.reset()\n\t\t\t// When you tap on the background and that there are no visible tips, you add a new node at this position.\n\t\t\t// If a tip is visible, you probably just want to dismiss it\n\t\t\tif (event.target === event.cy && !$('.qtip:visible').length){\n\t\t\t\treturn this.addNode(event.position)\n\t\t\t}\n\t\t})\n\n\t\tthis.cy.on('tap', 'node', event => {\n\t\t\tif (this.currentAction === 'linking'){\n\t\t\t\tthis.currentAction = null\n\t\t\t\tconst secondNode = event.target\n\t\t\t\t// We check if that edge aleady exists or if the source and target are the same node.\n\t\t\t\tif (!this.cy.elements(`edge[source = \"${this.lastSelectedNode.id()}\"][target = \"${secondNode.id()}\"]`).length && \n\t\t\t\t\t!this.cy.elements(`edge[target = \"${this.lastSelectedNode.id()}\"][source = \"${secondNode.id()}\"]`).length && \n\t\t\t\t\tsecondNode != this.lastSelectedNode){\n\t\t\t\t\tthis.link(this.lastSelectedNode.id(), secondNode.id())\n\t\t\t\t}\n\t\t\t}\n\n\t\t\t/**\n\t\t\t * The node that was clicked the last.\n\t\t\t * @type {Node}\n\t\t\t */\n\t\t\tthis.lastSelectedNode = event.target\n\t\t})\n\n\t\tthis.cy.on('tap', 'edge', event => {\n\t\t\tevent.target.remove()\n\t\t})\n\n\t\t// fix a bug when tap doesn't work on page change.\n\n\t\t$(document).on('click', event => this.cy.resize())\n\n\t\tthis.init()\n\t}\n\n\t/**\n\t * Initialize the graph by setting default values.\n\t *\n\t * @return {Graph} chaining\n\t */\n\tinit(){\n\t\t/**\n\t\t * Number of edges created.\n\t\t * Deleting an edge doesn't decrease that counter.\n\t\t * \n\t\t * @type {Number}\n\t\t */\n\t\tthis.nbrEdgesCreated = 0\n\n\t\t/**\n\t\t * Number of created nodes.\n\t\t * Deleting a node doesn't decrease this counter.\n\t\t * \n\t\t * @type {Number}\n\t\t */\n\t\tthis.nbrNodesCreated = 0\n\n\t\t/**\n\t\t * The node that was clicked the last.\n\t\t * @type {Node}\n\t\t */\n\t\tthis.lastSelectedNode = null\n\n\t\t/**\n\t\t * What the user is currently doing.\n\t\t * @type {String}\n\t\t */\n\t\tthis.currentAction = null\n\n\t\tthis.cy.elements().forEach(element => element.remove())\n\n\t\treturn this\n\t}\n\n\t/**\n\t * Sort targets with the CoSE layout (by Bilkent University).\n\t *\n\t * @return {Graph} chaining\n\t */\n\tsort(){\n\t\tthis.cy.layout({\n\t\t\tname: 'cose-bilkent',\n\t\t\tanimate: true\n\t\t}).run()\n\n\t\treturn this\n\t}\n\n\t/**\n\t * Reset the current action, selected target and hide the tips.\n\t *\n\t * @return {Graph} chaining\n\t */\n\treset(){\n\t\tthis.lastSelectedNode = null\n\t\tthis.currentAction = null\n\t\t$('.qtip').qtip('hide')\n\n\t\treturn this\n\t}\n\n\n\t/**\n\t * Link two targets together. You have to specify the ids.\n\t * \n\t * @param  {string} source - source node id.\n\t * @param  {string} target - target node id.\n\t * @return {Graph} chaining\n\t */\n\tlink(source, target){\n\t\tthis.cy.add({\n\t\t\tdata: {\n\t\t\t\tid: `e${this.nbrEdgesCreated++}`,\n\t\t\t\tsource: source,\n\t\t\t\ttarget: target\n\t\t\t},\n\t\t\tgroup: 'edges',\n\t\t\tselectable: true,\n\t\t\tlocked: false,\n\t\t\tgrabbable: true,\n\t\t\tclasses: ''\n\t\t})\n\t\tconsole.info(`Edge added linking ${source} to ${target}.`)\n\n\t\treturn this\n\t}\n\n\t/**\n\t * Add a node to the graph.\n\t *\n\t * Base nodes can not been attacket nor defended.\n\t * Patrols have to start at the base.\n\t * \n\t * @param {Object} position - node coordinates.\n\t * @param {Boolean} base - do you want to add a base (you shouldn't, except the first one)\n\t * @param {Number} robbersInterest - How often will robbers attack this target compared to others.\n\t * @param {Number} guardiansCost - How much will it cost to the guardian to not catch the robber on this node.\n\t * @param {Number} guardiansReward - How much will a guardian earn from catching a robber on this node.\n\t * @return {string} the new node id.\n\t */\n\taddNode(position = {x: 0, y: 0}, base = false, robbersInterest = 1, guardiansCost = 1, guardiansReward = 1){\n\t\tconst newNodeId = this.cy.nodes().length\n\n\t\tconst newNode = this.cy.add({\n\t\t\tdata: {\n\t\t\t\tid: newNodeId,\n\t\t\t\trobbersInterest: robbersInterest,\n\t\t\t\tguardiansCost: guardiansCost,\n\t\t\t\tguardiansReward: guardiansReward,\n\t\t\t\trobberSettings : new Map()\n\t\t\t},\n\t\t\tposition: position,\n\t\t\tgroup: 'nodes',\n\t\t\tselectable: true,\n\t\t\tlocked: false,\n\t\t\tgrabbable: true,\n\t\t\tclasses: base ? 'base' : ''\n\t\t}).qtip({\n\t\t\tcontent: `\n\t\t\t<div>\n\t\t\t\t<a class=\"waves-effect waves-light btn blue link\" style=\"width:160px\"><i class=\"material-icons right\">timeline</i>Link to...</a>\n\t\t\t\t<a class=\"waves-effect waves-light btn red delete\" style=\"width:160px; margin-top: 10px\" ${base ? 'disabled' : ''}><i class=\"material-icons right\">delete</i>Delete</a>\n\t\t\t\t\n\t\t\t\t<a class=\"waves-effect waves-light btn red lighten-2 minusInterest col\" ${base ? 'disabled' : ''}><i class=\"material-icons\">remove_circle</i></a>\n\t\t\t\t<div class=\"label\">Robbers Interest</div>\n\t\t\t\t<a class=\"waves-effect waves-light btn green lighten-2 plusInterest col\" ${base ? 'disabled' : ''}><i class=\"material-icons\">add_circle</i></a>\n\n\t\t\t\t<a class=\"waves-effect waves-light btn red lighten-2 minusCost col\" ${base ? 'disabled' : ''}><i class=\"material-icons\">remove_circle</i></a>\n\t\t\t\t<div class=\"label\">Guardians Cost</div>\n\t\t\t\t<a class=\"waves-effect waves-light btn green lighten-2 plusCost col\" ${base ? 'disabled' : ''}><i class=\"material-icons\">add_circle</i></a>\n\n\t\t\t\t<a class=\"waves-effect waves-light btn red lighten-2 minusReward col\" ${base ? 'disabled' : ''}><i class=\"material-icons\">remove_circle</i></a>\n\t\t\t\t<div class=\"label\">Guardians Reward</div>\n\t\t\t\t<a class=\"waves-effect waves-light btn green lighten-2 plusReward col\" ${base ? 'disabled' : ''}><i class=\"material-icons\">add_circle</i></a>\n\n\t\t\t\t<a class=\"waves-effect waves-light btn green dismiss\" style=\"width:160px; margin-top: 10px\"><i class=\"material-icons right\">cancel</i>Dismiss</a>\n\t\t\t</div>\n\t\t\t`,\n\t\t\tposition: {\n\t\t\t\tmy: 'top center',\n\t\t\t\tat: 'bottom center'\n\t\t\t},\n\t\t\tstyle: {\n\t\t\t\tclasses: 'qtip-bootstrap',\n\t\t\t\twidth: 195\n\t\t\t}\n\t\t})\n\n\t\tthis.settings.robbers.list.forEach(robber => newNode.data('robberSettings').set(robber, {\n\t\t\tcost: 2,\n\t\t\treward: 1\n\t\t}))\n\n\t\treturn newNodeId\n\t}\n\n\t/**\n\t * Return the length of an edge.\n\t * \n\t * @param  {Edge} edge - the edge to measure.\n\t * @return {Number} the length.\n\t */\n\tlength(edge){\n\t\treturn this.distance(edge.source(), edge.target())\n\t}\n\n\t/**\n\t *\tReturn the distance between dwo vertices.\n\t *\n\t * @param  {Node} node1 - the first node.\n\t * @param  {Node} node2 - the second node.\n\t * @return {Number} the distance.\n\t */\n\tdistance(node1, node2){\n\t\treturn ((node1.position().x - node2.position().x)**2 + (node1.position().y - node2.position().y)**2)**0.5\n\t}\n\n\t/**\n\t *\tConcatenate settings into a JSON object.\n\t *\t\n\t * @return {Object} concatenated settings. \n\t */\n\tgetSettings(){\n\t\treturn {\n\t\t\tvertices: Object.keys(cy.nodes())\n\t\t\t\t\t\t\t .filter(key => !isNaN(key))\n\t\t\t\t\t\t\t .map(key => ({\n\t\t\t\t\t\t\t \tid: parseInt(cy.nodes()[key].id()),\n\t\t\t\t\t\t\t \tposition: cy.nodes()[key].position(),\n\t\t\t\t\t\t\t \trobbersInterest: cy.nodes()[key].data('robbersInterest'),\n\t\t\t\t\t\t\t \tguardiansCost: cy.nodes()[key].data('guardiansCost'),\n\t\t\t\t\t\t\t\tguardiansReward: cy.nodes()[key].data('guardiansReward'),\n\t\t\t\t\t\t\t\trobberSettings: Array.from(cy.nodes()[key].data('robberSettings')).reduce((obj, [key, value]) => { obj[key] = value; return obj}, {})\n\t\t\t\t\t\t\t })),\n\t\t\tedges: Object.keys(cy.edges())\n\t\t\t\t\t\t .filter(key => !isNaN(key))\n\t\t\t\t\t\t .map(key => ({\n\t\t\t\t\t\t \tsource: parseInt(cy.edges()[key].source().id()),\n\t\t\t\t\t\t \ttarget: parseInt(cy.edges()[key].target().id()),\n\t\t\t\t\t\t \tlength: this.length(cy.edges()[key])\n\t\t\t\t\t\t }))\n\t\t}\n\t}\n}",
+    "static": true,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 77,
+    "kind": "class",
+    "name": "Graph",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js",
+    "static": true,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "access": null,
+    "export": true,
+    "importPath": "web-server/js/classes/interface/settings/subsettings/Graph.js",
+    "importStyle": "Graph",
+    "description": "Class representing the graph of the simulation.\n\nYou can add targets, delete targets, and link\nthem together.\n\nFor each target, you can set :\n\t- robbersInterest (the probability of robbers attacking this target)\n\t- guardiansCost (the cost when guardians fail to protect the target)\n\t- guardiansReward (the reward when guardians manage to prevent \n\t\t\t\t\t\tan attack)\n\t- robberSettings (the cost, reward and probability for each robber)\n\t\t(Set through the Robbers class)\n\nNodes = Attacks = Targets",
+    "lineNumber": 18,
+    "interface": false
+  },
+  {
+    "__docId__": 78,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#constructor",
+    "access": null,
+    "description": "",
+    "lineNumber": 23,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Settings"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "settings",
+        "description": "Settings object using this graph."
+      }
+    ]
+  },
+  {
+    "__docId__": 79,
+    "kind": "member",
+    "name": "settings",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#settings",
+    "access": null,
+    "description": "Settings object using this graph.",
+    "lineNumber": 30,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Settings"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 80,
+    "kind": "member",
+    "name": "stylesheet",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#stylesheet",
+    "access": null,
+    "description": "Graph style.",
+    "lineNumber": 36,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 81,
+    "kind": "member",
+    "name": "cy",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#cy",
+    "access": null,
+    "description": "Cytoscape graph linked to this graph.",
+    "lineNumber": 78,
+    "type": {
+      "nullable": null,
+      "types": [
+        "cytoscape"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 82,
+    "kind": "member",
+    "name": "refreshInterval",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#refreshInterval",
+    "access": null,
+    "description": "Interval that refresh the cytoscape graph.",
+    "lineNumber": 97,
+    "return": {
+      "nullable": null,
+      "types": [
+        "Interval"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 83,
+    "kind": "member",
+    "name": "currentAction",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#currentAction",
+    "access": null,
+    "description": "What the user is currently doing.",
+    "lineNumber": 107,
+    "type": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 84,
+    "kind": "member",
+    "name": "currentAction",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#currentAction",
+    "access": null,
+    "description": null,
+    "lineNumber": 158,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 85,
+    "kind": "member",
+    "name": "lastSelectedNode",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#lastSelectedNode",
+    "access": null,
+    "description": "The node that was clicked the last.",
+    "lineNumber": 172,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Node"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 86,
+    "kind": "method",
+    "name": "init",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#init",
+    "access": null,
+    "description": "Initialize the graph by setting default values.",
+    "lineNumber": 191,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Graph"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 87,
+    "kind": "member",
+    "name": "nbrEdgesCreated",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#nbrEdgesCreated",
+    "access": null,
+    "description": "Number of edges created.\nDeleting an edge doesn't decrease that counter.",
+    "lineNumber": 198,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 88,
+    "kind": "member",
+    "name": "nbrNodesCreated",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#nbrNodesCreated",
+    "access": null,
+    "description": "Number of created nodes.\nDeleting a node doesn't decrease this counter.",
+    "lineNumber": 206,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 89,
+    "kind": "member",
+    "name": "lastSelectedNode",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#lastSelectedNode",
+    "access": null,
+    "description": "The node that was clicked the last.",
+    "lineNumber": 212,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Node"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 90,
+    "kind": "member",
+    "name": "currentAction",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#currentAction",
+    "access": null,
+    "description": "What the user is currently doing.",
+    "lineNumber": 218,
+    "type": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 91,
+    "kind": "method",
+    "name": "sort",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#sort",
+    "access": null,
+    "description": "Sort targets with the CoSE layout (by Bilkent University).",
+    "lineNumber": 230,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Graph"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 92,
+    "kind": "method",
+    "name": "reset",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#reset",
+    "access": null,
+    "description": "Reset the current action, selected target and hide the tips.",
+    "lineNumber": 244,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Graph"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 93,
+    "kind": "member",
+    "name": "lastSelectedNode",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#lastSelectedNode",
+    "access": null,
+    "description": null,
+    "lineNumber": 245,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 94,
+    "kind": "member",
+    "name": "currentAction",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#currentAction",
+    "access": null,
+    "description": null,
+    "lineNumber": 246,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 95,
+    "kind": "method",
+    "name": "link",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#link",
+    "access": null,
+    "description": "Link two targets together. You have to specify the ids.",
+    "lineNumber": 260,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "source",
+        "description": "source node id."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "target",
+        "description": "target node id."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Graph"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 96,
+    "kind": "method",
+    "name": "addNode",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#addNode",
+    "access": null,
+    "description": "Add a node to the graph.\n\nBase nodes can not been attacket nor defended.\nPatrols have to start at the base.",
+    "lineNumber": 291,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "position",
+        "description": "node coordinates."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "base",
+        "description": "do you want to add a base (you shouldn't, except the first one)"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "robbersInterest",
+        "description": "How often will robbers attack this target compared to others."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "guardiansCost",
+        "description": "How much will it cost to the guardian to not catch the robber on this node."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "guardiansReward",
+        "description": "How much will a guardian earn from catching a robber on this node."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": "the new node id."
+    }
+  },
+  {
+    "__docId__": 97,
+    "kind": "method",
+    "name": "length",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#length",
+    "access": null,
+    "description": "Return the length of an edge.",
+    "lineNumber": 353,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Edge"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "edge",
+        "description": "the edge to measure."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": "the length."
+    }
+  },
+  {
+    "__docId__": 98,
+    "kind": "method",
+    "name": "distance",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#distance",
+    "access": null,
+    "description": "Return the distance between dwo vertices.",
+    "lineNumber": 364,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Node"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "node1",
+        "description": "the first node."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Node"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "node2",
+        "description": "the second node."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": "the distance."
+    }
+  },
+  {
+    "__docId__": 99,
+    "kind": "method",
+    "name": "getSettings",
+    "memberof": "js/classes/interface/settings/subsettings/Graph.js~Graph",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Graph.js~Graph#getSettings",
+    "access": null,
+    "description": "Concatenate settings into a JSON object.",
+    "lineNumber": 373,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "concatenated settings."
+    }
+  },
+  {
+    "__docId__": 100,
+    "kind": "file",
+    "name": "js/classes/interface/settings/subsettings/Robbers.js",
+    "content": "/**\n * Sub-setting for robbers manipulation.\n */\nexport default class Robbers{\n\n\t/**\n\t* @param {Settings} settings - Settings object using this robbers. \n\t*/\n\tconstructor(settings){\n\n\t\t// Fields\n\t\t/**\n\t\t * Settings object using this robbers.\n\t\t * @type {Settings}\n\t\t */\n\t\tthis.settings = settings\n\n\t\t// DOM listeners\n\n\t\t$(document).on('click', '#robbers .delete', event => {\n\n\t\t\tthis.removeRobber($(event.currentTarget).parent().parent().parent().data('robberid'))\n\n\t\t})\n\n\t\t$(document).on('click', '#robbers .configure', event => {\n\n\t\t\tthis.configureRobber($(event.currentTarget).parent().parent().parent().data('robberid'))\n\n\t\t})\n\n\t\t$(document).on('change', '#robbers input.discretion', event => {\n\n\t\t\tconst newValue = 1-parseFloat($(event.currentTarget).val())\n\n\t\t\tif (newValue < 0 || newValue > 1){\n\t\t\t\treturn $(event.currentTarget).css({\n\t\t\t\t\tcolor: 'red'\n\t\t\t\t})\n\t\t\t}\n\n\t\t\t$(event.currentTarget).css({\n\t\t\t\tcolor: \"#fff\"\n\t\t\t})\n\n\t\t\tthis.catchProbability.set(\n\t\t\t\t$(event.currentTarget).parent().parent().parent().parent().data('robberid'),\n\t\t\t\tnewValue\n\t\t\t)\n\n\t\t})\n\n\t\t$(document).on('change', '#modal-robber-config input', event => {\n\n\t\t\tconst row = $(event.currentTarget).parent().parent()\n\n\t\t\tconst nodeId = row.data('nodeid')\n\t\t\tconst robberId = row.data('robberid')\n\n\t\t\tconst setting = $(event.currentTarget).data('setting')\n\t\t\tconst newValue = parseFloat($(event.currentTarget).val())\n\n\t\t\tconsole.info(`${setting} changed for target ${nodeId}, new value is ${newValue}.`)\n\n\t\t\tthis.settings.graph.cy.nodes(`[id = \"${nodeId}\"]`).data('robberSettings').get(robberId)[setting] = newValue\n\n\t\t})\n\n\t\tthis.init()\n\n\t}\n\n\t/**\n\t * Initialize the robbers by setting default values.\n\t *\n\t * @return {Robbers} chaining\n\t */\n\tinit(){\n\n\t\tif (typeof this.list !== 'undefined')\n\t\t\t[...this.list].forEach(robberId => this.removeRobber(robberId))\n\n\t\t/**\n\t\t * Number of robbers created until now.\n\t\t * Deleting a robber doesn't decrease that counter.\n\t\t * \n\t\t * @type {Number}\n\t\t */\n\t\tthis.numberOfRobbersCreated = 0\n\n\t\t/**\n\t\t * Set of all robbers.\n\t\t * @todo We should probably change the name of this variable.\n\t\t * \n\t\t * @type {Set<Object>}\n\t\t */\n\t\tthis.list = new Set()\n\n\t\t/**\n\t\t * Probability of beeing caught for each robber.\n\t\t *\n\t\t * @type {Map<Number, Number>}\n\t\t */\n\t\tthis.catchProbability = new Map()\n\n\t\treturn this\n\t}\n\n\t/**\n\t * Add a robber to the settings.\n\t * His card can be seen in the \"Robbers\" tab.\n\t * His settings are set to default in every target.\n\t *\n\t * @param {Number} catchProbability - the catch probability of the new robber.\n\t * @return {Number} the new robber id.\n\t */\n\tnewRobber(catchProbability = 0.5){\n\n\t\tconst robberId = this.numberOfRobbersCreated++\n\n\t\tthis.list.add(robberId)\n\n\t\tthis.catchProbability.set(robberId, catchProbability)\n\n\t\tthis.settings.graph.cy.nodes().each(node => node.data('robberSettings').set(robberId, {\n\t\t\tcost: 1,\n\t\t\treward: 1\n\t\t}))\n\n\t\t$('#robbers').append(`\n\t\t\t<div class=\"col s4\" data-robberid=\"${robberId}\">\n\t\t\t    <div class=\"card blue-grey darken-1\">\n\t\t\t\t\t<div class=\"card-content white-text\">\n\t\t\t\t\t\t<span class=\"card-title\">Robber ${robberId+1}</span>\n\t\t\t\t\t\t<!--<p>Some bad guy.</p>-->\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"card-action\">\n\t\t\t\t\t\t<div class=\"discretionContainer\">\n\t\t\t\t\t\t\t<span>Discretion</span>\n\t\t\t\t\t\t\t<input type=\"number\" step=\"0.05\" class=\"discretion\" min=\"0\" max=\"1\" value=\"${(1-catchProbability)}\">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<a class=\"waves-effect waves-light btn blue configure\" style=\"width: 100%; margin-top: 10px;\"><i class=\"material-icons right\">mode_edit</i>Rewards</a>\n\t\t\t\t\t\t<a class=\"waves-effect waves-light btn red delete\" style=\"width: 100%; margin-top: 10px\" ${(robberId === 0) ? 'disabled' : ''}><i class=\"material-icons right\">delete</i>Delete</a>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t`)\n\n\t\treturn robberId\n\t}\n\n\t/**\n\t * Remove a robber from the settings.\n\t * His card gets removed and references to his settings are\n\t * removed from each target.\n\t *\n\t * @param {Number} robberId - the robber to remove.\n\t * @return {Robbers} chaining\n\t */\n\tremoveRobber(robberId){\n\n\t\tconsole.info(`Removing robber ${robberId}...`)\n\n\t\tthis.list.delete(robberId)\n\n\t\tthis.settings.graph.cy.nodes().each(node => node.data('robberSettings').delete(robberId))\n\n\t\t$('#robbers').find(`[data-robberid=${robberId}]`).remove()\n\n\t\treturn this\n\t}\n\n\t/**\n\t * Display a modal enabling the user to set the\n\t * robber properties for every target.\n\t * \n\t * @param {Number} robberId - the robber to configure.\n\t * @return {Robbers} chaining\n\t */\n\tconfigureRobber(robberId){\n\n\t\tconsole.info(`Configuring robber ${robberId+1}.`)\n\n\t\tlet table = `\n\t\t\t<table class=\"striped centered\">\n\t\t\t\t<thead>\n\t\t\t\t\t<tr>\n\t\t\t\t\t\t<th>Target ID</th>\n\t\t\t\t\t\t<th>Cost</th>\n\t\t\t\t\t\t<th>Reward</th>\n\t\t\t\t\t</tr>\n\t\t\t\t</thead>\n\n\t\t\t\t<tbody>`\n\n\t\tthis.settings.graph.cy.nodes('[id != \"0\"]').forEach(node => {\n\n\t\t\tlet settings = node.data('robberSettings').get(robberId)\n\n\t\t\ttable += `\n\t\t\t\t<tr data-nodeid=\"${node.id()}\" data-robberid=\"${robberId}\">\n\t\t\t\t\t<td>${node.id()}</td>\n\t\t\t\t\t<td><input data-setting=\"cost\" type=\"number\" value=\"${settings.cost}\" min=\"0\"></td>\n\t\t\t\t\t<td><input data-setting=\"reward\" type=\"number\" value=\"${settings.reward}\" min=\"0\"></td>\n\t\t\t\t</tr>`\n\t\t})\n\n\t\ttable += `\n\t\t\t\t</tbody>\n\t\t\t</table>`\n\n\t\t$('#modal-robber-config h4').text(`Robber ${robberId+1} configuration`)\n\n\t\t$('#modal-robber-config p').html(table)\n\n\t\t$('#modal-robber-config').modal('open')\n\n\t\treturn this\n\t}\n\n\t/**\n \t * Return the list of every robber.\n\t *\n\t * @return {Object} Robbers settings.\n\t */\n\tgetSettings(){\n\t\treturn {\n\t\t\tlist: [...this.list],\n\t\t\tcatchProbability: Array.from(this.catchProbability).reduce((obj, [key, value]) => { obj[key] = value; return obj}, {})\n\t\t}\n\t}\n\n\n}",
+    "static": true,
+    "longname": "js/classes/interface/settings/subsettings/Robbers.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 101,
+    "kind": "class",
+    "name": "Robbers",
+    "memberof": "js/classes/interface/settings/subsettings/Robbers.js",
+    "static": true,
+    "longname": "js/classes/interface/settings/subsettings/Robbers.js~Robbers",
+    "access": null,
+    "export": true,
+    "importPath": "web-server/js/classes/interface/settings/subsettings/Robbers.js",
+    "importStyle": "Robbers",
+    "description": "Sub-setting for robbers manipulation.",
+    "lineNumber": 4,
+    "interface": false
+  },
+  {
+    "__docId__": 102,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "js/classes/interface/settings/subsettings/Robbers.js~Robbers",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Robbers.js~Robbers#constructor",
+    "access": null,
+    "description": "",
+    "lineNumber": 9,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Settings"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "settings",
+        "description": "Settings object using this robbers."
+      }
+    ]
+  },
+  {
+    "__docId__": 103,
+    "kind": "member",
+    "name": "settings",
+    "memberof": "js/classes/interface/settings/subsettings/Robbers.js~Robbers",
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Robbers.js~Robbers#settings",
+    "access": null,
+    "description": "Settings object using this robbers.",
+    "lineNumber": 16,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Settings"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 104,
+    "kind": "method",
+    "name": "init",
+    "memberof": "js/classes/interface/settings/subsettings/Robbers.js~Robbers",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Robbers.js~Robbers#init",
+    "access": null,
+    "description": "Initialize the robbers by setting default values.",
+    "lineNumber": 78,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Robbers"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 105,
+    "kind": "member",
+    "name": "numberOfRobbersCreated",
+    "memberof": "js/classes/interface/settings/subsettings/Robbers.js~Robbers",
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Robbers.js~Robbers#numberOfRobbersCreated",
+    "access": null,
+    "description": "Number of robbers created until now.\nDeleting a robber doesn't decrease that counter.",
+    "lineNumber": 89,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 106,
+    "kind": "member",
+    "name": "list",
+    "memberof": "js/classes/interface/settings/subsettings/Robbers.js~Robbers",
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Robbers.js~Robbers#list",
+    "access": null,
+    "description": "Set of all robbers.",
+    "lineNumber": 97,
+    "todo": [
+      "We should probably change the name of this variable."
+    ],
+    "type": {
+      "nullable": null,
+      "types": [
+        "Set<Object>"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 107,
+    "kind": "member",
+    "name": "catchProbability",
+    "memberof": "js/classes/interface/settings/subsettings/Robbers.js~Robbers",
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Robbers.js~Robbers#catchProbability",
+    "access": null,
+    "description": "Probability of beeing caught for each robber.",
+    "lineNumber": 104,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Map<Number, Number>"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 108,
+    "kind": "method",
+    "name": "newRobber",
+    "memberof": "js/classes/interface/settings/subsettings/Robbers.js~Robbers",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Robbers.js~Robbers#newRobber",
+    "access": null,
+    "description": "Add a robber to the settings.\nHis card can be seen in the \"Robbers\" tab.\nHis settings are set to default in every target.",
+    "lineNumber": 117,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "catchProbability",
+        "description": "the catch probability of the new robber."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": "the new robber id."
+    }
+  },
+  {
+    "__docId__": 109,
+    "kind": "method",
+    "name": "removeRobber",
+    "memberof": "js/classes/interface/settings/subsettings/Robbers.js~Robbers",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Robbers.js~Robbers#removeRobber",
+    "access": null,
+    "description": "Remove a robber from the settings.\nHis card gets removed and references to his settings are\nremoved from each target.",
+    "lineNumber": 160,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "robberId",
+        "description": "the robber to remove."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Robbers"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 110,
+    "kind": "method",
+    "name": "configureRobber",
+    "memberof": "js/classes/interface/settings/subsettings/Robbers.js~Robbers",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Robbers.js~Robbers#configureRobber",
+    "access": null,
+    "description": "Display a modal enabling the user to set the\nrobber properties for every target.",
+    "lineNumber": 180,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "robberId",
+        "description": "the robber to configure."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Robbers"
+      ],
+      "spread": false,
+      "description": "chaining"
+    }
+  },
+  {
+    "__docId__": 111,
+    "kind": "method",
+    "name": "getSettings",
+    "memberof": "js/classes/interface/settings/subsettings/Robbers.js~Robbers",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "js/classes/interface/settings/subsettings/Robbers.js~Robbers#getSettings",
+    "access": null,
+    "description": "Return the list of every robber.",
+    "lineNumber": 226,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "Robbers settings."
+    }
+  },
+  {
+    "__docId__": 112,
+    "kind": "file",
+    "name": "js/main.js",
+    "content": "import Interface from './classes/Interface'\n\n/*\n*\tCytoscape (the graph library we are using) doesn't work so\n*\twell when the rendering canvas is hidden while the graph\n*\tis initialized. We have to wait for the canvas to be displayed\n*\tbefore initializing it and to only do so once.\n*\n*\tThus, we use the global flag graphInitialized.\n*/\n\n\nlet graphInitialized = false\n\n/**\n *\tFunction called whenever the hash is updated to do the correct\n *\taction.\n */\n\nconst updateHash = hash => {\n\n\t// We remove the '#' character from the hash. Just in case.\n\thash = hash.replace( /^#/, '' )\n\n\t/*\n\t*\tPrevents # links from going to the element.\n\t*/\n\tconst node = $( `#${hash}` )\n\tnode.attr( 'id', '' )\n\tdocument.location.hash = hash\n\tnode.attr( 'id', hash )\n\n\t/*\n\t*\tWe have to sort the graph when it's displayed\n\t*\tfor the first time.\n\t*/\n\tif (!graphInitialized && hash === 'simulate'){\n\t\twindow.graph.sort()\n\t\tgraphInitialized = true\n\t}\n\n\tif (window.cy !== undefined)\n\t\twindow.cy.resize()\n\n\t/*\n\t*\tFix a bug with parallax images.\n\t*/\n\n\tsetTimeout(() => {\n\t\t$(window).scroll().resize()\n\t}, 25)\n}\n\n/**\n *\tSetup non-specific DOM listeners and initialize modules.\n */\nconst setupDOM = () => {\n\n\t$('[data-dest]').click(event => {\n\t\twindow.location.hash = $(event.eventTarget).data('dest')\n\t\t$('nav ul.tabs').tabs('select_tab', $(event.currentTarget).data('dest'))\n\t\tupdateHash($(event.currentTarget).data('dest'))\n\t})\n\n\t$('nav ul.tabs').on('click', 'a', event => {\n\t\tupdateHash($(event.currentTarget).attr('href'))\n\t})\n\n\t$(window).on('hashchange', () => {\n\t\t$('nav ul.tabs').tabs('select_tab', window.location.hash.slice(1))\n\t\tupdateHash(window.location.hash)\n\t})\n\n\t$('.parallax').parallax()\n\n\t$('.modal#modal-robber-config').modal()\n\n\tConsoleLogHTML.connect($('#console'))\n}\n\n/**\n *\tWhenever the DOM content is reaady to be manipulated,\n *\tsetupe the specific DOM and create an Interface with the server.\n *\tThen, we link the UI elements to the settings they manipulate.\n */\n$(() => {\n\tsetupDOM()\n\t\n\tconst iface = new Interface()\n\t$('#sortNodes').on('click', event => iface.settings.graph.sort())\n\t$('#newRobber').on('click', event => iface.settings.robbers.newRobber())\n\t$('#launchButton').on('click', event => iface.startSimulation())\n\t$('#importButton').on('click', event => iface.settings.loader.import())\n\t$('#exportButton').on('click', event => iface.settings.saver.save())\n\t$('#export-gambit').on('click', event => iface.results.exportGambit())\n\t$('.modal#modal-results').modal({complete: () => {\n\t\tiface.stopSimulation()\n\t\t$('#export-gambit').attr('disabled', 'true')\n\t}})\n})",
+    "static": true,
+    "longname": "js/main.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 113,
+    "kind": "variable",
+    "name": "graphInitialized",
+    "memberof": "js/main.js",
+    "static": true,
+    "longname": "js/main.js~graphInitialized",
+    "access": null,
+    "export": false,
+    "importPath": "web-server/js/main.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 114,
+    "kind": "function",
+    "name": "updateHash",
+    "memberof": "js/main.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "js/main.js~updateHash",
+    "access": null,
+    "export": false,
+    "importPath": "web-server/js/main.js",
+    "importStyle": null,
+    "description": "Function called whenever the hash is updated to do the correct\naction.",
+    "lineNumber": 20,
+    "params": [
+      {
+        "name": "hash",
+        "types": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "__docId__": 115,
+    "kind": "function",
+    "name": "setupDOM",
+    "memberof": "js/main.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "js/main.js~setupDOM",
+    "access": null,
+    "export": false,
+    "importPath": "web-server/js/main.js",
+    "importStyle": null,
+    "description": "Setup non-specific DOM listeners and initialize modules.",
+    "lineNumber": 57,
+    "params": []
+  },
+  {
+    "__docId__": 117,
+    "kind": "external",
+    "name": "Infinity",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Infinity",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 118,
+    "kind": "external",
+    "name": "NaN",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~NaN",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 119,
+    "kind": "external",
+    "name": "undefined",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~undefined",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 120,
+    "kind": "external",
+    "name": "null",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~null",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 121,
+    "kind": "external",
+    "name": "Object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 122,
+    "kind": "external",
+    "name": "object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 123,
+    "kind": "external",
+    "name": "Function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 124,
+    "kind": "external",
+    "name": "function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 125,
+    "kind": "external",
+    "name": "Boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 126,
+    "kind": "external",
+    "name": "boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 127,
+    "kind": "external",
+    "name": "Symbol",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Symbol",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 128,
+    "kind": "external",
+    "name": "Error",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Error",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 129,
+    "kind": "external",
+    "name": "EvalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~EvalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 130,
+    "kind": "external",
+    "name": "InternalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~InternalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 131,
+    "kind": "external",
+    "name": "RangeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RangeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 132,
+    "kind": "external",
+    "name": "ReferenceError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ReferenceError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 133,
+    "kind": "external",
+    "name": "SyntaxError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~SyntaxError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 134,
+    "kind": "external",
+    "name": "TypeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~TypeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 135,
+    "kind": "external",
+    "name": "URIError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~URIError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 136,
+    "kind": "external",
+    "name": "Number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 137,
+    "kind": "external",
+    "name": "number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 138,
+    "kind": "external",
+    "name": "Date",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Date",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 139,
+    "kind": "external",
+    "name": "String",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~String",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 140,
+    "kind": "external",
+    "name": "string",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~string",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 141,
+    "kind": "external",
+    "name": "RegExp",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RegExp",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 142,
+    "kind": "external",
+    "name": "Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 143,
+    "kind": "external",
+    "name": "Int8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 144,
+    "kind": "external",
+    "name": "Uint8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 145,
+    "kind": "external",
+    "name": "Uint8ClampedArray",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8ClampedArray",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 146,
+    "kind": "external",
+    "name": "Int16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 147,
+    "kind": "external",
+    "name": "Uint16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 148,
+    "kind": "external",
+    "name": "Int32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 149,
+    "kind": "external",
+    "name": "Uint32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 150,
+    "kind": "external",
+    "name": "Float32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 151,
+    "kind": "external",
+    "name": "Float64Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float64Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 152,
+    "kind": "external",
+    "name": "Map",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Map",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 153,
+    "kind": "external",
+    "name": "Set",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Set",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 154,
+    "kind": "external",
+    "name": "WeakMap",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakMap",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 155,
+    "kind": "external",
+    "name": "WeakSet",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakSet",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 156,
+    "kind": "external",
+    "name": "ArrayBuffer",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ArrayBuffer",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 157,
+    "kind": "external",
+    "name": "DataView",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~DataView",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 158,
+    "kind": "external",
+    "name": "JSON",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~JSON",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 159,
+    "kind": "external",
+    "name": "Promise",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Promise",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 160,
+    "kind": "external",
+    "name": "Generator",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Generator",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 161,
+    "kind": "external",
+    "name": "GeneratorFunction",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~GeneratorFunction",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 162,
+    "kind": "external",
+    "name": "Reflect",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Reflect",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 163,
+    "kind": "external",
+    "name": "Proxy",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Proxy",
+    "access": null,
+    "description": "",
+    "lineNumber": 193,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 165,
+    "kind": "external",
+    "name": "CanvasRenderingContext2D",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 166,
+    "kind": "external",
+    "name": "DocumentFragment",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~DocumentFragment",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 167,
+    "kind": "external",
+    "name": "Element",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~Element",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 168,
+    "kind": "external",
+    "name": "Event",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~Event",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 169,
+    "kind": "external",
+    "name": "Node",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~Node",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 170,
+    "kind": "external",
+    "name": "NodeList",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~NodeList",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 171,
+    "kind": "external",
+    "name": "XMLHttpRequest",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 172,
+    "kind": "external",
+    "name": "AudioContext",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "access": null,
+    "description": "",
+    "lineNumber": 34,
+    "builtinExternal": true
+  }
+]
