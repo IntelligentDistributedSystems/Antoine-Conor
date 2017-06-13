@@ -1,16 +1,42 @@
+// Interface
 const blessed = require('blessed')
+// CPU & RAM
 const os = require('os-utils')
 
+/**
+ * Class used to have a nice interface.
+ */
 class Dashboard {
 
+	/**
+	 * @param  {Set<Socket>} sockets - Sockets to check.
+	 * @param  {Number} httpPort - Port on which the HTTP server is listening.
+	 * @param  {Number} webSocketsPort - Port on chich the socket server is listening.
+	 */
 	constructor(sockets, httpPort, webSocketsPort){
 
+		/**
+		 * Sockets to check.
+		 * @type {Set<Socket>}
+		 */
 		this.sockets = sockets
+		/**
+		 * Port on which the HTTP server is listening.
+		 * @type {Number}
+		 */
 		this.httpPort = httpPort
+		/**
+		 * Port on chich the socket server is listening.
+		 * @type {Number}
+		 */
 		this.webSocketsPort = webSocketsPort
 
 		// Main
 
+		/**
+		 * Screen in which we will put all the components.
+		 * @type {blessed.Screen}
+		 */
 		this.screen = blessed.screen({	
 			// Example of optional settings:
 			smartCSR: true,
@@ -44,8 +70,10 @@ class Dashboard {
 
 		this.screen.append(this.portsBox)	
 
-		// IPs-list
-
+		/**
+		 * Component containing the IPs list.
+		 * @type {blessed.List}
+		 */
 		this.ipsList = blessed.list({
 			top: 0,
 			left: '50%',
@@ -58,8 +86,10 @@ class Dashboard {
 
 		this.screen.append(this.ipsList)
 
-		// Ressources
-
+		/**
+		 * Component containing the ressources usage informations.
+		 * @type {blessed.Box}
+		 */
 		this.ressources = blessed.box({
 			top: 4,
 			left: 0,
@@ -72,6 +102,10 @@ class Dashboard {
 
 		this.screen.append(this.ressources)
 
+		/**
+		 * CPU usage component.
+		 * @type {blessed.ProgressBar}
+		 */
 		this.cpu = blessed.ProgressBar({
 			top: 0,
 			left: 0,
@@ -87,6 +121,10 @@ class Dashboard {
 		})
 		this.ressources.append(this.cpu)
 
+		/**
+		 * RAM usage component.
+		 * @type {blessed.ProgressBar}
+		 */
 		this.memory = blessed.ProgressBar({
 			top: 3,
 			left: 0,
@@ -103,8 +141,10 @@ class Dashboard {
 
 		this.ressources.append(this.memory)
 
-		// Logs
-
+		/**
+		 * Logs component.
+		 * @type {blessed.Log}
+		 */
 		this.logs = blessed.log({
 			top: 12,
 			left: 0,
@@ -120,6 +160,10 @@ class Dashboard {
 		setInterval(() => this.render(), 100)
 	}
 
+	/**
+	 * Update all the components data.
+	 * @return {Dashboard} chaining
+	 */
 	render(){
 
 		// IPs-list
@@ -153,6 +197,11 @@ class Dashboard {
 		return this
 	}
 
+	/**
+	 * Add a message to the dashboard's log.
+	 * @param  {String} msg - Log line to add.
+	 * @return {Dashboard} chaining
+	 */
 	log(msg){
 		this.logs.log(msg)
 

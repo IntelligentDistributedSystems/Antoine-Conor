@@ -1,9 +1,24 @@
+/**
+ * Class handling the Jason output.
+ */
 class LogParser{
 
+	/**
+	 * @param  {Simulation} simulation - The simulation using this handler.
+	 */
 	constructor(simulation){
+		/**
+		 * The simulation using this handler.
+		 * @type {Simulation}
+		 */
 		this.simulation = simulation
 	}
 
+	/**
+	 * Jason's output handler.
+	 * @param  {StringBuffer} data - Output
+	 * @return {LogParser} chaining
+	 */
 	handleOutput(data){
 
 		// The buffered data can be multiline.
@@ -52,6 +67,11 @@ class LogParser{
 		return this
 	}
 
+	/**
+	 * Handle the error messages.
+	 * @param  {StringBuffer} data - The error message.
+	 * @return {LogParser} chaining
+	 */
 	handleError(data){
 
 		this.simulation.sendError(data)

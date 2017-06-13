@@ -1,3 +1,6 @@
+/**
+ * Helper checking the settings integrity.
+ */
 module.exports = {
 	settingsCorrupted : function(settings){
 
